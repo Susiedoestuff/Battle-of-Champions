@@ -28,7 +28,11 @@ namespace BrawlTest
         bool p1falling, p1jumping, p1atkActive, p1spclActive, p1invisFrame; //indicators if these things are active
         bool p1atkCool, p1sklCool; //skill cooldowns
         bool p1facingRight; //which side is the player facing
+        string p1Character;
 
+        //p2
+        int p2xv, p2yv, p2xa, p2ya;
+        int p2hp, p2atk, p2def, p2dex, p2spd;
 
         public Form1()
         {
@@ -44,6 +48,8 @@ namespace BrawlTest
             p1def = 4; //how much damage and knockback is negated, ranges from 2 - 10
             p1dex = 5; //skill and hit recovery time, lower the better, ranges from 20 - 5
             p1spd = 3; //base movement acceleration
+            p1Character = "Cedric";
+
 
             //the same stuff for player 2
             p2Sprite = new Rectangle(400, 400, 50, 50);
@@ -68,9 +74,9 @@ namespace BrawlTest
             }
             if (jumping == false)
             {
-                if (e.KeyData == Keys.Up && yv < 50 && yv > -50 && falling == false)//check is players on a platform and velocity cap
+                if (e.KeyData == Keys.Up && p1yv < 50 && p1yv > -50 && falling == false)//check is players on a platform and velocity cap
                 {
-                    ya = -10;
+                    p1ya = -10;
                     jumping = true;
                 }
             }
@@ -86,15 +92,15 @@ namespace BrawlTest
         private void Form1_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.KeyData == Keys.Right || e.KeyData == Keys.Left)
-            { xa = 0; }
+            { p1xa = 0; }
             if (e.KeyData == Keys.Up)
-            { ya = 0; jumping = false; }
+            { p1ya = 0; jumping = false; }
         }
 
         private void mainPanel_Paint(object sender, PaintEventArgs e)
         {
             g = e.Graphics;
-            g.FillRectangle(greenbrush, Cedric);
+            g.FillRectangle(greenbrush, p1Sprite);
             g.FillRectangle(greenbrush, platform);
 
         }
