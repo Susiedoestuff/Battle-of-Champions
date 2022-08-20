@@ -31,29 +31,19 @@ namespace BrawlTest
         {
             this.components = new System.ComponentModel.Container();
             this.mainPanel = new System.Windows.Forms.Panel();
-            this.VeloX = new System.Windows.Forms.Label();
             this.veloTmr = new System.Windows.Forms.Timer(this.components);
             this.p1atkTime = new System.Windows.Forms.Timer(this.components);
-            this.mainPanel.SuspendLayout();
+            this.p2atkTime = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // mainPanel
             // 
-            this.mainPanel.Controls.Add(this.VeloX);
             this.mainPanel.Location = new System.Drawing.Point(-1, -1);
+            this.mainPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.mainPanel.Name = "mainPanel";
-            this.mainPanel.Size = new System.Drawing.Size(848, 680);
+            this.mainPanel.Size = new System.Drawing.Size(1131, 837);
             this.mainPanel.TabIndex = 0;
             this.mainPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.mainPanel_Paint);
-            // 
-            // VeloX
-            // 
-            this.VeloX.AutoSize = true;
-            this.VeloX.Location = new System.Drawing.Point(14, 14);
-            this.VeloX.Name = "VeloX";
-            this.VeloX.Size = new System.Drawing.Size(33, 13);
-            this.VeloX.TabIndex = 0;
-            this.VeloX.Text = "Velox";
             // 
             // veloTmr
             // 
@@ -65,19 +55,22 @@ namespace BrawlTest
             // 
             this.p1atkTime.Tick += new System.EventHandler(this.p1atkTime_Tick);
             // 
+            // p2atkTime
+            // 
+            this.p2atkTime.Tick += new System.EventHandler(this.p2atkTime_Tick);
+            // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(845, 677);
+            this.ClientSize = new System.Drawing.Size(1127, 833);
             this.Controls.Add(this.mainPanel);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);
-            this.mainPanel.ResumeLayout(false);
-            this.mainPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -86,8 +79,8 @@ namespace BrawlTest
 
         private System.Windows.Forms.Panel mainPanel;
         private System.Windows.Forms.Timer veloTmr;
-        private System.Windows.Forms.Label VeloX;
         private System.Windows.Forms.Timer p1atkTime;
+        private System.Windows.Forms.Timer p2atkTime;
     }
 }
 
