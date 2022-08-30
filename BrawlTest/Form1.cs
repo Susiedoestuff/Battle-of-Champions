@@ -87,6 +87,12 @@ namespace BrawlTest
 
             platform = new Rectangle(1, 600, 1000, 50);
             mainPanel.Invalidate();
+
+            //temp stats
+            p1atkLength = 3;
+            p1atkhbX = 70;
+            p1atkhbY = 40;
+            p1atkhbOffset = 70;
         }
 
 
@@ -98,7 +104,7 @@ namespace BrawlTest
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             //p1
-            if (p1xv < 10 && p1xv > -10)//velocity cap
+            if (p1xv < 10 && p1xv > -10 && p1atkActive == false)//velocity cap
             {
                 if (e.KeyData == Keys.Right) { p1xa = p1spd; p1facingRight = true; }
                 if (e.KeyData == Keys.Left) { p1xa = -p1spd; p1facingRight = false; }
@@ -299,6 +305,10 @@ namespace BrawlTest
             p1atkActive = true;
             p1atkTime.Enabled = true;
             p1atkCooltime = 0;
+            p1xv = 0;
+            p1yv = 0;
+            p1xa = 0;
+            p1ya = 0;
             switch (p1Character)
             {
                 case "Cedric":
@@ -319,6 +329,11 @@ namespace BrawlTest
             else
             {
                 p1atkCooltime += 1;
+            }
+            if (p1atkCooltime > p1atkLength)
+            {
+                p1atkhb = Rectangle.Empty;
+                p1atkActive = false;
             }
         }
 
@@ -344,15 +359,15 @@ namespace BrawlTest
                 {
 
                     playerposX = p1Sprite.X + 130;
-                    playerposY = p1Sprite.Y + 70;
+                    playerposY = p1Sprite.Y + p1atkhbOffset;
                 }
                 else
                 {
                     playerposX = p1Sprite.X;
-                    playerposY = p1Sprite.Y + 70;
+                    playerposY = p1Sprite.Y + p1atkhbOffset;
                 }
 
-                p1atkhb = new Rectangle(playerposX, playerposY, 70, 40);
+                p1atkhb = new Rectangle(playerposX, playerposY, p1atkhbX, p1atkhbY);
             }
             else
             {
