@@ -31,22 +31,23 @@ namespace BrawlTest
         //p1
         int p1xv, p1yv, p1xa, p1ya;
         int p1atkCooltime, p1spclCooltime; //cooldown timers
-        bool p1falling, p1jumping, p1atkActive, p1spclActive, p1invisFrame; //indicators if these things are active
+        bool p1falling, p1jumping, p1atkActive, p1spclActive, p1invince, p1stunned; //indicators if these things are active
         bool p1atkCool, p1sklCool; //skill cooldowns
         bool p1facingRight; //which side is the player facing
         string p1Character;
         //p1 imported integers
         int p1hp, p1atk, p1def, p1dex, p1spd; //stats
-        int p1atkLength, p1atkDmg, p1atkStun; //attack specifications 
+        int p1atkLength; //attack specifications 
         int p1atkhbX, p1atkhbY, p1atkhbOffset; //attack hitbox sizes
         bool p1spclDoesHeal, p1spclDoesDmg, p1spclDoesDrop, p1spclDoesSpecial; //Special skill conditions
         int p1spclLength, p1spcllength, p1spclCool, p1spclhbX, p1spclhbY; //Special skill specifications
+        int p1spclDmg, p1spclStun;
 
         //p2
         int p2xv, p2yv, p2xa, p2ya;
         int p2atkCooltime, p2spclCooltime; //cooldown timers
         int p2hp, p2atk, p2def, p2dex, p2spd;
-        bool p2falling, p2jumping, p2atkActive, p2spclActive, p2invisFrame; //indicators if these things are active
+        bool p2falling, p2jumping, p2atkActive, p2spclActive, p2invince, p2stunned; //indicators if these things are active
         bool p2atkCool, p2sklCool; //skill cooldowns
         bool p2facingRight; //which side is the player facing
         string p2Character;
@@ -93,6 +94,12 @@ namespace BrawlTest
             p1atkhbX = 70;
             p1atkhbY = 40;
             p1atkhbOffset = 70;
+
+            //bools defaults
+            p1invince = false;
+            p1stunned = false;
+            p2invince = false;
+            p2stunned = false;
         }
 
 
@@ -104,22 +111,25 @@ namespace BrawlTest
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             //p1
-            if (p1xv < 10 && p1xv > -10 && p1atkActive == false)//velocity cap
+            if (p1atkActive == false)
             {
-                if (e.KeyData == Keys.Right) { p1xa = p1spd; p1facingRight = true; }
-                if (e.KeyData == Keys.Left) { p1xa = -p1spd; p1facingRight = false; }
-            }
-            if (p1jumping == false)
-            {
-                if (e.KeyData == Keys.Up && p1yv < 50 && p1yv > -50 && p1falling == false)//check is players on a platform and velocity cap
+                if (p1xv < 10 && p1xv > -10)//velocity cap
                 {
-                    p1ya = -10;
-                    p1jumping = true;
+                    if (e.KeyData == Keys.Right) { p1xa = p1spd; p1facingRight = true; }
+                    if (e.KeyData == Keys.Left) { p1xa = -p1spd; p1facingRight = false; }
                 }
-            }
-            if (p1atkCool == false && p1spclActive == false && p1atkActive == false) //if no skill is currently active
-            {
-                if (e.KeyData == Keys.Enter) { p1Atk(); } //actives attack skill
+                if (p1jumping == false)
+                {
+                    if (e.KeyData == Keys.Up && p1yv < 50 && p1yv > -50 && p1falling == false)//check is players on a platform and velocity cap
+                    {
+                        p1ya = -10;
+                        p1jumping = true;
+                    }
+                }
+                if (p1atkCool == false && p1spclActive == false) //if no skill is currently active
+                {
+                    if (e.KeyData == Keys.Enter) { p1Atk(); } //actives attack skill
+                }
             }
 
             //p2
@@ -175,6 +185,8 @@ namespace BrawlTest
             p1Sprite.Y = p1hb.Y - 50;
             p1Sprite.X = p1hb.X - 70;
 
+            p1hpdisplay.Text = p1hp.ToString();
+
             if (p1hb.IntersectsWith(platform))
             {
                 if (p1falling == true)
@@ -204,7 +216,6 @@ namespace BrawlTest
                 p1yv += p1ya; //acceleration
             }
 
-
             if (p1xv < 10 && p1xv > -10)//velocity cap
             { 
                 p1xv += p1xa; //acceleration
@@ -227,6 +238,8 @@ namespace BrawlTest
             p2hb.X += p2xv;
             p2Sprite.Y = p2hb.Y - 50;
             p2Sprite.X = p2hb.X - 70;
+
+            p2hpdisplay.Text = p2hp.ToString();
 
             if (p2hb.IntersectsWith(platform))
             {
@@ -256,7 +269,6 @@ namespace BrawlTest
             {
                 p2yv += p2ya; //acceleration
             }
-
 
             if (p2xv < 10 && p2xv > -10)//velocity cap
             {
@@ -335,6 +347,15 @@ namespace BrawlTest
                 p1atkhb = Rectangle.Empty;
                 p1atkActive = false;
             }
+            if (p2hb.IntersectsWith(p1atkhb))
+            {
+                if (p1atk - p2def > 0 && p2invince == false)
+                {
+                    p2hp -= (p1atk - p2def);
+                }
+                p2invince = true;
+            }
+            p1atkhb.Y = p1Sprite.Y + p1atkhbOffset;
         }
 
         private void p2Atk()
@@ -342,6 +363,14 @@ namespace BrawlTest
         }
         private void p2atkTime_Tick(object sender, EventArgs e) //tracks cooldown time
         {
+            if (p1hb.IntersectsWith(p2atkhb))
+            {
+
+                if (p2atk - p1def > 0)
+                {
+                    p1hp -= (p2atk - p1def);
+                }
+            }
         }
 
 
