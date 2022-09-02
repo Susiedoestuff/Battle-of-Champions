@@ -30,7 +30,7 @@ namespace BrawlTest
 
         //p1
         int p1xv, p1yv, p1xa, p1ya;
-        int p1atkCooltime, p1spclCooltime; //cooldown timers
+        int p1atkCooltime, p1spclCooltime, p1stunTime; //cooldown timers
         bool p1falling, p1jumping, p1atkActive, p1spclActive, p1invince, p1stunned; //indicators if these things are active
         bool p1atkCool, p1sklCool; //skill cooldowns
         bool p1facingRight; //which side is the player facing
@@ -42,15 +42,17 @@ namespace BrawlTest
         bool p1spclDoesHeal, p1spclDoesDmg, p1spclDoesDrop, p1spclDoesSpecial; //Special skill conditions
         int p1spclLength, p1spcllength, p1spclCool, p1spclhbX, p1spclhbY; //Special skill specifications
         int p1spclDmg, p1spclStun;
+        bool p1dealKockback = false;
 
         //p2
         int p2xv, p2yv, p2xa, p2ya;
-        int p2atkCooltime, p2spclCooltime; //cooldown timers
+        int p2atkCooltime, p2spclCooltime, p2stunTime; //cooldown timers
         int p2hp, p2atk, p2def, p2dex, p2spd;
         bool p2falling, p2jumping, p2atkActive, p2spclActive, p2invince, p2stunned; //indicators if these things are active
         bool p2atkCool, p2sklCool; //skill cooldowns
         bool p2facingRight; //which side is the player facing
         string p2Character;
+        bool p2dealKockback = false;
 
         public Form1()
         {
@@ -69,7 +71,7 @@ namespace BrawlTest
             p1Sprite = new Rectangle(400, 400, 200, 150);
             p1hb = new Rectangle(400, 400, 60, 100);
             p1hp = 100; //how much damage they can take, ranges from 75 - 200
-            p1atk = 25; //how much base damage they can deal, ranges from 10 - 25
+            p1atk = 18; //how much base damage they can deal, ranges from 5 - 20
             p1def = 4; //how much damage and knockback is negated, ranges from 2 - 10
             p1dex = 5; //skill and hit recovery time, lower the better, ranges from 20 - 5
             p1spd = 3; //base movement acceleration
@@ -80,7 +82,7 @@ namespace BrawlTest
             p2Sprite = new Rectangle(400, 400, 200, 150);
             p2hb = new Rectangle(400, 400, 60, 100);
             p2hp = 100;
-            p2atk = 25;
+            p2atk = 18;
             p2def = 4;
             p2dex = 5;
             p2spd = 3;
@@ -111,7 +113,7 @@ namespace BrawlTest
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             //p1
-            if (p1atkActive == false)
+            if (p1atkActive == false && p1stunned == false)
             {
                 if (p1xv < 10 && p1xv > -10)//velocity cap
                 {
@@ -133,22 +135,25 @@ namespace BrawlTest
             }
 
             //p2
-            if (p2xv < 10 && p2xv > -10)//velocity cap
+            if (p2atkActive == false && p2stunned == false)
             {
-                if (e.KeyData == Keys.D) { p2xa = p2spd; p2facingRight = true; }
-                if (e.KeyData == Keys.A) { p2xa = -p2spd; p2facingRight = false; }
-            }
-            if (p2jumping == false)
-            {
-                if (e.KeyData == Keys.W && p2yv < 50 && p2yv > -50 && p2falling == false)//check is players on a platform and velocity cap
+                if (p2xv < 10 && p2xv > -10)//velocity cap
                 {
-                    p2ya = -10;
-                    p2jumping = true;
+                    if (e.KeyData == Keys.D) { p2xa = p2spd; p2facingRight = true; }
+                    if (e.KeyData == Keys.A) { p2xa = -p2spd; p2facingRight = false; }
                 }
-            }
-            if (p2atkCool == false && p2spclActive == false && p2atkActive == false) //if no skill is currently active
-            {
-                if (e.KeyData == Keys.G) { p2Atk(); } //actives attack skill
+                if (p2jumping == false)
+                {
+                    if (e.KeyData == Keys.W && p2yv < 50 && p2yv > -50 && p2falling == false)//check is players on a platform and velocity cap
+                    {
+                        p2ya = -10;
+                        p2jumping = true;
+                    }
+                }
+                if (p2atkCool == false && p2spclActive == false && p2atkActive == false) //if no skill is currently active
+                {
+                    if (e.KeyData == Keys.G) { p2Atk(); } //actives attack skill
+                }
             }
         }
         private void Form1_KeyUp(object sender, KeyEventArgs e)
@@ -172,7 +177,7 @@ namespace BrawlTest
         //----------------------------------\\
         //             Movement             \\
         //----------------------------------\\
-        private void veloTmr_Tick(object sender, EventArgs e)
+        private void veloTmr_Tick(object sender, EventArgs e) //universal timer
         {
             mainPanel.Invalidate();
 
@@ -229,6 +234,8 @@ namespace BrawlTest
                 p1xv += 1;
             }
 
+            p1atkhb.Y = p1Sprite.Y + p1atkhbOffset;//attack hitbox
+
 
 
             //----------------------------------\\
@@ -283,6 +290,36 @@ namespace BrawlTest
                 p2xv += 1;
             }
         }
+        private void p2stunTmr_Tick(object sender, EventArgs e)
+        {
+            p2stunned = true;
+            p2stunTime -= 1;
+            if (p2stunTime < p2dex - 2)
+            {
+                if (p2dealKockback == false)//dealing knockback
+                {
+                    if (p1facingRight == true)
+                    {
+                        p2xv = 30 - p2def - p2hp/5; //knockback based on defence and current hp
+                        p2yv = -5;
+                    }
+                    else
+                    {
+                        p2xv = -30 + p2def + p2hp/5;
+                        p2yv = -5;
+                    }
+                    p2invince = false;
+                    p2dealKockback = true;
+                }
+            }
+            if(p2stunTime == 0)
+            {
+                p2dealKockback = false;
+                p2stunned = false;
+                p2stunTmr.Enabled = false;
+            }
+        }
+
 
 
         //----------------------------------\\
@@ -308,7 +345,7 @@ namespace BrawlTest
 
 
         //----------------------------------\\
-        //          Player Skills           \\
+        //       Player Base attack         \\
         //----------------------------------\\
 
         private void p1Atk()
@@ -321,14 +358,22 @@ namespace BrawlTest
             p1yv = 0;
             p1xa = 0;
             p1ya = 0;
-            switch (p1Character)
+            if (p1atkActive == true)
             {
-                case "Cedric":
-                    p1CedricAtk();
-                    break;
-                case "Riol":
-                    p1RiolAtk();
-                    break;
+                int playerposX, playerposY;
+                if (p1facingRight == true)
+                {
+
+                    playerposX = p1Sprite.X + 130;
+                    playerposY = p1Sprite.Y + p1atkhbOffset;
+                }
+                else
+                {
+                    playerposX = p1Sprite.X;
+                    playerposY = p1Sprite.Y + p1atkhbOffset;
+                }
+
+                p1atkhb = new Rectangle(playerposX, playerposY, p1atkhbX, p1atkhbY);
             }
         }
         private void p1atkTime_Tick(object sender, EventArgs e) //tracks cooldown time
@@ -349,13 +394,19 @@ namespace BrawlTest
             }
             if (p2hb.IntersectsWith(p1atkhb))
             {
+                p2xv = 0;
+                p2xa = 0;
+                p2yv = 0;
+                p2ya = 0;
                 if (p1atk - p2def > 0 && p2invince == false)
                 {
                     p2hp -= (p1atk - p2def);
                 }
                 p2invince = true;
+                p2stunned = true;
+                p2stunTime = p2dex;
+                p2stunTmr.Enabled = true;
             }
-            p1atkhb.Y = p1Sprite.Y + p1atkhbOffset;
         }
 
         private void p2Atk()
@@ -365,7 +416,6 @@ namespace BrawlTest
         {
             if (p1hb.IntersectsWith(p2atkhb))
             {
-
                 if (p2atk - p1def > 0)
                 {
                     p1hp -= (p2atk - p1def);
@@ -375,37 +425,9 @@ namespace BrawlTest
 
 
         //----------------------------------\\
-        //       Player Skills List         \\
+        //          Player Specials         \\
         //----------------------------------\\
 
-        //cool person :)
-        private void p1CedricAtk()
-        {
-            if(p1atkActive == true)
-            {
-                int playerposX, playerposY;
-                if (p1facingRight == true)
-                {
-
-                    playerposX = p1Sprite.X + 130;
-                    playerposY = p1Sprite.Y + p1atkhbOffset;
-                }
-                else
-                {
-                    playerposX = p1Sprite.X;
-                    playerposY = p1Sprite.Y + p1atkhbOffset;
-                }
-
-                p1atkhb = new Rectangle(playerposX, playerposY, p1atkhbX, p1atkhbY);
-            }
-            else
-            {
-
-            }
-        }
-        private void p1RiolAtk()
-        {
-        }
 
     }
 }

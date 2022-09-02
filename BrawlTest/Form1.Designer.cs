@@ -46,26 +46,29 @@ namespace BrawlTest
             this.mainPanel.Controls.Add(this.p2hpdisplay);
             this.mainPanel.Controls.Add(this.p1hpdisplay);
             this.mainPanel.Location = new System.Drawing.Point(-1, -1);
+            this.mainPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.mainPanel.Name = "mainPanel";
-            this.mainPanel.Size = new System.Drawing.Size(848, 680);
+            this.mainPanel.Size = new System.Drawing.Size(1131, 837);
             this.mainPanel.TabIndex = 0;
             this.mainPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.mainPanel_Paint);
             // 
             // p2hpdisplay
             // 
             this.p2hpdisplay.AutoSize = true;
-            this.p2hpdisplay.Location = new System.Drawing.Point(783, 14);
+            this.p2hpdisplay.Location = new System.Drawing.Point(1044, 17);
+            this.p2hpdisplay.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.p2hpdisplay.Name = "p2hpdisplay";
-            this.p2hpdisplay.Size = new System.Drawing.Size(35, 13);
+            this.p2hpdisplay.Size = new System.Drawing.Size(46, 17);
             this.p2hpdisplay.TabIndex = 1;
             this.p2hpdisplay.Text = "label2";
             // 
             // p1hpdisplay
             // 
             this.p1hpdisplay.AutoSize = true;
-            this.p1hpdisplay.Location = new System.Drawing.Point(14, 14);
+            this.p1hpdisplay.Location = new System.Drawing.Point(19, 17);
+            this.p1hpdisplay.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.p1hpdisplay.Name = "p1hpdisplay";
-            this.p1hpdisplay.Size = new System.Drawing.Size(35, 13);
+            this.p1hpdisplay.Size = new System.Drawing.Size(46, 17);
             this.p1hpdisplay.TabIndex = 0;
             this.p1hpdisplay.Text = "label1";
             // 
@@ -83,12 +86,22 @@ namespace BrawlTest
             // 
             this.p2atkTime.Tick += new System.EventHandler(this.p2atkTime_Tick);
             // 
+            // p1stunTmr
+            // 
+            this.p1stunTmr.Interval = 50;
+            // 
+            // p2stunTmr
+            // 
+            this.p2stunTmr.Interval = 50;
+            this.p2stunTmr.Tick += new System.EventHandler(this.p2stunTmr_Tick);
+            // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(845, 677);
+            this.ClientSize = new System.Drawing.Size(1127, 833);
             this.Controls.Add(this.mainPanel);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
