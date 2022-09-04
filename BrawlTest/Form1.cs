@@ -35,24 +35,34 @@ namespace BrawlTest
         bool p1atkCool, p1sklCool; //skill cooldowns
         bool p1facingRight; //which side is the player facing
         string p1Character;
+        int p1lives;
         //p1 imported integers
         int p1hp, p1atk, p1def, p1dex, p1spd; //stats
         int p1atkLength; //attack specifications 
         int p1atkhbX, p1atkhbY, p1atkhbOffset; //attack hitbox sizes
         bool p1spclDoesHeal, p1spclDoesDmg, p1spclDoesDrop, p1spclDoesSpecial; //Special skill conditions
-        int p1spclLength, p1spcllength, p1spclCool, p1spclhbX, p1spclhbY; //Special skill specifications
+        int p1spclLength, p1spclCool, p1spclhbX, p1spclhbY; //Special skill specifications
         int p1spclDmg, p1spclStun;
-        bool p1dealKockback = false;
+        string p1desc;
+        bool p1dealKnockback = false;
 
         //p2
         int p2xv, p2yv, p2xa, p2ya;
         int p2atkCooltime, p2spclCooltime, p2stunTime; //cooldown timers
-        int p2hp, p2atk, p2def, p2dex, p2spd;
         bool p2falling, p2jumping, p2atkActive, p2spclActive, p2invince, p2stunned; //indicators if these things are active
         bool p2atkCool, p2sklCool; //skill cooldowns
         bool p2facingRight; //which side is the player facing
         string p2Character;
-        bool p2dealKockback = false;
+        int p2lives;
+        //p2 imported integers
+        int p2hp, p2atk, p2def, p2dex, p2spd; //stats
+        int p2atkLength; //attack specifications 
+        int p2atkhbX, p2atkhbY, p2atkhbOffset; //attack hitbox sizes
+        bool p2spclDoesHeal, p2spclDoesDmg, p2spclDoesDrop, p2spclDoesSpecial; //Special skill conditions
+        int p2spclLength, p2spclCool, p2spclhbX, p2spclhbY; //Special skill specifications
+        int p2spclDmg, p2spclStun;
+        string p2desc;
+        bool p2dealKnockback = false;
 
         public Form1()
         {
@@ -88,7 +98,7 @@ namespace BrawlTest
             p2spd = 3;
             p2Character = "Cedric";
 
-            platform = new Rectangle(1, 600, 1000, 50);
+            platform = new Rectangle(1, 600, 600, 50);
             mainPanel.Invalidate();
 
             //temp stats
@@ -105,7 +115,189 @@ namespace BrawlTest
         }
 
 
+        //----------------------------------\\
+        //        Loading Character         \\
+        //----------------------------------\\
+        private void p1loadChar()
+        {
+            System.IO.StreamReader file = new System.IO.StreamReader(Application.StartupPath + @"\characters\" + p1Character.ToString() + ".txt");
+            int linenumber = 1;
+            for (int i = 1; i <= 21; i++)
+            {
+                try
+                {
+                    string line = File.ReadLines(Application.StartupPath + @"\characters\" + p1Character.ToString() + ".txt").ElementAt(linenumber);
+                    switch (linenumber)
+                    {
+                        case 1://character description
+                            p1desc = line;
+                            break;
+                        case 2://stats
+                            p1hp = int.Parse(line);
+                            break;
+                        case 3:
+                            p1atk = int.Parse(line);
+                            break;
+                        case 4:
+                            p1def = int.Parse(line);
+                            break;
+                        case 5:
+                            p1dex = int.Parse(line);
+                            break;
+                        case 6:
+                            p1spd = int.Parse(line);
+                            break;
+                        case 7:
+                            p1spd = int.Parse(line);
+                            break;
+                        case 8://attack specifications
+                            p1atkLength = int.Parse(line);
+                            break;
+                        case 9:
+                            p1atkhbX = int.Parse(line);
+                            break;
+                        case 10:
+                            p1atkhbY = int.Parse(line);
+                            break;
+                        case 11:
+                            p1atkhbOffset = int.Parse(line);
+                            break;
+                        case 12://special spefications
+                            if (line.Contains("y")) { p1spclDoesHeal = true; }
+                            else { p1spclDoesHeal = false; }
+                            break;
+                        case 13:
+                            if (line.Contains("y")) { p1spclDoesDmg = true; }
+                            else { p1spclDoesDmg = false; }
+                            break;
+                        case 14:
+                            if (line.Contains("y")) { p1spclDoesDrop = true; }
+                            else { p1spclDoesDrop = false; }
+                            break;
+                        case 15:
+                            if (line.Contains("y")) { p1spclDoesSpecial = true; }
+                            else { p1spclDoesSpecial = false; }
+                            break;
+                        case 16:
+                            p1spclLength = int.Parse(line);
+                            break;
+                        case 17:
+                            p1spclCool = int.Parse(line);
+                            break;
+                        case 18:
+                            p1spclhbX = int.Parse(line);
+                            break;
+                        case 19:
+                            p1spclhbY = int.Parse(line);
+                            break;
+                        case 20:
+                            p1spclDmg = int.Parse(line);
+                            break;
+                        case 21:
+                            p1spclStun = int.Parse(line);
+                            break;
 
+                    }
+                    linenumber += 1;
+                }
+                catch (Exception)
+                {
+                    file.Close();
+                    MessageBox.Show("Error has occured in reading character files. Please check if the character files are correct.");
+                }
+            }
+            file.Close();
+        }
+        private void p2loadChar()
+        {
+            System.IO.StreamReader file = new System.IO.StreamReader(Application.StartupPath + @"\characters\" + p2Character.ToString() + ".txt");
+            int linenumber = 1;
+            for (int i = 1; i <= 21; i++)
+            {
+                try
+                {
+                    string line = File.ReadLines(Application.StartupPath + @"\characters\" + p2Character.ToString() + ".txt").ElementAt(linenumber);
+                    switch (linenumber)
+                    {
+                        case 1://character description
+                            p2desc = line;
+                            break;
+                        case 2://stats
+                            p2hp = int.Parse(line);
+                            break;
+                        case 3:
+                            p2atk = int.Parse(line);
+                            break;
+                        case 4:
+                            p2def = int.Parse(line);
+                            break;
+                        case 5:
+                            p2dex = int.Parse(line);
+                            break;
+                        case 6:
+                            p2spd = int.Parse(line);
+                            break;
+                        case 7:
+                            p2spd = int.Parse(line);
+                            break;
+                        case 8://attack specifications
+                            p2atkLength = int.Parse(line);
+                            break;
+                        case 9:
+                            p2atkhbX = int.Parse(line);
+                            break;
+                        case 10:
+                            p2atkhbY = int.Parse(line);
+                            break;
+                        case 11:
+                            p2atkhbOffset = int.Parse(line);
+                            break;
+                        case 12://special spefications
+                            if (line.Contains("y")) { p2spclDoesHeal = true; }
+                            else { p2spclDoesHeal = false; }
+                            break;
+                        case 13:
+                            if (line.Contains("y")) { p2spclDoesDmg = true; }
+                            else { p2spclDoesDmg = false; }
+                            break;
+                        case 14:
+                            if (line.Contains("y")) { p2spclDoesDrop = true; }
+                            else { p2spclDoesDrop = false; }
+                            break;
+                        case 15:
+                            if (line.Contains("y")) { p2spclDoesSpecial = true; }
+                            else { p2spclDoesSpecial = false; }
+                            break;
+                        case 16:
+                            p2spclLength = int.Parse(line);
+                            break;
+                        case 17:
+                            p2spclCool = int.Parse(line);
+                            break;
+                        case 18:
+                            p2spclhbX = int.Parse(line);
+                            break;
+                        case 19:
+                            p2spclhbY = int.Parse(line);
+                            break;
+                        case 20:
+                            p2spclDmg = int.Parse(line);
+                            break;
+                        case 21:
+                            p2spclStun = int.Parse(line);
+                            break;
+
+                    }
+                    linenumber += 1;
+                }
+                catch (Exception)
+                {
+                    file.Close();
+                    MessageBox.Show("Error has occured in reading character files. Please check if the character files are correct.");
+                }
+            }
+            file.Close();
+        }
 
         //----------------------------------\\
         //             Controls              \\
@@ -296,7 +488,7 @@ namespace BrawlTest
             p2stunTime -= 1;
             if (p2stunTime < p2dex - 2)
             {
-                if (p2dealKockback == false)//dealing knockback
+                if (p2dealKnockback == false)//dealing knockback
                 {
                     if (p1facingRight == true)
                     {
@@ -309,12 +501,12 @@ namespace BrawlTest
                         p2yv = -5;
                     }
                     p2invince = false;
-                    p2dealKockback = true;
+                    p2dealKnockback = true;
                 }
             }
             if(p2stunTime == 0)
             {
-                p2dealKockback = false;
+                p2dealKnockback = false;
                 p2stunned = false;
                 p2stunTmr.Enabled = false;
             }
