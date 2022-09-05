@@ -46,7 +46,7 @@ namespace BrawlTest
             this.mainPanel.Controls.Add(this.p2hpdisplay);
             this.mainPanel.Controls.Add(this.p1hpdisplay);
             this.mainPanel.Location = new System.Drawing.Point(-1, -1);
-            this.mainPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.mainPanel.Margin = new System.Windows.Forms.Padding(4);
             this.mainPanel.Name = "mainPanel";
             this.mainPanel.Size = new System.Drawing.Size(1131, 837);
             this.mainPanel.TabIndex = 0;
@@ -89,6 +89,7 @@ namespace BrawlTest
             // p1stunTmr
             // 
             this.p1stunTmr.Interval = 50;
+            this.p1stunTmr.Tick += new System.EventHandler(this.p1stunTmr_Tick);
             // 
             // p2stunTmr
             // 
@@ -101,7 +102,7 @@ namespace BrawlTest
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1127, 833);
             this.Controls.Add(this.mainPanel);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
