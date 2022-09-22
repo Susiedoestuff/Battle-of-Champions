@@ -37,7 +37,7 @@ namespace BrawlTest
         bool p1atkCool, p1sklCool; //skill cooldowns
         bool p1facingRight; //which side is the player facing
         string p1Character;
-        int p1lives;
+        int p1currentHp, p1lives;
         //p1 imported integers
         int p1hp, p1atk, p1def, p1dex, p1spd; //stats
         int p1atkLength; //attack specifications 
@@ -55,7 +55,7 @@ namespace BrawlTest
         bool p2atkCool, p2sklCool; //skill cooldowns
         bool p2facingRight; //which side is the player facing
         string p2Character;
-        int p2lives;
+        int p2currentHp, p2lives;
         //p2 imported integers
         int p2hp, p2atk, p2def, p2dex, p2spd; //stats
         int p2atkLength; //attack specifications 
@@ -97,7 +97,7 @@ namespace BrawlTest
             //the same stuff for player 2
             p2Sprite = new Rectangle(400, 400, 200, 150);
             p2hb = new Rectangle(400, 400, 60, 100);
-            p2Character = "Cedric";
+            p2Character = "Riol";
             p2loadChar();
             p2lives = 3;
 
@@ -202,7 +202,6 @@ namespace BrawlTest
                     file.Close();
                 }
             }
-            file.Close();
         }
         private void p2loadChar()
         {
@@ -302,6 +301,8 @@ namespace BrawlTest
             {
                 gameStarted = true;
                 gameStart();
+                p1currentHp = p1hp;
+                p2currentHp = p2hp;
             }
             else
             {
@@ -384,7 +385,7 @@ namespace BrawlTest
             p1Sprite.Y = p1hb.Y - 50;
             p1Sprite.X = p1hb.X - 70;
 
-            p1hpdisplay.Text = p1hp.ToString();
+            p1hpdisplay.Text = p1currentHp.ToString();
 
             if (p1hb.IntersectsWith(platform))
             {
@@ -440,7 +441,7 @@ namespace BrawlTest
             p2Sprite.Y = p2hb.Y - 50;
             p2Sprite.X = p2hb.X - 70;
 
-            p2hpdisplay.Text = p2hp.ToString();
+            p2hpdisplay.Text = p2currentHp.ToString();
 
             if (p2hb.IntersectsWith(platform))
             {
@@ -495,12 +496,12 @@ namespace BrawlTest
                 {
                     if (p2facingRight == true)
                     {
-                        p1xv = 30 - p1def - p1hp / 5; //knockback based on defence and current hp
+                        p1xv = p1hp/3 - p1def - p1currentHp / 5; //knockback based on defence and current hp
                         p1yv = -5;
                     }
                     else
                     {
-                        p1xv = -30 + p1def + p1hp / 5;
+                        p1xv = -p1hp/3 + p1def + p1currentHp / 5;
                         p1yv = -5;
                     }
                     p1invince = false;
@@ -525,12 +526,12 @@ namespace BrawlTest
                 {
                     if (p1facingRight == true)
                     {
-                        p2xv = 30 - p2def - p2hp/5; //knockback based on defence and current hp
+                        p2xv = p2hp/3 - p2def - p2currentHp / 5; //knockback based on defence and current hp
                         p2yv = -5;
                     }
                     else
                     {
-                        p2xv = -30 + p2def + p2hp/5;
+                        p2xv = -p2hp/3 + p2def + p2currentHp / 5;
                         p2yv = -5;
                     }
                     p2invince = false;
@@ -589,13 +590,13 @@ namespace BrawlTest
                 if (p1facingRight == true)
                 {
 
-                    playerposX = p1Sprite.X + 130;
-                    playerposY = p1Sprite.Y + p1atkhbOffset;
-                }
-                else
-                {
-                    playerposX = p1Sprite.X;
-                    playerposY = p1Sprite.Y + p1atkhbOffset;
+                    playerposX = p1hb.X + 60;
+                    playerposY = p1hb.Y + p1atkhbOffset;
+                }                 
+                else              
+                {                 
+                    playerposX = p1hb.X - p1atkhbX;
+                    playerposY = p1hb.Y + p1atkhbOffset;
                 }
 
                 p1atkhb = new Rectangle(playerposX, playerposY, p1atkhbX, p1atkhbY);
@@ -625,7 +626,7 @@ namespace BrawlTest
                 p2ya = 0;
                 if (p1atk - p2def > 0 && p2invince == false)
                 {
-                    p2hp -= (p1atk - p2def);
+                    p2currentHp -= (p1atk - p2def);
                 }
                 p2invince = true;
                 p2stunned = true;
@@ -649,14 +650,13 @@ namespace BrawlTest
                 int playerposX, playerposY;
                 if (p2facingRight == true)
                 {
-
-                    playerposX = p2Sprite.X + 130;
-                    playerposY = p2Sprite.Y + p2atkhbOffset;
+                    playerposX = p2hb.X + 60;
+                    playerposY = p2hb.Y + p2atkhbOffset;
                 }
                 else
                 {
-                    playerposX = p2Sprite.X;
-                    playerposY = p2Sprite.Y + p2atkhbOffset;
+                    playerposX = p2hb.X - p2atkhbX;
+                    playerposY = p2hb.Y + p2atkhbOffset;
                 }
 
                 p2atkhb = new Rectangle(playerposX, playerposY, p2atkhbX, p2atkhbY);
@@ -686,7 +686,7 @@ namespace BrawlTest
                 p1ya = 0;
                 if (p2atk - p1def > 0 && p1invince == false)
                 {
-                    p1hp -= (p2atk - p1def);
+                    p1currentHp -= (p2atk - p1def);
                 }
                 p1invince = true;
                 p1stunned = true;
