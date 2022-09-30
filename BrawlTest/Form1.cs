@@ -19,16 +19,17 @@ namespace BrawlTest
         //            Variables             \\
         //----------------------------------\\
 
-        Rectangle p1Sprite, p2Sprite, platform;
-        Rectangle p1hb, p1atkhb, p1spclhb; //hitboxes
-        Rectangle p2hb, p2atkhb, p2spclhb; //hitboxes
+        Rectangle platform;
+        Rectangle p1Sprite, p1hb, p1atkhb, p1spclhb; //hitboxes
+        Rectangle p2Sprite, p2hb, p2atkhb, p2spclhb; //hitboxes
 
         Graphics g; // declare the graphics object
         SolidBrush greenbrush = new SolidBrush(Color.Purple);
         SolidBrush purplebrush = new SolidBrush(Color.Green);
         SolidBrush blackbrush = new SolidBrush(Color.Gray);
 
-        bool gameStarted;
+        bool gameStarted, titleCleared, charSelected;
+        string gameStatus;
 
         //p1
         int p1xv, p1yv, p1xa, p1ya;
@@ -47,6 +48,14 @@ namespace BrawlTest
         int p1spclDmg, p1spclStun;
         string p1desc;
         bool p1dealKnockback = false;
+        //p1 sprite works
+        string p1spriteStatus;
+        int p1frame;
+        Image[] p1Idle = new Image[10];
+
+
+
+
 
         //p2
         int p2xv, p2yv, p2xa, p2ya;
@@ -65,6 +74,17 @@ namespace BrawlTest
         int p2spclDmg, p2spclStun;
         string p2desc;
         bool p2dealKnockback = false;
+        //p2 sprite works
+        string p2spriteStatus;
+        int p2frame;
+        Image[] p2Idle = new Image[10];
+
+
+
+
+
+        Title title = new Title();
+        CharSel charsel = new CharSel();
 
         public Form1()
         {
@@ -81,6 +101,8 @@ namespace BrawlTest
         private void Form1_Load(object sender, EventArgs e)
         {
             gameStarted = false;
+            charSelected = false;
+            gameStatus = "title";
         }
 
         //----------------------------------\\
@@ -90,14 +112,12 @@ namespace BrawlTest
         {
             p1Sprite = new Rectangle(400, 400, 200, 150);
             p1hb = new Rectangle(400, 400, 60, 100);
-            p1Character = "Cedric";
             p1loadChar();
             p1lives = 3;
 
             //the same stuff for player 2
             p2Sprite = new Rectangle(400, 400, 200, 150);
             p2hb = new Rectangle(400, 400, 60, 100);
-            p2Character = "Riol";
             p2loadChar();
             p2lives = 3;
 
@@ -109,13 +129,30 @@ namespace BrawlTest
             p1stunned = false;
             p2invince = false;
             p2stunned = false;
+            veloTmr.Enabled = true;
         }
+
+        //----------------------------------\\
+        //       Selecting Character        \\
+        //----------------------------------\\
+
+
 
 
 
         //----------------------------------\\
         //        Loading Character         \\
         //----------------------------------\\
+
+        private void p1prepareSprite()
+        {
+            for (int i = 1; i <= 9; i++)//creates the image files for animations
+            {
+                p1Idle[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p1Character + "_" + p1spriteStatus + "_(" + i.ToString() + ").png");
+            }
+        }
+
+
         private void p1loadChar()
         {
             System.IO.StreamReader file = new System.IO.StreamReader(Application.StartupPath + @"\characters\" + p1Character.ToString() + ".txt");
@@ -299,10 +336,32 @@ namespace BrawlTest
         {
             if (gameStarted == false)
             {
-                gameStarted = true;
-                gameStart();
-                p1currentHp = p1hp;
-                p2currentHp = p2hp;
+                if (titleCleared == false)
+                {
+                    titleCleared = true;
+                    title.triggerTransition();
+                    p1Sprite = new Rectangle(90, 384, 400, 300);
+                    p2Sprite = new Rectangle(610, 534, 200, 150);
+                    p1spriteStatus = "Idle";
+                    p2spriteStatus = "Idle";
+                    p1Character = charsel.p1char();
+                    p2Character = charsel.p2char();
+                    p1prepareSprite();
+                }
+                else 
+                {
+                    if (e.KeyData == Keys.Right) { charsel.moveSelRight1(); }
+                    if (e.KeyData == Keys.Left) { charsel.moveSelLeft1(); }
+                    if (e.KeyData == Keys.Up) { charsel.moveSelUp1(); }
+                    if (e.KeyData == Keys.Down) { charsel.moveSelDown1(); }
+                    if (e.KeyData == Keys.D) { charsel.moveSelRight2(); }
+                    if (e.KeyData == Keys.A) { charsel.moveSelLeft2(); }
+                    if (e.KeyData == Keys.W) { charsel.moveSelUp2(); }
+                    if (e.KeyData == Keys.S) { charsel.moveSelDown2(); }
+                    p1Character = charsel.p1char();
+                    p2Character = charsel.p2char();
+                    p1prepareSprite();
+                }
             }
             else
             {
@@ -385,11 +444,9 @@ namespace BrawlTest
             p1Sprite.Y = p1hb.Y - 50;
             p1Sprite.X = p1hb.X - 70;
 
-            p1hpdisplay.Text = p1currentHp.ToString();
-
             if (p1hb.IntersectsWith(platform))
             {
-                if (p1falling == true)
+                if (p1falling == true && p1hb.Y < 600)
                 {
                     int place = (int)p1hb.Y;
                     p1ya = 0;
@@ -441,11 +498,9 @@ namespace BrawlTest
             p2Sprite.Y = p2hb.Y - 50;
             p2Sprite.X = p2hb.X - 70;
 
-            p2hpdisplay.Text = p2currentHp.ToString();
-
             if (p2hb.IntersectsWith(platform))
             {
-                if (p2falling == true)
+                if (p2falling == true && p2hb.Y < 600) 
                 {
                     int place = (int)p2hb.Y;
                     p2ya = 0;
@@ -554,20 +609,59 @@ namespace BrawlTest
         private void mainPanel_Paint(object sender, PaintEventArgs e)
         {
             g = e.Graphics;
+            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+            switch (gameStatus)
+            {
+                case "title":
+                    title.drawTitle(g);
+                    break;
+                case "CharSel":
+                    charsel.drawCharSel(g);
+                    g.DrawImage(p1Idle[p1frame], p1Sprite);
+                    //g.DrawImage(p2Idle[p2frame], p2Sprite);
+                    charsel.drawFade(g);
+                    break;
+            }
+
             g.FillRectangle(purplebrush, p1hb);
             g.FillRectangle(purplebrush, p1atkhb);
 
             g.FillRectangle(greenbrush, p2hb);
             g.FillRectangle(greenbrush, p2atkhb);
 
-
             g.FillRectangle(blackbrush, platform);
 
         }
 
-
-
-
+        private void aniTmr_Tick(object sender, EventArgs e)
+        {
+            mainPanel.Invalidate();
+            switch (gameStatus)
+            {
+                case "title":
+                    title.aniTitle();
+                    title.transitionTitle();
+                    if(title.titleDone())
+                    {
+                        gameStatus = "CharSel";
+                    }
+                    break;
+                case "CharSel":
+                    charsel.aniCharSel();
+                    charsel.transitionCharSel();
+                    break;
+            }
+            switch (p1spriteStatus)
+            {
+                case "Idle":
+                    p1frame += 1;//cycles between frames
+                    if (p1frame == 10)
+                    {
+                        p1frame = 1;
+                    }
+                    break;
+            }
+        }
 
 
         //----------------------------------\\
