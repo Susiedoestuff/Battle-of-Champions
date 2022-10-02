@@ -31,6 +31,9 @@ namespace BrawlTest
         bool gameStarted, titleCleared, charSelected;
         string gameStatus;
 
+
+
+
         //p1
         int p1xv, p1yv, p1xa, p1ya;
         int p1atkCooltime, p1spclCooltime, p1stunTime; //cooldown timers
@@ -51,10 +54,7 @@ namespace BrawlTest
         //p1 sprite works
         string p1spriteStatus;
         int p1frame;
-        Image[] p1Idle = new Image[10];
-
-
-
+        Image[] p1Idle = new Image[9];
 
 
         //p2
@@ -77,7 +77,7 @@ namespace BrawlTest
         //p2 sprite works
         string p2spriteStatus;
         int p2frame;
-        Image[] p2Idle = new Image[10];
+        Image[] p2Idle = new Image[9];
 
 
 
@@ -85,6 +85,7 @@ namespace BrawlTest
 
         Title title = new Title();
         CharSel charsel = new CharSel();
+        Rules rules = new Rules();
 
         public Form1()
         {
@@ -146,13 +147,24 @@ namespace BrawlTest
 
         private void p1prepareSprite()
         {
-            for (int i = 1; i <= 9; i++)//creates the image files for animations
+            if (p1Character != "nocharacter")
             {
-                p1Idle[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p1Character + "_" + p1spriteStatus + "_(" + i.ToString() + ").png");
+                for (int i = 1; i <= 8; i++)//creates the image files for animations
+                {
+                    p1Idle[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p1Character + "_" + p1spriteStatus + "_(" + i.ToString() + ").png");
+                }
             }
         }
-
-
+        private void p2prepareSprite()
+        {
+            if (p2Character != "nocharacter")
+            {
+                for (int i = 1; i <= 8; i++)//creates the image files for animations
+                {
+                    p2Idle[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p2Character + "_" + p2spriteStatus + "_(" + i.ToString() + ").png");
+                }
+            }
+        }
         private void p1loadChar()
         {
             System.IO.StreamReader file = new System.IO.StreamReader(Application.StartupPath + @"\characters\" + p1Character.ToString() + ".txt");
@@ -340,27 +352,37 @@ namespace BrawlTest
                 {
                     titleCleared = true;
                     title.triggerTransition();
-                    p1Sprite = new Rectangle(90, 384, 400, 300);
-                    p2Sprite = new Rectangle(610, 534, 200, 150);
+                    p1Sprite = new Rectangle(90, 388, 400, 300);
+                    p2Sprite = new Rectangle(510, 388, 400, 300);
                     p1spriteStatus = "Idle";
                     p2spriteStatus = "Idle";
                     p1Character = charsel.p1char();
                     p2Character = charsel.p2char();
                     p1prepareSprite();
+                    p2prepareSprite();
                 }
                 else 
                 {
-                    if (e.KeyData == Keys.Right) { charsel.moveSelRight1(); }
-                    if (e.KeyData == Keys.Left) { charsel.moveSelLeft1(); }
-                    if (e.KeyData == Keys.Up) { charsel.moveSelUp1(); }
-                    if (e.KeyData == Keys.Down) { charsel.moveSelDown1(); }
-                    if (e.KeyData == Keys.D) { charsel.moveSelRight2(); }
-                    if (e.KeyData == Keys.A) { charsel.moveSelLeft2(); }
-                    if (e.KeyData == Keys.W) { charsel.moveSelUp2(); }
-                    if (e.KeyData == Keys.S) { charsel.moveSelDown2(); }
-                    p1Character = charsel.p1char();
-                    p2Character = charsel.p2char();
-                    p1prepareSprite();
+                    if (gameStatus == "CharSel" && charsel.transitionDone() == true)
+                    {
+                        if (e.KeyData == Keys.Right) { charsel.moveSelRight1(); }
+                        if (e.KeyData == Keys.Left) { charsel.moveSelLeft1(); }
+                        if (e.KeyData == Keys.Up) { charsel.moveSelUp1(); }
+                        if (e.KeyData == Keys.Down) { charsel.moveSelDown1(); }
+                        if (e.KeyData == Keys.D) { charsel.moveSelRight2(); }
+                        if (e.KeyData == Keys.A) { charsel.moveSelLeft2(); }
+                        if (e.KeyData == Keys.W) { charsel.moveSelUp2(); }
+                        if (e.KeyData == Keys.S) { charsel.moveSelDown2(); }
+                        p1Character = charsel.p1char();
+                        p2Character = charsel.p2char();
+                        p1prepareSprite();
+                        p2prepareSprite();
+                        if (e.KeyData == Keys.R) { charsel.toRules(); }
+                    }
+                    else if ( rules.transitionDone() == true )
+                    {
+                        rules.toCharsel();
+                    }
                 }
             }
             else
@@ -618,8 +640,23 @@ namespace BrawlTest
                 case "CharSel":
                     charsel.drawCharSel(g);
                     g.DrawImage(p1Idle[p1frame], p1Sprite);
-                    //g.DrawImage(p2Idle[p2frame], p2Sprite);
-                    charsel.drawFade(g);
+                    g.DrawImage(p2Idle[p2frame], p2Sprite);
+                    if (charsel.transitionDone() != true)
+                    {
+                        charsel.drawFade(g);
+                    }
+                    charsel.drawFadeout(g);
+                    break;
+                case "Rules":
+                    rules.drawRules(g);
+                    if (rules.transitionDone() != true)
+                    {
+                        rules.drawFade(g);
+                    }
+                    else if (rules.rulesDone() != true)
+                    {
+                        rules.drawFadeout(g);
+                    }
                     break;
             }
 
@@ -648,16 +685,63 @@ namespace BrawlTest
                     break;
                 case "CharSel":
                     charsel.aniCharSel();
-                    charsel.transitionCharSel();
+                    if (charsel.transitionDone() != true)
+                    {
+                        charsel.transitionCharSel();
+                    }
+                    else if (charsel.charselDone() != true)
+                    {
+                        charsel.fadeoutCharSel();
+                    }
+                    else
+                    {
+                        rules = new Rules();
+                        p1Sprite = Rectangle.Empty;
+                        p2Sprite = Rectangle.Empty;
+                        gameStatus = charsel.statuscharsel();
+                        charsel.charselEmpty();
+                    }
+                    break;
+                case "Rules":
+                    rules.aniRules();
+                    if (rules.transitionDone() != true)
+                    {
+                        rules.transitionRules();
+                    }
+                    else if (rules.rulesDone() != true)
+                    {
+                        rules.fadeoutRules();
+                    }
+                    else
+                    {
+                        charsel = new CharSel();
+                        gameStatus = "CharSel";
+                        p1Sprite = new Rectangle(90, 388, 400, 300);
+                        p2Sprite = new Rectangle(510, 388, 400, 300);
+                        p1Character = charsel.p1char();
+                        p2Character = charsel.p2char();
+                        p1prepareSprite();
+                        p2prepareSprite();
+                    }
                     break;
             }
             switch (p1spriteStatus)
             {
                 case "Idle":
                     p1frame += 1;//cycles between frames
-                    if (p1frame == 10)
+                    if (p1frame == 9)
                     {
                         p1frame = 1;
+                    }
+                    break;
+            }
+            switch (p2spriteStatus)
+            {
+                case "Idle":
+                    p2frame += 1;//cycles between frames
+                    if (p2frame == 9)
+                    {
+                        p2frame = 1;
                     }
                     break;
             }

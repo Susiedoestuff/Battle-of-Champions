@@ -17,26 +17,36 @@ namespace BrawlTest
         //loads assets for the animated components of the character selection screen
         public Image[] charSelFrame = new Image[22];
         public Image[] fadeFrame = new Image[6];
+        public Image[] fadeoutFrame = new Image[6];
         public Image[] selFrame1 = new Image[7];
         public Image[] selFrame2 = new Image[7];
         public Image[] charIcons = new Image[17];
-        public Rectangle charSelSpace, fadeSpace, selSpace1, selSpace2;
+        public Rectangle charSelSpace, fadeSpace, selSpace1, selSpace2, blackSpace;
         public Rectangle[] charIconSpace = new Rectangle[17];
-        public int Frame, Fade, Choser;
+        public int Frame, Fade, Fade2, Choser;
         public int charNum1, charNum2;
         public string[] Char = new string[17];
+        public bool Clicked, Flash, fadeStart, fadeComplete;
+        public string status;
 
         public CharSel()
         {
             charSelSpace = new Rectangle(0, 0, 1000, 750);//default sizes and values
             fadeSpace = new Rectangle(0, 0, 1000, 750);
-            selSpace1 = new Rectangle(88, 76, 124, 124);
             selSpace2 = new Rectangle(188, 76, 124, 124);
             Frame = 1;
             Fade = 1;
+            Fade2 = 1;
             Choser = 1;
             charNum1 = 1;
             charNum2 = 2;
+            fadeComplete = false;
+
+            if (charNum1 <= 8 ) { selSpace1 = new Rectangle(charNum1 * 100 - 12 , 76, 124, 124);  }
+            else {  selSpace1 = new Rectangle((charNum1-8) * 100 - 12, 176, 124, 124); }
+            if (charNum2 <= 8) { selSpace2 = new Rectangle(charNum2 * 100 - 12, 76, 124, 124); }
+            else { selSpace2 = new Rectangle((charNum2 - 8) * 100 - 12, 176, 124, 124); }
+
             for (int i = 1; i <= 21; i++)//creates the image files for animations
             {
                 charSelFrame[i] = Image.FromFile(Application.StartupPath + @"\Assets\CharSel_(" + i.ToString() + ").png");
@@ -44,6 +54,7 @@ namespace BrawlTest
             for (int i = 1; i <= 5; i++)
             {
                 fadeFrame[i] = Image.FromFile(Application.StartupPath + @"\Assets\FadeSc_(" + i.ToString() + ").png");
+                fadeoutFrame[i] = Image.FromFile(Application.StartupPath + @"\Assets\FadeBlc_(" + i.ToString() + ").png");
             }
             for (int i = 1; i <= 6; i++)
             {
@@ -103,10 +114,77 @@ namespace BrawlTest
             }
             else
             {
-                fadeSpace = Rectangle.Empty;
+                fadeComplete = true;
             }
 
         }
+        public void fadeoutCharSel()
+        {
+            if (Clicked == true)
+            {
+                if (Fade2 <= 5)
+                {
+                    Fade2 += 1;
+                    fadeStart = true; 
+                }
+                if (Fade2 == 5)
+                {
+                    blackSpace = new Rectangle(0, 0, 1000, 750);
+                    Clicked = false;
+                    fadeStart = false;
+                }
+            }
+        }
+
+        public void toRules()
+        {
+            fadeSpace = new Rectangle(0, 0, 1000, 750);
+            status = "Rules";
+            Clicked = true;
+        }
+        public void charselEmpty()
+        {
+            charSelSpace = Rectangle.Empty;
+            selSpace1 = Rectangle.Empty;
+            selSpace2 = Rectangle.Empty;
+            for (int i = 1; i <= 16; i++)
+            {
+                charIconSpace[i] = Rectangle.Empty;
+            }
+            fadeSpace = Rectangle.Empty;
+            blackSpace = Rectangle.Empty;
+        }
+
+
+        public string statuscharsel()
+        {
+            return status;
+        }
+
+
+        public bool transitionDone()//returns bool to Form1 to change screens
+        {
+            if (fadeComplete == true)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        public bool charselDone()//returns bool to Form1 to change screens
+        {
+            if (Fade2 == 5)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
 
         public void readCharlist()
         {
@@ -124,7 +202,7 @@ namespace BrawlTest
                 }
                 if (Char[i] == null)
                 {
-                    Char[i] = "test";
+                    Char[i] = "nocharacter";
                 }
             }
         }
@@ -145,6 +223,14 @@ namespace BrawlTest
             {
                 g.DrawImage(fadeFrame[Fade], fadeSpace);
             }
+        }
+        public void drawFadeout(Graphics g)//draws fade
+        {
+            if (Fade2 <= 5 && fadeStart == true)
+            {
+                g.DrawImage(fadeoutFrame[Fade2], fadeSpace);
+            }
+            g.DrawImage(fadeoutFrame[5], blackSpace);
         }
 
 

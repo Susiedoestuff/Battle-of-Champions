@@ -138,4 +138,36 @@
   <metadata name="$this.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        AAABAAEAEhQAAAEAIAAYBgAAFgAAACgAAAASAAAAKAAAAAEAIAAAAAAAoAUAABILAAASCwAAAAAAAAAA
+        AAD///8A////AP///wD///8A////AP///wDkq4L/5KuC/+Srgv/kq4L/5KuC/+Srgv////8A////AP//
+        /wD///8A////AP///wD///8A////AP///wD///8A////AP///wDkq4L/5KuC/+Srgv/kq4L/5KuC/+Sr
+        gv////8A////AP///wD///8A////AP///wD///8A////AP///wD///8A5KuC/+Srgv84MzD/ODMw/zgz
+        MP84MzD/ODMw/zgzMP/kq4L/5KuC/////wD///8A////AP///wD///8A////AP///wD///8A5KuC/+Sr
+        gv84MzD/ODMw/zgzMP84MzD/ODMw/zgzMP/kq4L/5KuC/////wD///8A////AP///wD///8A////AOSr
+        gv/kq4L/ODMw/zgzMP84MzD/ODMw/zgzMP84MzD/ODMw/zgzMP84MzD/ODMw/+Srgv/kq4L/////AP//
+        /wD///8A////AOSrgv/kq4L/ODMw/zgzMP84MzD/ODMw/zgzMP84MzD/ODMw/zgzMP84MzD/ODMw/+Sr
+        gv/kq4L/////AP///wDkq4L/5KuC/zgAAP84AAD/OAAA/zgAAP84MzD/ODMw///v4///7+P/OAAA/zgA
+        AP84AAD/OAAA/zgAAP84AAD/5KuC/+Srgv/kq4L/5KuC/zgAAP84AAD/OAAA/zgAAP84MzD/ODMw///v
+        4///7+P/OAAA/zgAAP84AAD/OAAA/zgAAP84AAD/5KuC/+Srgv84AAD/OAAA/zgAAP84AAD/OAAA/zgA
+        AP//ynX//8p1///Kdf//ynX//8p1///Kdf84AAD/OAAA/zgAAP84AAD/OAAA/zgAAP84AAD/OAAA/zgA
+        AP84AAD/OAAA/zgAAP//ynX//8p1///Kdf//ynX//8p1///Kdf84AAD/OAAA/zgAAP84AAD/OAAA/zgA
+        AP+PZET/j2RE/49kRP+PZET/8+zm//Ps5v/z7Ob/8+zm//Ps5v/z7Ob/8+zm//Ps5v/z7Ob/8+zm/49k
+        RP+PZET/j2RE/49kRP+PZET/j2RE/49kRP+PZET/8+zm//Ps5v/z7Ob/8+zm//Ps5v/z7Ob/8+zm//Ps
+        5v/z7Ob/8+zm/49kRP+PZET/j2RE/49kRP+PZET/j2RE/49kRP+PZET/j2RE/49kRP//////////////
+        //////////////////+PZET/j2RE/49kRP+PZET/j2RE/49kRP+PZET/j2RE/49kRP+PZET/j2RE/49k
+        RP////////////////////////////////+PZET/j2RE/49kRP+PZET/j2RE/49kRP////8A////ADgA
+        AP84AAD/OAAA/zgAAP84AAD/OAAA////////////OAAA/zgAAP84AAD/OAAA/zgAAP84AAD/////AP//
+        /wD///8A////ADgAAP84AAD/OAAA/zgAAP84AAD/OAAA////////////OAAA/zgAAP84AAD/OAAA/zgA
+        AP84AAD/////AP///wD///8A////AP///wD///8AODMw/zgzMP84MzD/ODMw/zgzMP84MzD/ODMw/zgz
+        MP84MzD/ODMw/////wD///8A////AP///wD///8A////AP///wD///8AODMw/zgzMP84MzD/ODMw/zgz
+        MP84MzD/ODMw/zgzMP84MzD/ODMw/////wD///8A////AP///wD///8A////AP///wD///8A////AP//
+        /wCPZET/j2RE/49kRP+PZET/j2RE/49kRP////8A////AP///wD///8A////AP///wD///8A////AP//
+        /wD///8A////AP///wCPZET/j2RE/49kRP+PZET/j2RE/49kRP////8A////AP///wD///8A////AP//
+        /wD8D8AA/A/AAPADwADwA8AAwADAAMAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAA
+        wADAAMAA8APAAPADwAD8D8AA/A/AAA==
+</value>
+  </data>
 </root>
