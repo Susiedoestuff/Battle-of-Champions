@@ -32,21 +32,85 @@ namespace BrawlTest
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.mainPanel = new System.Windows.Forms.Panel();
+            this.p2spclDesc = new System.Windows.Forms.Label();
+            this.p2Name = new System.Windows.Forms.Label();
+            this.p1spclDesc = new System.Windows.Forms.Label();
+            this.p1Name = new System.Windows.Forms.Label();
             this.veloTmr = new System.Windows.Forms.Timer(this.components);
             this.p1atkTime = new System.Windows.Forms.Timer(this.components);
             this.p2atkTime = new System.Windows.Forms.Timer(this.components);
             this.p1stunTmr = new System.Windows.Forms.Timer(this.components);
             this.p2stunTmr = new System.Windows.Forms.Timer(this.components);
             this.aniTmr = new System.Windows.Forms.Timer(this.components);
+            this.mainPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // mainPanel
             // 
+            this.mainPanel.BackColor = System.Drawing.Color.Black;
+            this.mainPanel.Controls.Add(this.p2spclDesc);
+            this.mainPanel.Controls.Add(this.p2Name);
+            this.mainPanel.Controls.Add(this.p1spclDesc);
+            this.mainPanel.Controls.Add(this.p1Name);
             this.mainPanel.Location = new System.Drawing.Point(0, 0);
             this.mainPanel.Name = "mainPanel";
             this.mainPanel.Size = new System.Drawing.Size(1000, 750);
             this.mainPanel.TabIndex = 0;
             this.mainPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.mainPanel_Paint);
+            // 
+            // p2spclDesc
+            // 
+            this.p2spclDesc.BackColor = System.Drawing.Color.Transparent;
+            this.p2spclDesc.Font = new System.Drawing.Font("Abel", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.p2spclDesc.ForeColor = System.Drawing.Color.White;
+            this.p2spclDesc.Location = new System.Drawing.Point(530, 306);
+            this.p2spclDesc.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.p2spclDesc.Name = "p2spclDesc";
+            this.p2spclDesc.Size = new System.Drawing.Size(130, 76);
+            this.p2spclDesc.TabIndex = 3;
+            this.p2spclDesc.Text = "p2spclDesc";
+            this.p2spclDesc.TextAlign = System.Drawing.ContentAlignment.BottomRight;
+            this.p2spclDesc.Visible = false;
+            // 
+            // p2Name
+            // 
+            this.p2Name.BackColor = System.Drawing.Color.Transparent;
+            this.p2Name.Font = new System.Drawing.Font("Abel", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.p2Name.ForeColor = System.Drawing.Color.White;
+            this.p2Name.Location = new System.Drawing.Point(500, 382);
+            this.p2Name.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.p2Name.Name = "p2Name";
+            this.p2Name.Size = new System.Drawing.Size(160, 38);
+            this.p2Name.TabIndex = 2;
+            this.p2Name.Text = "p2Name";
+            this.p2Name.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.p2Name.Visible = false;
+            // 
+            // p1spclDesc
+            // 
+            this.p1spclDesc.BackColor = System.Drawing.Color.Transparent;
+            this.p1spclDesc.Font = new System.Drawing.Font("Abel", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.p1spclDesc.ForeColor = System.Drawing.Color.White;
+            this.p1spclDesc.Location = new System.Drawing.Point(340, 330);
+            this.p1spclDesc.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.p1spclDesc.Name = "p1spclDesc";
+            this.p1spclDesc.Size = new System.Drawing.Size(140, 90);
+            this.p1spclDesc.TabIndex = 1;
+            this.p1spclDesc.Text = "p1spclDesc";
+            this.p1spclDesc.Visible = false;
+            // 
+            // p1Name
+            // 
+            this.p1Name.BackColor = System.Drawing.Color.Transparent;
+            this.p1Name.Font = new System.Drawing.Font("Abel", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.p1Name.ForeColor = System.Drawing.Color.White;
+            this.p1Name.Location = new System.Drawing.Point(340, 300);
+            this.p1Name.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.p1Name.Name = "p1Name";
+            this.p1Name.Size = new System.Drawing.Size(160, 38);
+            this.p1Name.TabIndex = 0;
+            this.p1Name.Text = "p1Name";
+            this.p1Name.Visible = false;
             // 
             // veloTmr
             // 
@@ -55,10 +119,12 @@ namespace BrawlTest
             // 
             // p1atkTime
             // 
+            this.p1atkTime.Interval = 125;
             this.p1atkTime.Tick += new System.EventHandler(this.p1atkTime_Tick);
             // 
             // p2atkTime
             // 
+            this.p2atkTime.Interval = 125;
             this.p2atkTime.Tick += new System.EventHandler(this.p2atkTime_Tick);
             // 
             // p1stunTmr
@@ -91,6 +157,7 @@ namespace BrawlTest
             this.Load += new System.EventHandler(this.Form1_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);
+            this.mainPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -104,6 +171,10 @@ namespace BrawlTest
         private System.Windows.Forms.Timer p1stunTmr;
         private System.Windows.Forms.Timer p2stunTmr;
         private System.Windows.Forms.Timer aniTmr;
+        private System.Windows.Forms.Label p1Name;
+        private System.Windows.Forms.Label p1spclDesc;
+        private System.Windows.Forms.Label p2spclDesc;
+        private System.Windows.Forms.Label p2Name;
     }
 }
 

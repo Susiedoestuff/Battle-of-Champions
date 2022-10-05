@@ -21,12 +21,13 @@ namespace BrawlTest
         public Image[] selFrame1 = new Image[7];
         public Image[] selFrame2 = new Image[7];
         public Image[] charIcons = new Image[17];
-        public Rectangle charSelSpace, fadeSpace, selSpace1, selSpace2, blackSpace;
+        public Image ready = Image.FromFile(Application.StartupPath + @"\Assets\Ready.png");
+        public Rectangle charSelSpace, fadeSpace, selSpace1, selSpace2, blackSpace, p1ready, p2ready;
         public Rectangle[] charIconSpace = new Rectangle[17];
         public int Frame, Fade, Fade2, Choser;
         public int charNum1, charNum2;
         public string[] Char = new string[17];
-        public bool Clicked, Flash, fadeStart, fadeComplete;
+        public bool Clicked, fadeStart, fadeComplete;
         public string status;
 
         public CharSel()
@@ -82,6 +83,15 @@ namespace BrawlTest
                 charIconSpace[i] = new Rectangle((i-8) * 100, 188, 100, 100);
             }
 
+        }
+
+        public void p1chosenChar()
+        {
+            p1ready = new Rectangle(56, 374, 78, 28);
+        }
+        public void p2chosenChar()
+        {
+            p2ready = new Rectangle (866, 374, 78, 28);
         }
 
         public string p1char()
@@ -142,6 +152,14 @@ namespace BrawlTest
             status = "Rules";
             Clicked = true;
         }
+        public void toGame()
+        {
+            fadeSpace = new Rectangle(0, 0, 1000, 750);
+            status = "Game";
+            Clicked = true;
+        }
+
+
         public void charselEmpty()
         {
             charSelSpace = Rectangle.Empty;
@@ -216,6 +234,8 @@ namespace BrawlTest
             }
             g.DrawImage(selFrame1[Choser], selSpace1);
             g.DrawImage(selFrame2[Choser], selSpace2);
+            g.DrawImage(ready, p1ready);
+            g.DrawImage(ready, p2ready);
         }
         public void drawFade(Graphics g)//draws fade
         {
