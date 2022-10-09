@@ -114,7 +114,7 @@ namespace BrawlTest
             // 
             // veloTmr
             // 
-            this.veloTmr.Interval = 10;
+            this.veloTmr.Interval = 15;
             this.veloTmr.Tick += new System.EventHandler(this.veloTmr_Tick);
             // 
             // p1atkTime

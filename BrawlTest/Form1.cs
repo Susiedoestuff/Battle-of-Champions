@@ -19,15 +19,14 @@ namespace BrawlTest
         //            Variables             \\
         //----------------------------------\\
 
-        Rectangle platform;
+        Rectangle platform, Arena;
         Rectangle p1Sprite, p1hb, p1atkhb, p1spclhb; //hitboxes
         Rectangle p2Sprite, p2hb, p2atkhb, p2spclhb; //hitboxes
 
         Graphics g; // declare the graphics object
-        SolidBrush greenbrush = new SolidBrush(Color.Purple);
-        SolidBrush purplebrush = new SolidBrush(Color.Green);
         SolidBrush blackbrush = new SolidBrush(Color.Gray);
         SolidBrush whiteBrush = new SolidBrush(Color.White);
+        Image arenaImage = Image.FromFile(Application.StartupPath + @"\Assets\Arena.png");
 
         bool gameStarted, titleCleared, charSelected, labels;
         string gameStatus;
@@ -64,11 +63,14 @@ namespace BrawlTest
         Image[] p1JumpL = new Image[5];
         Image[] p1Regular = new Image[25];
         Image[] p1RegularL = new Image[25];
+        Image[] p1RegularAtk = new Image[25];
+        Image[] p1RegularAtkL = new Image[25];
         Image[] p1Special = new Image[25];
         Image[] p1SpecialL = new Image[25];
         Image[] p1Concede = new Image[4];
         //p1 CharSel stat works
         Rectangle p1hpbar, p1atkbar, p1defbar, p1dexbar, p1spdbar;
+        Rectangle p1ChpBar, p1livesBar, p1spclBar;
         bool p1charChosen;
 
 
@@ -102,11 +104,14 @@ namespace BrawlTest
         Image[] p2JumpL = new Image[5];
         Image[] p2Regular = new Image[25];
         Image[] p2RegularL = new Image[25];
+        Image[] p2RegularAtk = new Image[25];
+        Image[] p2RegularAtkL = new Image[25];
         Image[] p2Special = new Image[25];
         Image[] p2SpecialL = new Image[25];
         Image[] p2Concede = new Image[4];
         //p2 CharSel stat works
         Rectangle p2hpbar, p2atkbar, p2defbar, p2dexbar, p2spdbar;
+        Rectangle p2ChpBar, p2livesBar, p2spclBar;
         bool p2charChosen;
 
 
@@ -140,24 +145,34 @@ namespace BrawlTest
         //----------------------------------\\
         private void gameStart()
         {
-            p1Sprite = new Rectangle(400, 400, 200, 150);
-            p1hb = new Rectangle(400, 400, 60, 100);
+            p1Sprite = new Rectangle(300, 300, 200, 150);
+            p1hb = new Rectangle(300, 300, 60, 100);
             p1loadChar();
             p1prepareSprite();
             p1lives = 3;
             p1frame = 1;
             p1facingRight = true;
+            p1currentHp = p1hp;
+            p1ChpBar = new Rectangle(195, 629, (200 * p1currentHp/p1hp), 5);
+            p1livesBar = new Rectangle(161, 658, 78*p1lives , 5);
+
 
             //the same stuff for player 2
-            p2Sprite = new Rectangle(400, 400, 200, 150);
-            p2hb = new Rectangle(400, 400, 60, 100);
+            p2Sprite = new Rectangle(640, 300, 200, 150);
+            p2hb = new Rectangle(640, 300, 60, 100);
             p2loadChar();
             p2prepareSprite();
             p2lives = 3;
             p2frame = 1;
             p2facingRight = false;
+            p2currentHp = p2hp;
+            p2ChpBar = new Rectangle(603, 629, (200 * p2currentHp / p2hp), 5);
+            p2livesBar = new Rectangle(603, 658, 78*p2lives, 5);
 
-            platform = new Rectangle(1, 600, 1000, 50);
+
+
+            platform = new Rectangle(0, 540, 1000, 50);
+            Arena = new Rectangle(0, 0, 1000, 750);
             mainPanel.Invalidate();
 
             //bools defaults
@@ -436,6 +451,9 @@ namespace BrawlTest
                 p1Regular[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p1Character + "_Regular_(" + i.ToString() + ").png");
                 p1RegularL[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p1Character + "_Regular_(" + i.ToString() + ").png");
                 p1RegularL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);
+                p1RegularAtk[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p1Character + "_AtkWeapon_(" + i.ToString() + ").png");
+                p1RegularAtkL[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p1Character + "_AtkWeapon_(" + i.ToString() + ").png");
+                p1RegularAtkL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);
             }
             for (int i = 1; i <= p1spclLength; i++)
             {
@@ -481,6 +499,9 @@ namespace BrawlTest
                 p2Regular[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p2Character + "_Regular_(" + i.ToString() + ").png");
                 p2RegularL[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p2Character + "_Regular_(" + i.ToString() + ").png");
                 p2RegularL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);
+                p2RegularAtk[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p2Character + "_AtkWeapon_(" + i.ToString() + ").png");
+                p2RegularAtkL[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p2Character + "_AtkWeapon_(" + i.ToString() + ").png");
+                p2RegularAtkL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);
             }
             for (int i = 1; i <= p2spclLength; i++)
             {
@@ -506,6 +527,13 @@ namespace BrawlTest
             g.FillRectangle(whiteBrush, p2defbar);
             g.FillRectangle(whiteBrush, p2dexbar);
             g.FillRectangle(whiteBrush, p2spdbar);
+        }
+        private void drawBarsGame(Graphics g)
+        {
+            g.FillRectangle(whiteBrush, p1ChpBar);
+            g.FillRectangle(whiteBrush, p2ChpBar);
+            g.FillRectangle(whiteBrush, p1livesBar);
+            g.FillRectangle(whiteBrush, p2livesBar);
         }
 
         //----------------------------------\\
@@ -600,14 +628,24 @@ namespace BrawlTest
                 {
                     if (p1xv < 10 && p1xv > -10)//velocity cap
                     {
-                        if (e.KeyData == Keys.D) { p1xa = p1spd; p1facingRight = true; p1spriteStatus = "Run"; p1frame = 1; }
-                        if (e.KeyData == Keys.A) { p1xa = -p1spd; p1facingRight = false; p1spriteStatus = "Run"; p1frame = 1; }
+                        if (e.KeyData == Keys.D) { p1xa = p1spd; p1facingRight = true; p1spriteStatus = "Run"; 
+                            if (p1frame >= 5)
+                            {
+                                p1frame = 1;
+                            }
+                        }
+                        if (e.KeyData == Keys.A) { p1xa = -p1spd; p1facingRight = false; p1spriteStatus = "Run";
+                            if (p1frame >= 5)
+                            {
+                                p1frame = 1;
+                            }
+                        }
                     }
                     if (p1jumping == false)
                     {
                         if (e.KeyData == Keys.W && p1yv < 50 && p1yv > -50 && p1falling == false)//check is players on a platform and velocity cap
                         {
-                            p1ya = -10;
+                            p1ya = -7;
                             p1jumping = true;
                             if (p1atkActive == false)
                             {
@@ -625,14 +663,22 @@ namespace BrawlTest
                 {
                     if (p2xv < 10 && p2xv > -10)//velocity cap
                     {
-                        if (e.KeyData == Keys.Right) { p2xa = p2spd; p2facingRight = true; p2spriteStatus = "Run"; p2frame = 1; }
-                        if (e.KeyData == Keys.Left) { p2xa = -p2spd; p2facingRight = false; p2spriteStatus = "Run"; p2frame = 1; }
+                        if (e.KeyData == Keys.Right) { p2xa = p2spd; p2facingRight = true; p2spriteStatus = "Run"; if (p2frame >= 5)
+                            {
+                                p2frame = 1;
+                            }
+                        }
+                        if (e.KeyData == Keys.Left) { p2xa = -p2spd; p2facingRight = false; p2spriteStatus = "Run"; if (p2frame >= 5)
+                            {
+                                p2frame = 1;
+                            }
+                        }
                     }
                     if (p2jumping == false)
                     {
                         if (e.KeyData == Keys.Up && p2yv < 50 && p2yv > -50 && p2falling == false)//check is players on a platform and velocity cap
                         {
-                            p2ya = -10;
+                            p2ya = -7;
                             p2jumping = true;
                             if (p2atkActive == false)
                             {
@@ -688,7 +734,6 @@ namespace BrawlTest
         {
             mainPanel.Invalidate();
 
-
             //----------------------------------\\
             //               P1                 \\
             //----------------------------------\\
@@ -696,6 +741,18 @@ namespace BrawlTest
             p1hb.X += p1xv;
             p1Sprite.Y = p1hb.Y - 50;
             p1Sprite.X = p1hb.X - 70;
+            if(p1hb.X <= 0)
+            {
+                p1hb.X = 1;
+                p1xa = 0;
+                p1xv = 0;
+            }
+            if (p1hb.X >= 940)
+            {
+                p1hb.X = 939;
+                p1xa = 0;
+                p1xv = 0;
+            }
 
             if (p1hb.IntersectsWith(platform))
             {
@@ -703,12 +760,19 @@ namespace BrawlTest
                 {
                     int place = (int)p1hb.Y;
                     p1ya = 0;
-                    p1hb.Y -= place - 501;
+                    p1hb.Y -= place - 441;
                     p1yv = 0;
                     p1falling = false;
                     if (p1atkActive == false)
                     {
-                        p1spriteStatus = "Engarde";
+                        if(p1xa == 0)
+                        {
+                            p1spriteStatus = "Engarde";
+                        }
+                        else
+                        {
+                            p1spriteStatus = "Run";
+                        }
                     }
                 }
             }
@@ -755,6 +819,18 @@ namespace BrawlTest
             p2hb.X += p2xv;
             p2Sprite.Y = p2hb.Y - 50;
             p2Sprite.X = p2hb.X - 70;
+            if (p2hb.X <= 0)
+            {
+                p2hb.X = 1;
+                p2xa = 0;
+                p2xv = 0;
+            }
+            if (p2hb.X >= 940)
+            {
+                p2hb.X = 939;
+                p2xa = 0;
+                p2xv = 0;
+            }
 
             if (p2hb.IntersectsWith(platform))
             {
@@ -762,12 +838,19 @@ namespace BrawlTest
                 {
                     int place = (int)p2hb.Y;
                     p2ya = 0;
-                    p2hb.Y -= place - 501;
+                    p2hb.Y -= place - 441;
                     p2yv = 0;
                     p2falling = false;
                     if (p2atkActive == false)
                     {
-                        p2spriteStatus = "Engarde";
+                        if (p2xa == 0)
+                        {
+                            p2spriteStatus = "Engarde";
+                        }
+                        else
+                        {
+                            p2spriteStatus = "Run";
+                        }
                     }
                 }
             }
@@ -920,6 +1003,8 @@ namespace BrawlTest
                     }
                     break;
                 case "Game":
+                    g.DrawImage(arenaImage, Arena);
+                    drawBarsGame(g);
                     switch (p1spriteStatus)
                     {
                         case "Engarde":
@@ -956,10 +1041,12 @@ namespace BrawlTest
                             if (p1facingRight == true)
                             {
                                 g.DrawImage(p1Regular[p1frame], p1Sprite);
+                                g.DrawImage(p1RegularAtk[p1frame], p1atkhb);
                             }
                             else
                             {
                                 g.DrawImage(p1RegularL[p1frame], p1Sprite);
+                                g.DrawImage(p1RegularAtkL[p1frame], p1atkhb);
                             }
                             break;
                         case "Taunt":
@@ -1012,10 +1099,12 @@ namespace BrawlTest
                             if (p2facingRight == true)
                             {
                                 g.DrawImage(p2Regular[p2frame], p2Sprite);
+                                g.DrawImage(p2RegularAtk[p2frame], p2atkhb);
                             }
                             else
                             {
                                 g.DrawImage(p2RegularL[p2frame], p2Sprite);
+                                g.DrawImage(p2RegularAtkL[p2frame], p2atkhb);
                             }
                             break;
                         case "Taunt":
@@ -1034,10 +1123,6 @@ namespace BrawlTest
                     }
                     break;
             }
-
-
-            g.FillRectangle(blackbrush, platform);
-
         }
 
         private void aniTmr_Tick(object sender, EventArgs e)
@@ -1305,6 +1390,7 @@ namespace BrawlTest
                 if (p1atk - p2def > 0 && p2invince == false)
                 {
                     p2currentHp -= (p1atk - p2def);
+                    p2ChpBar = new Rectangle(603 + 200 - (200 * p2currentHp / p2hp), 629, (200 * p2currentHp / p2hp), 5);
                 }
                 p2invince = true;
                 p2stunned = true;
@@ -1366,6 +1452,7 @@ namespace BrawlTest
                 if (p2atk - p1def > 0 && p1invince == false)
                 {
                     p1currentHp -= (p2atk - p1def);
+                    p1ChpBar = new Rectangle(195, 629, (200 * p1currentHp / p1hp), 5);
                 }
                 p1invince = true;
                 p1stunned = true;
