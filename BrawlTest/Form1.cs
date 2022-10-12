@@ -24,11 +24,11 @@ namespace BrawlTest
         Rectangle p2Sprite, p2hb, p2atkhb, p2spclhb; //hitboxes
 
         Graphics g; // declare the graphics object
-        SolidBrush blackbrush = new SolidBrush(Color.Gray);
+        SolidBrush blueBrush = new SolidBrush(Color.LightSkyBlue);
         SolidBrush whiteBrush = new SolidBrush(Color.White);
         Image arenaImage = Image.FromFile(Application.StartupPath + @"\Assets\Arena.png");
 
-        bool gameStarted, titleCleared, charSelected, labels;
+        bool gameStarted, titleCleared, labels;
         string gameStatus;
         int smallDelay;
 
@@ -44,9 +44,9 @@ namespace BrawlTest
         //p1 imported integers
         int p1hp, p1atk, p1def, p1dex, p1spd; //stats
         int p1atkLength; //attack specifications 
-        int p1atkhbX, p1atkhbY, p1atkhbOffset; //attack hitbox sizes
+        int p1atkhbX, p1atkhbY, p1atkhbOffsetX, p1atkhbOffsetY; //attack hitbox sizes
         bool p1spclDoesHeal, p1spclDoesDmg, p1spclDoesDrop, p1spclDoesSpecial; //Special skill conditions
-        int p1spclLength, p1spclCool, p1spclhbX, p1spclhbY, p1spclhbOffset; //Special skill specifications
+        int p1spclLength, p1spclCool, p1spclhbX, p1spclhbY, p1spclhbOffsetX, p1spclhbOffsetY; //Special skill specifications
         int p1spclDmg, p1spclStun;
         string p1fullName, p1desc;
         bool p1dealKnockback = false;
@@ -85,9 +85,9 @@ namespace BrawlTest
         //p2 imported integers
         int p2hp, p2atk, p2def, p2dex, p2spd; //stats
         int p2atkLength; //attack specifications 
-        int p2atkhbX, p2atkhbY, p2atkhbOffset; //attack hitbox sizes
+        int p2atkhbX, p2atkhbY, p2atkhbOffsetX, p2atkhbOffsetY; //attack hitbox sizes
         bool p2spclDoesHeal, p2spclDoesDmg, p2spclDoesDrop, p2spclDoesSpecial; //Special skill conditions
-        int p2spclLength, p2spclCool, p2spclhbX, p2spclhbY, p2spclhbOffset; //Special skill specifications
+        int p2spclLength, p2spclCool, p2spclhbX, p2spclhbY, p2spclhbOffsetX, p2spclhbOffsetY; //Special skill specifications
         int p2spclDmg, p2spclStun;
         string p2fullName, p2desc;
         bool p2dealKnockback = false;
@@ -135,7 +135,6 @@ namespace BrawlTest
         private void Form1_Load(object sender, EventArgs e)
         {
             gameStarted = false;
-            charSelected = false;
             gameStatus = "title";
             smallDelay = 1;
         }
@@ -155,6 +154,9 @@ namespace BrawlTest
             p1currentHp = p1hp;
             p1ChpBar = new Rectangle(195, 629, (200 * p1currentHp/p1hp), 5);
             p1livesBar = new Rectangle(161, 658, 78*p1lives , 5);
+            p1spclTmr.Enabled = true;
+            p1sklCool = true;
+
 
 
             //the same stuff for player 2
@@ -168,6 +170,8 @@ namespace BrawlTest
             p2currentHp = p2hp;
             p2ChpBar = new Rectangle(603, 629, (200 * p2currentHp / p2hp), 5);
             p2livesBar = new Rectangle(603, 658, 78*p2lives, 5);
+            p2spclTmr.Enabled = true;
+            p2sklCool = true;
 
 
 
@@ -203,7 +207,7 @@ namespace BrawlTest
                 p1hpbar = new Rectangle(180, 310, p1hp, 4);
                 p1atkbar = new Rectangle(180, 334, p1atk*7, 4);
                 p1defbar = new Rectangle(180, 358, p1def * 15, 4);
-                p1dexbar = new Rectangle(180, 382, (20-p1dex) * 15, 4);
+                p1dexbar = new Rectangle(180, 382, (13-p1dex) * 15, 4);
                 p1spdbar = new Rectangle(180, 406 , p1spd * 50, 4);
                 p1Name.Text = p1fullName;
                 p1spclDesc.Text = p1desc;
@@ -224,7 +228,7 @@ namespace BrawlTest
                 p2hpbar = new Rectangle(820 - p2hp, 310, p2hp, 4);
                 p2atkbar = new Rectangle(820 - (p2atk * 7), 334, p2atk * 7, 4);
                 p2defbar = new Rectangle(820 - (p2def * 15), 358, p2def * 15, 4);
-                p2dexbar = new Rectangle(820 - ((20 - p2dex) * 15), 382, (20 - p2dex) * 15, 4);
+                p2dexbar = new Rectangle(820 - ((13 - p2dex) * 15), 382, (13 - p2dex) * 15, 4);
                 p2spdbar = new Rectangle(820 - (p2spd * 50), 406, p2spd * 50, 4);
                 p2Name.Text = p2fullName;
                 p2spclDesc.Text = p2desc;
@@ -236,7 +240,7 @@ namespace BrawlTest
             {
                 System.IO.StreamReader file = new System.IO.StreamReader(Application.StartupPath + @"\characters\" + p1Character.ToString() + ".txt");
                 int linenumber = 1;
-                for (int i = 1; i <= 21; i++)
+                for (int i = 1; i <= 25; i++)
                 {
                     try
                     {
@@ -274,43 +278,49 @@ namespace BrawlTest
                                 p1atkhbY = int.Parse(line);
                                 break;
                             case 11:
-                                p1atkhbOffset = int.Parse(line);
+                                p1atkhbOffsetX = int.Parse(line);
                                 break;
-                            case 12://special spefications
+                            case 12:
+                                p1atkhbOffsetY = int.Parse(line);
+                                break;
+                            case 13://special spefications
                                 if (line.Contains("y")) { p1spclDoesHeal = true; }
                                 else { p1spclDoesHeal = false; }
                                 break;
-                            case 13:
+                            case 14:
                                 if (line.Contains("y")) { p1spclDoesDmg = true; }
                                 else { p1spclDoesDmg = false; }
                                 break;
-                            case 14:
+                            case 15:
                                 if (line.Contains("y")) { p1spclDoesDrop = true; }
                                 else { p1spclDoesDrop = false; }
                                 break;
-                            case 15:
+                            case 16:
                                 if (line.Contains("y")) { p1spclDoesSpecial = true; }
                                 else { p1spclDoesSpecial = false; }
                                 break;
-                            case 16:
+                            case 17:
                                 p1spclLength = int.Parse(line);
                                 break;
-                            case 17:
+                            case 18:
                                 p1spclCool = int.Parse(line);
                                 break;
-                            case 18:
+                            case 19:
                                 p1spclhbX = int.Parse(line);
                                 break;
-                            case 19:
+                            case 20:
                                 p1spclhbY = int.Parse(line);
                                 break;
-                            case 20:
-                                p1spclhbOffset = int.Parse(line);
-                                break;
                             case 21:
-                                p1spclDmg = int.Parse(line);
+                                p1spclhbOffsetX = int.Parse(line);
                                 break;
                             case 22:
+                                p1spclhbOffsetY = int.Parse(line);
+                                break;
+                            case 23:
+                                p1spclDmg = int.Parse(line);
+                                break;
+                            case 24:
                                 p1spclStun = int.Parse(line);
                                 break;
                         }
@@ -329,7 +339,7 @@ namespace BrawlTest
             {
                 System.IO.StreamReader file = new System.IO.StreamReader(Application.StartupPath + @"\characters\" + p2Character.ToString() + ".txt");
                 int linenumber = 1;
-                for (int i = 1; i <= 21; i++)
+                for (int i = 1; i <= 25; i++)
                 {
                     try
                     {
@@ -367,43 +377,49 @@ namespace BrawlTest
                                 p2atkhbY = int.Parse(line);
                                 break;
                             case 11:
-                                p2atkhbOffset = int.Parse(line);
+                                p2atkhbOffsetX = int.Parse(line);
                                 break;
-                            case 12://special spefications
+                            case 12:
+                                p2atkhbOffsetY = int.Parse(line);
+                                break;
+                            case 13://special spefications
                                 if (line.Contains("y")) { p2spclDoesHeal = true; }
                                 else { p2spclDoesHeal = false; }
                                 break;
-                            case 13:
+                            case 14:
                                 if (line.Contains("y")) { p2spclDoesDmg = true; }
                                 else { p2spclDoesDmg = false; }
                                 break;
-                            case 14:
+                            case 15:
                                 if (line.Contains("y")) { p2spclDoesDrop = true; }
                                 else { p2spclDoesDrop = false; }
                                 break;
-                            case 15:
+                            case 16:
                                 if (line.Contains("y")) { p2spclDoesSpecial = true; }
                                 else { p2spclDoesSpecial = false; }
                                 break;
-                            case 16:
+                            case 17:
                                 p2spclLength = int.Parse(line);
                                 break;
-                            case 17:
+                            case 18:
                                 p2spclCool = int.Parse(line);
                                 break;
-                            case 18:
+                            case 19:
                                 p2spclhbX = int.Parse(line);
                                 break;
-                            case 19:
+                            case 20:
                                 p2spclhbY = int.Parse(line);
                                 break;
-                            case 20:
-                                p2spclhbOffset = int.Parse(line);
-                                break;
                             case 21:
-                                p2spclDmg = int.Parse(line);
+                                p2spclhbOffsetX = int.Parse(line);
                                 break;
                             case 22:
+                                p2spclhbOffsetY = int.Parse(line);
+                                break;
+                            case 23:
+                                p2spclDmg = int.Parse(line);
+                                break;
+                            case 24:
                                 p2spclStun = int.Parse(line);
                                 break;
                         }
@@ -534,6 +550,22 @@ namespace BrawlTest
             g.FillRectangle(whiteBrush, p2ChpBar);
             g.FillRectangle(whiteBrush, p1livesBar);
             g.FillRectangle(whiteBrush, p2livesBar);
+            if(p1spclCooltime >= p1spclCool)
+            {
+                g.FillRectangle(blueBrush, p1spclBar);
+            }
+            else
+            {
+                g.FillRectangle(whiteBrush, p1spclBar);
+            }
+            if (p2spclCooltime >= p2spclCool)
+            {
+                g.FillRectangle(blueBrush, p2spclBar);
+            }
+            else
+            {
+                g.FillRectangle(whiteBrush, p2spclBar);
+            }
         }
 
         //----------------------------------\\
@@ -593,7 +625,7 @@ namespace BrawlTest
                             p2Character = charsel.p2char();
                             p2loadChar();
                             p2prepareSpritecharsel();
-                            if (e.KeyData == Keys.Enter)
+                            if (e.KeyData == Keys.M)
                             {
                                 if (p2Character != "nocharacter")
                                 { 
@@ -628,34 +660,37 @@ namespace BrawlTest
                 {
                     if (p1xv < 10 && p1xv > -10)//velocity cap
                     {
-                        if (e.KeyData == Keys.D) { p1xa = p1spd; p1facingRight = true; p1spriteStatus = "Run"; 
-                            if (p1frame >= 5)
-                            {
-                                p1frame = 1;
-                            }
-                        }
-                        if (e.KeyData == Keys.A) { p1xa = -p1spd; p1facingRight = false; p1spriteStatus = "Run";
-                            if (p1frame >= 5)
-                            {
-                                p1frame = 1;
-                            }
-                        }
-                    }
-                    if (p1jumping == false)
-                    {
-                        if (e.KeyData == Keys.W && p1yv < 50 && p1yv > -50 && p1falling == false)//check is players on a platform and velocity cap
+                        if (e.KeyData == Keys.D)
                         {
-                            p1ya = -7;
-                            p1jumping = true;
-                            if (p1atkActive == false)
+                            p1xa = p1spd; p1facingRight = true; p1spriteStatus = "Run";
+                            if (p1frame >= 5)
                             {
                                 p1frame = 1;
-                                p1spriteStatus = "Jump";
+                            }
+                        }
+                        if (e.KeyData == Keys.A)
+                        {
+                            p1xa = -p1spd; p1facingRight = false; p1spriteStatus = "Run";
+                            if (p1frame >= 5)
+                            {
+                                p1frame = 1;
                             }
                         }
                     }
-                    if (e.KeyData == Keys.G) { p1Atk(); p1spriteStatus = "Regular"; p1frame = 1; } //actives attack skill
-                    if (e.KeyData == Keys.H) { p1spriteStatus = "Taunt"; p1frame = 1; }
+                    if (e.KeyData == Keys.W && p1yv < 50 && p1yv > -50 && p1falling == false && p1jumping == false)//check is players on a platform and velocity cap
+                    {
+                        p1ya = -7;
+                        p1jumping = true;
+                        if (p1atkActive == false)
+                        {
+                            p1frame = 1;
+                            p1spriteStatus = "Jump";
+                        }
+                    }
+                    if (e.KeyData == Keys.G && p1atkCool == false && p1jumping == false) { p1Atk(); p1spriteStatus = "Regular"; p1frame = 1; } //actives attack skill
+                    if (e.KeyData == Keys.H && p1sklCool == false && p1jumping == false) { p1spclAtk(); p1spriteStatus = "Special"; p1frame = 1; } //actives attack skill
+
+                    if (e.KeyData == Keys.J) { p1spriteStatus = "Taunt"; p1frame = 1; }
                 }
 
                 //p2
@@ -663,32 +698,35 @@ namespace BrawlTest
                 {
                     if (p2xv < 10 && p2xv > -10)//velocity cap
                     {
-                        if (e.KeyData == Keys.Right) { p2xa = p2spd; p2facingRight = true; p2spriteStatus = "Run"; if (p2frame >= 5)
-                            {
-                                p2frame = 1;
-                            }
-                        }
-                        if (e.KeyData == Keys.Left) { p2xa = -p2spd; p2facingRight = false; p2spriteStatus = "Run"; if (p2frame >= 5)
-                            {
-                                p2frame = 1;
-                            }
-                        }
-                    }
-                    if (p2jumping == false)
-                    {
-                        if (e.KeyData == Keys.Up && p2yv < 50 && p2yv > -50 && p2falling == false)//check is players on a platform and velocity cap
+                        if (e.KeyData == Keys.Right)
                         {
-                            p2ya = -7;
-                            p2jumping = true;
-                            if (p2atkActive == false)
+                            p2xa = p2spd; p2facingRight = true; p2spriteStatus = "Run"; if (p2frame >= 5)
                             {
                                 p2frame = 1;
-                                p2spriteStatus = "Jump";
+                            }
+                        }
+                        if (e.KeyData == Keys.Left)
+                        {
+                            p2xa = -p2spd; p2facingRight = false; p2spriteStatus = "Run"; if (p2frame >= 5)
+                            {
+                                p2frame = 1;
                             }
                         }
                     }
-                    if (e.KeyData == Keys.Enter) { p2Atk(); p2spriteStatus = "Regular"; p2frame = 1; } //actives attack skill
-                    if (e.KeyData == Keys.Space) { p2spriteStatus = "Taunt"; p2frame = 1; }
+                    if (e.KeyData == Keys.Up && p2yv < 50 && p2yv > -50 && p2falling == false && p2jumping == false)//check is players on a platform and velocity cap
+                    {
+                        p2ya = -7;
+                        p2jumping = true;
+                        if (p2atkActive == false)
+                        {
+                            p2frame = 1;
+                            p2spriteStatus = "Jump";
+                        }
+                    }
+                    if (e.KeyData == Keys.M && p2atkCool == false && p2jumping == false) { p2Atk(); p2spriteStatus = "Regular"; p2frame = 1; } //actives attack skill
+                    if (e.KeyData == Keys.N && p2sklCool == false && p2jumping == false) { p2spclAtk(); p2spriteStatus = "Special"; p2frame = 1; } //actives attack skill
+
+                    if (e.KeyData == Keys.B) { p2spriteStatus = "Taunt"; p2frame = 1; }
                 }
             }
         }
@@ -697,30 +735,32 @@ namespace BrawlTest
             if (gameStarted == true)
             {
                 //p1
-                if (e.KeyData == Keys.D || e.KeyData == Keys.A)
+                if (p1atkActive == false && p1stunned == false && p1spclActive == false)
                 {
-                    p1xa = 0;
-                    if (p1atkActive == false)
+                    if (e.KeyData == Keys.D || e.KeyData == Keys.A)
                     {
-                        p1spriteStatus = "Engarde";
-                        p1frame = 1;
+                        p1xa = 0;
+                        if (p1atkActive == false)
+                        {
+                            p1spriteStatus = "Engarde";
+                            p1frame = 1;
+                        }
                     }
                 }
-                if (e.KeyData == Keys.W)
-                { p1ya = 0; p1jumping = false; }
 
                 //p2
-                if (e.KeyData == Keys.Right || e.KeyData == Keys.Left)
+                if (p2atkActive == false && p2stunned == false && p2spclActive == false)
                 {
-                    p2xa = 0;
-                    if (p2atkActive == false)
+                    if (e.KeyData == Keys.Right || e.KeyData == Keys.Left)
                     {
-                        p2spriteStatus = "Engarde";
-                        p2frame = 1;
+                        p2xa = 0;
+                        if (p2atkActive == false)
+                        {
+                            p2spriteStatus = "Engarde";
+                            p2frame = 1;
+                        }
                     }
                 }
-                if (e.KeyData == Keys.Up)
-                { p2ya = 0; p2jumping = false; }
             }
         }
 
@@ -733,7 +773,6 @@ namespace BrawlTest
         private void veloTmr_Tick(object sender, EventArgs e) //universal timer
         {
             mainPanel.Invalidate();
-
             //----------------------------------\\
             //               P1                 \\
             //----------------------------------\\
@@ -763,6 +802,7 @@ namespace BrawlTest
                     p1hb.Y -= place - 441;
                     p1yv = 0;
                     p1falling = false;
+                    p1jumping = false;
                     if (p1atkActive == false)
                     {
                         if(p1xa == 0)
@@ -810,7 +850,7 @@ namespace BrawlTest
             {
                 p1xv += 1;
             }
-
+            p1spclBar = new Rectangle(103, 719, (292 * p1spclCooltime / p1spclCool), 5);
 
             //----------------------------------\\
             //               P2                 \\
@@ -841,6 +881,7 @@ namespace BrawlTest
                     p2hb.Y -= place - 441;
                     p2yv = 0;
                     p2falling = false;
+                    p2jumping = false;
                     if (p2atkActive == false)
                     {
                         if (p2xa == 0)
@@ -888,20 +929,21 @@ namespace BrawlTest
             {
                 p2xv += 1;
             }
+            p2spclBar = new Rectangle(895 - (292 * p2spclCooltime / p2spclCool), 719, (292 * p2spclCooltime / p2spclCool), 5);
         }
 
         private void p1stunTmr_Tick(object sender, EventArgs e)
         {
             p1stunned = true;
             p1stunTime -= 1;
-            if (p1stunTime < p1dex - 2)
+            if (p1hb.IntersectsWith(p2atkhb) == false && p1hb.IntersectsWith(p2spclhb) == false)
             {
                 if (p1dealKnockback == false)//dealing knockback
                 {
                     p1frame = 1;
-                    if (p2facingRight == true)
+                    if (p1facingRight == true)
                     {
-                        p1xv = 20 - p1def - (p1currentHp/p1hp)*10; //knockback based on defence and current hp
+                        p1xv = 20 - p1def - (p1currentHp / p1hp) * 10; //knockback based on defence and current hp
                         p1yv = -5;
                     }
                     else
@@ -925,7 +967,7 @@ namespace BrawlTest
         {
             p2stunned = true;
             p2stunTime -= 1;
-            if (p2stunTime < p2dex - 2)
+            if (p2hb.IntersectsWith(p1atkhb) == false && p2hb.IntersectsWith(p1spclhb) == false)
             {
                 if (p2dealKnockback == false)//dealing knockback
                 {
@@ -1062,6 +1104,16 @@ namespace BrawlTest
                                 g.DrawImage(p1JumpL[1], p1Sprite);
                             }
                             break;
+                        case "Special":
+                            if (p1facingRight == true)
+                            {
+                                g.DrawImage(p1Special[p1frame], p1Sprite);
+                            }
+                            else
+                            {
+                                g.DrawImage(p1SpecialL[p1frame], p1Sprite);
+                            }
+                            break;
                     }
                     switch (p2spriteStatus)
                     {
@@ -1118,6 +1170,16 @@ namespace BrawlTest
                             else
                             {
                                 g.DrawImage(p2JumpL[1], p2Sprite);
+                            }
+                            break;
+                        case "Special":
+                            if (p2facingRight == true)
+                            {
+                                g.DrawImage(p2Special[p2frame], p2Sprite);
+                            }
+                            else
+                            {
+                                g.DrawImage(p2SpecialL[p2frame], p2Sprite);
                             }
                             break;
                     }
@@ -1270,7 +1332,14 @@ namespace BrawlTest
                     break;
                 case "Regular":
                     p1frame += 1;
-                    if (p1frame == 9)
+                    if (p1frame == p1atkLength + 1)
+                    {
+                        p1frame = 1; p1spriteStatus = "Engarde";
+                    }
+                    break;
+                case "Special":
+                    p1frame += 1;
+                    if (p1frame == p1spclLength + 1)
                     {
                         p1frame = 1; p1spriteStatus = "Engarde";
                     }
@@ -1323,7 +1392,14 @@ namespace BrawlTest
                     break;
                 case "Regular":
                     p2frame += 1;
-                    if (p2frame == 9)
+                    if (p2frame == p2atkLength + 1)
+                    {
+                        p2frame = 1; p2spriteStatus = "Engarde";
+                    }
+                    break;
+                case "Special":
+                    p2frame += 1;
+                    if (p2frame == p2spclLength + 1)
                     {
                         p2frame = 1; p2spriteStatus = "Engarde";
                     }
@@ -1346,33 +1422,28 @@ namespace BrawlTest
             p1yv = 0;
             p1xa = 0;
             p1ya = 0;
-            if (p1atkActive == true)
+            int playerposX, playerposY;
+            if (p1facingRight == true)
             {
-                int playerposX, playerposY;
-                if (p1facingRight == true)
-                {
-
-                    playerposX = p1hb.X + 60;
-                    playerposY = p1hb.Y + p1atkhbOffset;
-                }                 
-                else              
-                {                 
-                    playerposX = p1hb.X - p1atkhbX;
-                    playerposY = p1hb.Y + p1atkhbOffset;
-                }
-
-                p1atkhb = new Rectangle(playerposX, playerposY, p1atkhbX, p1atkhbY);
+                playerposX = p1hb.X + 30 + p1atkhbOffsetX;
+                playerposY = p1hb.Y + p1atkhbOffsetY;
             }
+            else
+            {
+                playerposX = p1hb.X + 30 - p1atkhbOffsetX - p1atkhbX;
+                playerposY = p1hb.Y + p1atkhbOffsetY;
+            }
+            p1atkhb = new Rectangle(playerposX, playerposY, p1atkhbX, p1atkhbY);
         }
         private void p1atkTime_Tick(object sender, EventArgs e) //tracks cooldown time
         {
-            if (p1atkCooltime > p1dex)
+            if (p1atkCooltime > p1atkLength + p1dex)
             {
                 p1atkTime.Enabled = false;
                 p1atkCool = false;
             }
             else
-            {;
+            {
                 p1atkCooltime += 1;
             }
             if (p1atkCooltime > p1atkLength)
@@ -1396,6 +1467,7 @@ namespace BrawlTest
                 p2stunned = true;
                 p2stunTime = p2dex;
                 p2stunTmr.Enabled = true;
+                p2dealKnockback = false;
             }
         }
 
@@ -1409,26 +1481,22 @@ namespace BrawlTest
             p2yv = 0;
             p2xa = 0;
             p2ya = 0;
-            if (p2atkActive == true)
+            int playerposX, playerposY;
+            if (p2facingRight == true)
             {
-                int playerposX, playerposY;
-                if (p2facingRight == true)
-                {
-                    playerposX = p2hb.X + 60;
-                    playerposY = p2hb.Y + p2atkhbOffset;
-                }
-                else
-                {
-                    playerposX = p2hb.X - p2atkhbX;
-                    playerposY = p2hb.Y + p2atkhbOffset;
-                }
-
-                p2atkhb = new Rectangle(playerposX, playerposY, p2atkhbX, p2atkhbY);
+                playerposX = p2hb.X + 30 + p2atkhbOffsetX;
+                playerposY = p2hb.Y + p2atkhbOffsetY;
             }
+            else
+            {
+                playerposX = p2hb.X + 30 - p2atkhbOffsetX - p2atkhbX;
+                playerposY = p2hb.Y + p2atkhbOffsetY;
+            }
+            p2atkhb = new Rectangle(playerposX, playerposY, p2atkhbX, p2atkhbY);
         }
         private void p2atkTime_Tick(object sender, EventArgs e) //tracks cooldown time
         {
-            if (p2atkCooltime > p2dex)
+            if (p2atkCooltime > p1atkLength + p2dex)
             {
                 p2atkTime.Enabled = false;
                 p2atkCool = false;
@@ -1458,6 +1526,7 @@ namespace BrawlTest
                 p1stunned = true;
                 p1stunTime = p1dex;
                 p1stunTmr.Enabled = true;
+                p1dealKnockback = false;
             }
         }
 
@@ -1466,6 +1535,263 @@ namespace BrawlTest
         //          Player Specials         \\
         //----------------------------------\\
 
+        private void p1spclAtk()
+        {
+            p1sklCool = true;
+            p1spclActive = true;
+            p1spclTmr.Enabled = true;
+            p1spclCooltime = 0;
+            if (p1spclDoesSpecial == true)
+            {
+                switch (p1Character)
+                {
+                    case "Cedric":
+                        if (p1facingRight == true)
+                        {
+                            p1xv = 10;
+                            p1xa = 0;
+                        }
+                        else
+                        {
+                            p1xv = -10;
+                            p1xa = 0;
+                        }
+                        break;
+                }
+            }
+            if (p1spclDoesDmg == true)
+            {
+                p1xv = 0;
+                p1yv = 0;
+                p1xa = 0;
+                p1ya = 0;
+                int playerposX, playerposY;
+                if (p1facingRight == true)
+                {
+                    playerposX = p1hb.X + 30 + p1spclhbOffsetX;
+                    playerposY = p1hb.Y + p1spclhbOffsetY;
+                }
+                else
+                {
+                    playerposX = p1hb.X + 30 - p1spclhbOffsetX - p1spclhbX;
+                    playerposY = p1hb.Y + p1spclhbOffsetY;
+                }
+                p1spclhb = new Rectangle(playerposX, playerposY, p1spclhbX, p1spclhbY);
+            }
+            if(p1spclDoesDrop == true)
+            {
+
+            }
+            if(p1spclDoesHeal == true)
+            {
+                p1currentHp += p1spclDmg * p1atk;
+                if(p1currentHp > p1hp)
+                {
+                    p1currentHp = p1hp;
+                }
+                p1ChpBar = new Rectangle(195, 629, (200 * p1currentHp / p1hp), 5);
+            }
+        }
+        private void p1spclTmr_Tick(object sender, EventArgs e)
+        {
+            if (p1spclCooltime >= p1spclCool)
+            {
+                p1spclTmr.Enabled = false;
+                p1sklCool = false;
+            }
+            else
+            {
+                p1spclCooltime += 1;
+            }
+            if (p1spclCooltime > p1spclLength)
+            {
+                p1spclActive = false;
+            }
+            if (p1spclActive == true)
+            {
+                if (p1spclDoesSpecial == true)
+                {
+                    switch (p1Character)
+                    {
+                        case "Cedric":
+                            if (p1spclCooltime < 5)
+                            {
+                                p1spclDoesDmg = false;
+                                p1invince = true;
+                            }
+                            if (p1spclCooltime == 5)
+                            {
+                                p1spclDoesDmg = true;
+                                p1spclAtk();
+                                p1spclCooltime = 5;
+                            }
+                            if (p1spclCooltime == 32)
+                            {
+                                p1spclDoesDmg = false;
+                            }
+                            break;
+                    }
+                }
+                if (p1spclDoesDmg == true)
+                {
+                    if (p1spclCooltime > p1spclLength)
+                    {
+                        p1spclhb = Rectangle.Empty;
+                    }
+                    if (p2hb.IntersectsWith(p1spclhb))
+                    {
+                        p2spriteStatus = "TakingDamage";
+                        p2xv = 0;
+                        p2xa = 0;
+                        p2yv = 0;
+                        p2ya = 0;
+                        if (p1spclDmg * p1atk - p2def > 0 && p2invince == false)
+                        {
+                            p2currentHp -= p1spclDmg * p1atk;
+                            p2ChpBar = new Rectangle(603 + 200 - (200 * p2currentHp / p2hp), 629, (200 * p2currentHp / p2hp), 5);
+                        }
+                        p2invince = true;
+                        p2stunned = true;
+                        p2stunTime = p1spclStun;
+                        p2stunTmr.Enabled = true;
+                        p2dealKnockback = false;
+                    }
+                }
+                if (p1spclDoesDrop == true)
+                {
+
+                }
+            }
+        }
+
+        private void p2spclAtk()
+        {
+            p2sklCool = true;
+            p2spclActive = true;
+            p2spclTmr.Enabled = true;
+            p2spclCooltime = 0;
+            if (p2spclDoesSpecial == true)
+            {
+                switch (p2Character)
+                {
+                    case "Cedric":
+                        if (p2facingRight == true)
+                        {
+                            p2xv = 10;
+                            p2xa = 0;
+                        }
+                        else
+                        {
+                            p2xv = -10;
+                            p2xa = 0;
+                        }
+                        break;
+                }
+            }
+            if (p2spclDoesDmg == true)
+            {
+                p2xv = 0;
+                p2yv = 0;
+                p2xa = 0;
+                p2ya = 0;
+                int playerposX, playerposY;
+                if (p2facingRight == true)
+                {
+                    playerposX = p2hb.X + 30 + p2spclhbOffsetX;
+                    playerposY = p2hb.Y + p2spclhbOffsetY;
+                }
+                else
+                {
+                    playerposX = p2hb.X + 30 - p2spclhbOffsetX - p2spclhbX;
+                    playerposY = p2hb.Y + p2spclhbOffsetY;
+                }
+                p2spclhb = new Rectangle(playerposX, playerposY, p2spclhbX, p2spclhbY);
+            }
+            if (p2spclDoesDrop == true)
+            {
+
+            }
+            if (p2spclDoesHeal == true)
+            {
+                p2currentHp += p2spclDmg * p2atk;
+                if (p2currentHp > p2hp)
+                {
+                    p2currentHp = p2hp;
+                }
+                p2ChpBar = new Rectangle(603 + 200 - (200 * p2currentHp / p2hp), 629, (200 * p2currentHp / p2hp), 5);
+            }
+        }
+        private void p2spclTmr_Tick(object sender, EventArgs e)
+        {
+            if (p2spclCooltime >= p2spclCool)
+            {
+                p2spclTmr.Enabled = false;
+                p2sklCool = false;
+            }
+            else
+            {
+                p2spclCooltime += 1;
+            }
+            if (p2spclCooltime > p2spclLength)
+            {
+                p2spclActive = false;
+            }
+            if (p2spclActive == true)
+            {
+                if (p2spclDoesSpecial == true)
+                {
+                    switch (p2Character)
+                    {
+                        case "Cedric":
+                            if (p2spclCooltime < 5)
+                            {
+                                p2spclDoesDmg = false;
+                                p2invince = true;
+                            }
+                            if (p2spclCooltime == 5)
+                            {
+                                p2spclDoesDmg = true;
+                                p2spclAtk();
+                                p2spclCooltime = 5;
+                            }
+                            if (p2spclCooltime == 32)
+                            {
+                                p2spclDoesDmg = false;
+                            }
+                            break;
+                    }
+                }
+                if (p2spclDoesDmg == true)
+                {
+                    if (p2spclCooltime > p2spclLength)
+                    {
+                        p2spclhb = Rectangle.Empty;
+                    }
+                    if (p1hb.IntersectsWith(p2spclhb))
+                    {
+                        p1spriteStatus = "TakingDamage";
+                        p1xv = 0;
+                        p1xa = 0;
+                        p1yv = 0;
+                        p1ya = 0;
+                        if (p2spclDmg * p2atk - p1def > 0 && p1invince == false)
+                        {
+                            p1currentHp -= p2spclDmg * p2atk;
+                            p1ChpBar = new Rectangle(195, 629, (200 * p1currentHp / p1hp), 5);
+                        }
+                        p1invince = true;
+                        p1stunned = true;
+                        p1stunTime = p2spclStun;
+                        p1stunTmr.Enabled = true;
+                        p1dealKnockback = false;
+                    }
+                }
+                if (p2spclDoesDrop == true)
+                {
+
+                }
+            }
+        }
 
     }
 }

@@ -42,6 +42,8 @@ namespace BrawlTest
             this.p1stunTmr = new System.Windows.Forms.Timer(this.components);
             this.p2stunTmr = new System.Windows.Forms.Timer(this.components);
             this.aniTmr = new System.Windows.Forms.Timer(this.components);
+            this.p1spclTmr = new System.Windows.Forms.Timer(this.components);
+            this.p2spclTmr = new System.Windows.Forms.Timer(this.components);
             this.mainPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -129,12 +131,10 @@ namespace BrawlTest
             // 
             // p1stunTmr
             // 
-            this.p1stunTmr.Interval = 50;
             this.p1stunTmr.Tick += new System.EventHandler(this.p1stunTmr_Tick);
             // 
             // p2stunTmr
             // 
-            this.p2stunTmr.Interval = 50;
             this.p2stunTmr.Tick += new System.EventHandler(this.p2stunTmr_Tick);
             // 
             // aniTmr
@@ -143,15 +143,27 @@ namespace BrawlTest
             this.aniTmr.Interval = 125;
             this.aniTmr.Tick += new System.EventHandler(this.aniTmr_Tick);
             // 
+            // p1spclTmr
+            // 
+            this.p1spclTmr.Interval = 125;
+            this.p1spclTmr.Tick += new System.EventHandler(this.p1spclTmr_Tick);
+            // 
+            // p2spclTmr
+            // 
+            this.p2spclTmr.Interval = 125;
+            this.p2spclTmr.Tick += new System.EventHandler(this.p2spclTmr_Tick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
-            this.ClientSize = new System.Drawing.Size(999, 750);
+            this.ClientSize = new System.Drawing.Size(998, 750);
             this.Controls.Add(this.mainPanel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(1014, 789);
+            this.MinimumSize = new System.Drawing.Size(1014, 789);
             this.Name = "Form1";
             this.Text = "Battle of Champions";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -175,6 +187,8 @@ namespace BrawlTest
         private System.Windows.Forms.Label p1spclDesc;
         private System.Windows.Forms.Label p2spclDesc;
         private System.Windows.Forms.Label p2Name;
+        private System.Windows.Forms.Timer p1spclTmr;
+        private System.Windows.Forms.Timer p2spclTmr;
     }
 }
 
