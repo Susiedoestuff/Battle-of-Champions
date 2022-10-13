@@ -19,7 +19,7 @@ namespace BrawlTest
         //            Variables             \\
         //----------------------------------\\
 
-        Rectangle platform, Arena;
+        Rectangle platform, Arena, fadeSpace;
         Rectangle p1Sprite, p1hb, p1atkhb, p1spclhb; //hitboxes
         Rectangle p2Sprite, p2hb, p2atkhb, p2spclhb; //hitboxes
 
@@ -27,10 +27,11 @@ namespace BrawlTest
         SolidBrush blueBrush = new SolidBrush(Color.LightSkyBlue);
         SolidBrush whiteBrush = new SolidBrush(Color.White);
         Image arenaImage = Image.FromFile(Application.StartupPath + @"\Assets\Arena.png");
+        Image[] fadeFrame = new Image[6];
 
-        bool gameStarted, titleCleared, labels;
+        bool gameStarted, titleCleared, labels, fadeDone;
         string gameStatus;
-        int smallDelay;
+        int smallDelay, Frame;
 
 
         //p1
@@ -68,10 +69,14 @@ namespace BrawlTest
         Image[] p1Special = new Image[25];
         Image[] p1SpecialL = new Image[25];
         Image[] p1Concede = new Image[4];
+        Image[] p1ConcedeL = new Image[4];
+        bool p1flash;
         //p1 CharSel stat works
         Rectangle p1hpbar, p1atkbar, p1defbar, p1dexbar, p1spdbar;
         Rectangle p1ChpBar, p1livesBar, p1spclBar;
         bool p1charChosen;
+        //p1 Result Stats
+        int p1damageDealt, p1damageTaken;
 
 
         //p2
@@ -109,10 +114,14 @@ namespace BrawlTest
         Image[] p2Special = new Image[25];
         Image[] p2SpecialL = new Image[25];
         Image[] p2Concede = new Image[4];
+        Image[] p2ConcedeL = new Image[4];
+        bool p2flash;
         //p2 CharSel stat works
         Rectangle p2hpbar, p2atkbar, p2defbar, p2dexbar, p2spdbar;
         Rectangle p2ChpBar, p2livesBar, p2spclBar;
         bool p2charChosen;
+        //p2 Result Stats
+        int p2damageDealt, p2damageTaken;
 
 
 
@@ -126,17 +135,15 @@ namespace BrawlTest
             typeof(Panel).InvokeMember("DoubleBuffered", BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic, null, mainPanel, new object[] { true });
         }
 
-
-
-
-        //----------------------------------\\
-        //             Loading              \\
-        //----------------------------------\\
         private void Form1_Load(object sender, EventArgs e)
         {
             gameStarted = false;
             gameStatus = "title";
             smallDelay = 1;
+            for (int i = 1; i <= 5; i++)
+            {
+                fadeFrame[i] = Image.FromFile(Application.StartupPath + @"\Assets\FadeSc_(" + i.ToString() + ").png");
+            }
         }
 
         //----------------------------------\\
@@ -144,47 +151,48 @@ namespace BrawlTest
         //----------------------------------\\
         private void gameStart()
         {
+            gameStarted = true;
+            p1lives = 3;
+            p2lives = 3;
+            p1setChar();
+            p2setChar();
+            p1loadChar();
+            p2loadChar();
+            p1prepareSprite();
+            p2prepareSprite();
+            veloTmr.Enabled = true;
+            mainPanel.Invalidate();
+        }
+
+        private void p1setChar()
+        {
             p1Sprite = new Rectangle(300, 300, 200, 150);
             p1hb = new Rectangle(300, 300, 60, 100);
-            p1loadChar();
-            p1prepareSprite();
-            p1lives = 3;
             p1frame = 1;
             p1facingRight = true;
             p1currentHp = p1hp;
-            p1ChpBar = new Rectangle(195, 629, (200 * p1currentHp/p1hp), 5);
-            p1livesBar = new Rectangle(161, 658, 78*p1lives , 5);
+            p1ChpBar = new Rectangle(195, 629, (200 * p1currentHp / p1hp), 5);
+            p1livesBar = new Rectangle(161, 658, 78 * p1lives, 5);
             p1spclTmr.Enabled = true;
+            p1spclCooltime = 1;
             p1sklCool = true;
-
-
-
-            //the same stuff for player 2
+            p1invince = false;
+            p1stunned = false;
+        }
+        private void p2setChar()
+        {
             p2Sprite = new Rectangle(640, 300, 200, 150);
             p2hb = new Rectangle(640, 300, 60, 100);
-            p2loadChar();
-            p2prepareSprite();
-            p2lives = 3;
             p2frame = 1;
             p2facingRight = false;
             p2currentHp = p2hp;
             p2ChpBar = new Rectangle(603, 629, (200 * p2currentHp / p2hp), 5);
-            p2livesBar = new Rectangle(603, 658, 78*p2lives, 5);
+            p2livesBar = new Rectangle(603, 658, 78 * p2lives, 5);
             p2spclTmr.Enabled = true;
+            p2spclCooltime = 1;
             p2sklCool = true;
-
-
-
-            platform = new Rectangle(0, 540, 1000, 50);
-            Arena = new Rectangle(0, 0, 1000, 750);
-            mainPanel.Invalidate();
-
-            //bools defaults
-            p1invince = false;
-            p1stunned = false;
             p2invince = false;
             p2stunned = false;
-            veloTmr.Enabled = true;
         }
 
 
@@ -480,6 +488,8 @@ namespace BrawlTest
             for (int i = 1; i <= 3; i++)
             {
                 p1Concede[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p1Character + "_Concede_(" + i.ToString() + ").png");
+                p1ConcedeL[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p1Character + "_Concede_(" + i.ToString() + ").png");
+                p1ConcedeL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);
             }
         }
         private void p2prepareSprite()
@@ -528,6 +538,8 @@ namespace BrawlTest
             for (int i = 1; i <= 3; i++)
             {
                 p2Concede[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p2Character + "_Concede_(" + i.ToString() + ").png");
+                p2ConcedeL[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p2Character + "_Concede_(" + i.ToString() + ").png");
+                p2ConcedeL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);
             }
         }
 
@@ -653,10 +665,10 @@ namespace BrawlTest
                     }
                 }
             }
-            else
+            else if(fadeDone == true)
             {
                 //p1
-                if (p1atkActive == false && p1stunned == false && p1spclActive == false)
+                if (p1atkActive == false && p1stunned == false && p1spclActive == false && p1spriteStatus != "Concede")
                 {
                     if (p1xv < 10 && p1xv > -10)//velocity cap
                     {
@@ -694,7 +706,7 @@ namespace BrawlTest
                 }
 
                 //p2
-                if (p2atkActive == false && p2stunned == false && p2spclActive == false)
+                if (p2atkActive == false && p2stunned == false && p2spclActive == false && p2spriteStatus != "Concede")
                 {
                     if (p2xv < 10 && p2xv > -10)//velocity cap
                     {
@@ -732,7 +744,7 @@ namespace BrawlTest
         }
         private void Form1_KeyUp(object sender, KeyEventArgs e)
         {
-            if (gameStarted == true)
+            if (gameStarted == true && fadeDone == true)
             {
                 //p1
                 if (p1atkActive == false && p1stunned == false && p1spclActive == false)
@@ -763,9 +775,6 @@ namespace BrawlTest
                 }
             }
         }
-
-
-
 
         //----------------------------------\\
         //             Movement             \\
@@ -851,6 +860,20 @@ namespace BrawlTest
                 p1xv += 1;
             }
             p1spclBar = new Rectangle(103, 719, (292 * p1spclCooltime / p1spclCool), 5);
+            if(p1currentHp <= 0)
+            {
+                if (p1hb.IntersectsWith(platform) && p1spriteStatus != "TakingDamage")
+                {
+                    if(p1spriteStatus != "Concede")
+                    {
+                        p1frame = 1;
+                    }
+                    p1spriteStatus = "Concede";
+                }
+                p1xv = 0;
+                p1xa = 0;
+            }
+
 
             //----------------------------------\\
             //               P2                 \\
@@ -930,6 +953,19 @@ namespace BrawlTest
                 p2xv += 1;
             }
             p2spclBar = new Rectangle(895 - (292 * p2spclCooltime / p2spclCool), 719, (292 * p2spclCooltime / p2spclCool), 5);
+            if (p2currentHp <= 0)
+            {
+                if (p2hb.IntersectsWith(platform) && p2spriteStatus != "TakingDamage")
+                {
+                    if (p2spriteStatus != "Concede")
+                    {
+                        p2frame = 1;
+                    }
+                    p2spriteStatus = "Concede";
+                }
+                p2xv = 0;
+                p2xa = 0;
+            }
         }
 
         private void p1stunTmr_Tick(object sender, EventArgs e)
@@ -941,7 +977,7 @@ namespace BrawlTest
                 if (p1dealKnockback == false)//dealing knockback
                 {
                     p1frame = 1;
-                    if (p1facingRight == true)
+                    if (p2facingRight == true)
                     {
                         p1xv = 20 - p1def - (p1currentHp / p1hp) * 10; //knockback based on defence and current hp
                         p1yv = -5;
@@ -1047,141 +1083,250 @@ namespace BrawlTest
                 case "Game":
                     g.DrawImage(arenaImage, Arena);
                     drawBarsGame(g);
-                    switch (p1spriteStatus)
+                    if (fadeDone == false)
                     {
-                        case "Engarde":
-                            if (p1facingRight == true)
-                            {
-                                g.DrawImage(p1Engarde[p1frame], p1Sprite);
-                            }
-                            else
-                            {
-                                g.DrawImage(p1EngardeL[p1frame], p1Sprite);
-                            }
-                            break;
-                        case "Jump":
-                            if (p1facingRight == true)
-                            {
-                                g.DrawImage(p1Jump[p1frame], p1Sprite);
-                            }
-                            else
-                            {
-                                g.DrawImage(p1JumpL[p1frame], p1Sprite);
-                            }
-                            break;
-                        case "Run":
-                            if (p1facingRight == true)
-                            {
-                                g.DrawImage(p1Run[p1frame], p1Sprite);
-                            }
-                            else
-                            {
-                                g.DrawImage(p1RunL[p1frame], p1Sprite);
-                            }
-                            break;
-                        case "Regular":
-                            if (p1facingRight == true)
-                            {
-                                g.DrawImage(p1Regular[p1frame], p1Sprite);
-                                g.DrawImage(p1RegularAtk[p1frame], p1atkhb);
-                            }
-                            else
-                            {
-                                g.DrawImage(p1RegularL[p1frame], p1Sprite);
-                                g.DrawImage(p1RegularAtkL[p1frame], p1atkhb);
-                            }
-                            break;
-                        case "Taunt":
-                            g.DrawImage(p1Taunt[p1frame], p1Sprite);
-                            break;
-                        case "TakingDamage":
-                            if (p1facingRight == true)
-                            {
-                                g.DrawImage(p1Jump[1], p1Sprite);
-                            }
-                            else
-                            {
-                                g.DrawImage(p1JumpL[1], p1Sprite);
-                            }
-                            break;
-                        case "Special":
-                            if (p1facingRight == true)
-                            {
-                                g.DrawImage(p1Special[p1frame], p1Sprite);
-                            }
-                            else
-                            {
-                                g.DrawImage(p1SpecialL[p1frame], p1Sprite);
-                            }
-                            break;
+                        g.DrawImage(fadeFrame[Frame], fadeSpace);
                     }
-                    switch (p2spriteStatus)
+                    else
                     {
-                        case "Engarde":
-                            if (p2facingRight == true)
-                            {
-                                g.DrawImage(p2Engarde[p2frame], p2Sprite);
-                            }
-                            else
-                            {
-                                g.DrawImage(p2EngardeL[p2frame], p2Sprite);
-                            }
-                            break;
-                        case "Jump":
-                            if (p2facingRight == true)
-                            {
-                                g.DrawImage(p2Jump[p2frame], p2Sprite);
-                            }
-                            else
-                            {
-                                g.DrawImage(p2JumpL[p2frame], p2Sprite);
-                            }
-                            break;
-                        case "Run":
-                            if (p2facingRight == true)
-                            {
-                                g.DrawImage(p2Run[p2frame], p2Sprite);
-                            }
-                            else
-                            {
-                                g.DrawImage(p2RunL[p2frame], p2Sprite);
-                            }
-                            break;
-                        case "Regular":
-                            if (p2facingRight == true)
-                            {
-                                g.DrawImage(p2Regular[p2frame], p2Sprite);
-                                g.DrawImage(p2RegularAtk[p2frame], p2atkhb);
-                            }
-                            else
-                            {
-                                g.DrawImage(p2RegularL[p2frame], p2Sprite);
-                                g.DrawImage(p2RegularAtkL[p2frame], p2atkhb);
-                            }
-                            break;
-                        case "Taunt":
-                            g.DrawImage(p2Taunt[p2frame], p2Sprite);
-                            break;
-                        case "TakingDamage":
-                            if (p2facingRight == true)
-                            {
-                                g.DrawImage(p2Jump[1], p2Sprite);
-                            }
-                            else
-                            {
-                                g.DrawImage(p2JumpL[1], p2Sprite);
-                            }
-                            break;
-                        case "Special":
-                            if (p2facingRight == true)
-                            {
-                                g.DrawImage(p2Special[p2frame], p2Sprite);
-                            }
-                            else
-                            {
-                                g.DrawImage(p2SpecialL[p2frame], p2Sprite);
-                            }
-                            break;
+                        switch (p1spriteStatus)
+                        {
+                            case "Engarde":
+                                if (p1facingRight == true)
+                                {
+                                    g.DrawImage(p1Engarde[p1frame], p1Sprite);
+                                }
+                                else
+                                {
+                                    g.DrawImage(p1EngardeL[p1frame], p1Sprite);
+                                }
+                                break;
+                            case "Jump":
+                                if (p1facingRight == true)
+                                {
+                                    g.DrawImage(p1Jump[p1frame], p1Sprite);
+                                }
+                                else
+                                {
+                                    g.DrawImage(p1JumpL[p1frame], p1Sprite);
+                                }
+                                break;
+                            case "Run":
+                                if (p1facingRight == true)
+                                {
+                                    g.DrawImage(p1Run[p1frame], p1Sprite);
+                                }
+                                else
+                                {
+                                    g.DrawImage(p1RunL[p1frame], p1Sprite);
+                                }
+                                break;
+                            case "Regular":
+                                if (p1facingRight == true)
+                                {
+                                    g.DrawImage(p1Regular[p1frame], p1Sprite);
+                                    g.DrawImage(p1RegularAtk[p1frame], p1atkhb);
+                                }
+                                else
+                                {
+                                    g.DrawImage(p1RegularL[p1frame], p1Sprite);
+                                    g.DrawImage(p1RegularAtkL[p1frame], p1atkhb);
+                                }
+                                break;
+                            case "Taunt":
+                                g.DrawImage(p1Taunt[p1frame], p1Sprite);
+                                break;
+                            case "TakingDamage":
+                                if (p1facingRight == true)
+                                {
+                                    g.DrawImage(p1Jump[1], p1Sprite);
+                                }
+                                else
+                                {
+                                    g.DrawImage(p1JumpL[1], p1Sprite);
+                                }
+                                break;
+                            case "Special":
+                                if (p1facingRight == true)
+                                {
+                                    g.DrawImage(p1Special[p1frame], p1Sprite);
+                                }
+                                else
+                                {
+                                    g.DrawImage(p1SpecialL[p1frame], p1Sprite);
+                                }
+                                break;
+                            case "Concede":
+                                if (p1frame <= 3)
+                                {
+                                    if (p1facingRight == true)
+                                    {
+                                        g.DrawImage(p1Concede[p1frame], p1Sprite);
+                                    }
+                                    else
+                                    {
+                                        g.DrawImage(p1ConcedeL[p1frame], p1Sprite);
+                                    }
+                                }
+                                else if (p1frame > 13)
+                                {
+                                    if (p1facingRight == true)
+                                    {
+                                        if (p1flash == false)
+                                        {
+                                            g.DrawImage(p1Concede[3], p1Sprite);
+                                            p1flash = true;
+                                        }
+                                        else
+                                        {
+                                            p1flash = false;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (p1flash == false)
+                                        {
+                                            g.DrawImage(p1ConcedeL[3], p1Sprite);
+                                            p1flash = true;
+                                        }
+                                        else
+                                        {
+                                            p1flash = false;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (p1facingRight == true)
+                                    {
+                                        g.DrawImage(p1Concede[3], p1Sprite);
+                                    }
+                                    else
+                                    {
+                                        g.DrawImage(p1ConcedeL[3], p1Sprite);
+                                    }
+                                }
+                                break;
+                        }
+                        switch (p2spriteStatus)
+                        {
+                            case "Engarde":
+                                if (p2facingRight == true)
+                                {
+                                    g.DrawImage(p2Engarde[p2frame], p2Sprite);
+                                }
+                                else
+                                {
+                                    g.DrawImage(p2EngardeL[p2frame], p2Sprite);
+                                }
+                                break;
+                            case "Jump":
+                                if (p2facingRight == true)
+                                {
+                                    g.DrawImage(p2Jump[p2frame], p2Sprite);
+                                }
+                                else
+                                {
+                                    g.DrawImage(p2JumpL[p2frame], p2Sprite);
+                                }
+                                break;
+                            case "Run":
+                                if (p2facingRight == true)
+                                {
+                                    g.DrawImage(p2Run[p2frame], p2Sprite);
+                                }
+                                else
+                                {
+                                    g.DrawImage(p2RunL[p2frame], p2Sprite);
+                                }
+                                break;
+                            case "Regular":
+                                if (p2facingRight == true)
+                                {
+                                    g.DrawImage(p2Regular[p2frame], p2Sprite);
+                                    g.DrawImage(p2RegularAtk[p2frame], p2atkhb);
+                                }
+                                else
+                                {
+                                    g.DrawImage(p2RegularL[p2frame], p2Sprite);
+                                    g.DrawImage(p2RegularAtkL[p2frame], p2atkhb);
+                                }
+                                break;
+                            case "Taunt":
+                                g.DrawImage(p2Taunt[p2frame], p2Sprite);
+                                break;
+                            case "TakingDamage":
+                                if (p2facingRight == true)
+                                {
+                                    g.DrawImage(p2Jump[1], p2Sprite);
+                                }
+                                else
+                                {
+                                    g.DrawImage(p2JumpL[1], p2Sprite);
+                                }
+                                break;
+                            case "Special":
+                                if (p2facingRight == true)
+                                {
+                                    g.DrawImage(p2Special[p2frame], p2Sprite);
+                                }
+                                else
+                                {
+                                    g.DrawImage(p2SpecialL[p2frame], p2Sprite);
+                                }
+                                break;
+                            case "Concede":
+                                if (p2frame <= 3)
+                                {
+                                    if (p2facingRight == true)
+                                    {
+                                        g.DrawImage(p2Concede[p2frame], p2Sprite);
+                                    }
+                                    else
+                                    {
+                                        g.DrawImage(p2ConcedeL[p2frame], p2Sprite);
+                                    }
+                                }
+                                else if (p2frame > 13)
+                                {
+                                    if (p2facingRight == true)
+                                    {
+                                        if (p2flash == false)
+                                        {
+                                            g.DrawImage(p2Concede[3], p2Sprite);
+                                            p2flash = true;
+                                        }
+                                        else
+                                        {
+                                            p2flash = false;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (p2flash == false)
+                                        {
+                                            g.DrawImage(p2ConcedeL[3], p2Sprite);
+                                            p2flash = true;
+                                        }
+                                        else
+                                        {
+                                            p2flash = false;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (p2facingRight == true)
+                                    {
+                                        g.DrawImage(p2Concede[3], p2Sprite);
+                                    }
+                                    else
+                                    {
+                                        g.DrawImage(p2ConcedeL[3], p2Sprite);
+                                    }
+                                }
+                                break;
+                        }
                     }
                     break;
             }
@@ -1236,10 +1381,13 @@ namespace BrawlTest
                             {
                                 p1Sprite = Rectangle.Empty;
                                 p2Sprite = Rectangle.Empty;
+                                platform = new Rectangle(0, 540, 1000, 50);
+                                Arena = new Rectangle(0, 0, 1000, 750);
+                                fadeSpace = new Rectangle(0, 0, 1000, 750);
                                 gameStatus = charsel.statuscharsel();
                                 charsel.charselEmpty();
-                                gameStart();
-                                gameStarted = true;
+                                Frame = 1;
+                                fadeDone = false;
                             }
 
                         }
@@ -1282,6 +1430,22 @@ namespace BrawlTest
                         p2loadChar();
                         p1prepareSpritecharsel();
                         p2prepareSpritecharsel();
+                    }
+                    break;
+                case "Game":
+                    if(Frame < 10)
+                    {
+                        Frame += 1;
+                        if(Frame == 5)
+                        {
+                            fadeDone = true;
+                            fadeSpace = Rectangle.Empty;
+                        }
+                    }
+                    else if (Frame == 10)
+                    {
+                        gameStart();
+                        Frame = 11;
                     }
                     break;
             }
@@ -1344,6 +1508,14 @@ namespace BrawlTest
                         p1frame = 1; p1spriteStatus = "Engarde";
                     }
                     break;
+                case "Concede":
+                    p1frame += 1;
+                    if(p1frame == 15)
+                    {
+                        p1lives -= 1;
+                        p1setChar();
+                    }
+                    break;
             }
             switch (p2spriteStatus)
             {
@@ -1404,6 +1576,14 @@ namespace BrawlTest
                         p2frame = 1; p2spriteStatus = "Engarde";
                     }
                     break;
+                case "Concede":
+                    p2frame += 1;
+                    if (p2frame == 15)
+                    {
+                        p2lives -= 1;
+                        p2setChar();
+                    }
+                    break;
             }
         }
 
@@ -1461,6 +1641,8 @@ namespace BrawlTest
                 if (p1atk - p2def > 0 && p2invince == false)
                 {
                     p2currentHp -= (p1atk - p2def);
+                    p2damageTaken += (p1atk - p2def);
+                    p1damageDealt += (p1atk - p2def);
                     p2ChpBar = new Rectangle(603 + 200 - (200 * p2currentHp / p2hp), 629, (200 * p2currentHp / p2hp), 5);
                 }
                 p2invince = true;
@@ -1520,6 +1702,8 @@ namespace BrawlTest
                 if (p2atk - p1def > 0 && p1invince == false)
                 {
                     p1currentHp -= (p2atk - p1def);
+                    p1damageTaken += (p2atk - p1def);
+                    p2damageDealt += (p2atk - p1def);
                     p1ChpBar = new Rectangle(195, 629, (200 * p1currentHp / p1hp), 5);
                 }
                 p1invince = true;
@@ -1603,10 +1787,6 @@ namespace BrawlTest
             {
                 p1spclCooltime += 1;
             }
-            if (p1spclCooltime > p1spclLength)
-            {
-                p1spclActive = false;
-            }
             if (p1spclActive == true)
             {
                 if (p1spclDoesSpecial == true)
@@ -1648,6 +1828,8 @@ namespace BrawlTest
                         if (p1spclDmg * p1atk - p2def > 0 && p2invince == false)
                         {
                             p2currentHp -= p1spclDmg * p1atk;
+                            p2damageTaken += p1spclDmg * p1atk;
+                            p1damageDealt += p1spclDmg * p1atk;
                             p2ChpBar = new Rectangle(603 + 200 - (200 * p2currentHp / p2hp), 629, (200 * p2currentHp / p2hp), 5);
                         }
                         p2invince = true;
@@ -1660,6 +1842,10 @@ namespace BrawlTest
                 if (p1spclDoesDrop == true)
                 {
 
+                }
+                if (p1spclCooltime > p1spclLength)
+                {
+                    p1spclActive = false;
                 }
             }
         }
@@ -1732,10 +1918,6 @@ namespace BrawlTest
             {
                 p2spclCooltime += 1;
             }
-            if (p2spclCooltime > p2spclLength)
-            {
-                p2spclActive = false;
-            }
             if (p2spclActive == true)
             {
                 if (p2spclDoesSpecial == true)
@@ -1777,6 +1959,8 @@ namespace BrawlTest
                         if (p2spclDmg * p2atk - p1def > 0 && p1invince == false)
                         {
                             p1currentHp -= p2spclDmg * p2atk;
+                            p1damageTaken += p2spclDmg * p2atk;
+                            p2damageDealt += p2spclDmg * p2atk;
                             p1ChpBar = new Rectangle(195, 629, (200 * p1currentHp / p1hp), 5);
                         }
                         p1invince = true;
@@ -1789,6 +1973,10 @@ namespace BrawlTest
                 if (p2spclDoesDrop == true)
                 {
 
+                }
+                if (p2spclCooltime > p2spclLength)
+                {
+                    p2spclActive = false;
                 }
             }
         }
