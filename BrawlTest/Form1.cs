@@ -37,7 +37,7 @@ namespace BrawlTest
         //p1
         int p1xv, p1yv, p1xa, p1ya;
         int p1atkCooltime, p1spclCooltime, p1stunTime; //cooldown timers
-        bool p1falling, p1jumping, p1atkActive, p1spclActive, p1invince, p1stunned; //indicators if these things are active
+        bool p1falling, p1jumping, p1atkActive, p1spclActive, p1invince, p1stunned, p1trueInvince; //indicators if these things are active
         bool p1atkCool, p1sklCool; //skill cooldowns
         bool p1facingRight; //which side is the player facing
         string p1Character;
@@ -82,7 +82,7 @@ namespace BrawlTest
         //p2
         int p2xv, p2yv, p2xa, p2ya;
         int p2atkCooltime, p2spclCooltime, p2stunTime; //cooldown timers
-        bool p2falling, p2jumping, p2atkActive, p2spclActive, p2invince, p2stunned; //indicators if these things are active
+        bool p2falling, p2jumping, p2atkActive, p2spclActive, p2invince, p2stunned, p2trueInvince; //indicators if these things are active
         bool p2atkCool, p2sklCool; //skill cooldowns
         bool p2facingRight; //which side is the player facing
         string p2Character;
@@ -178,6 +178,7 @@ namespace BrawlTest
             p1sklCool = true;
             p1invince = false;
             p1stunned = false;
+            p1trueInvince = false;
         }
         private void p2setChar()
         {
@@ -187,12 +188,13 @@ namespace BrawlTest
             p2facingRight = false;
             p2currentHp = p2hp;
             p2ChpBar = new Rectangle(603, 629, (200 * p2currentHp / p2hp), 5);
-            p2livesBar = new Rectangle(603, 658, 78 * p2lives, 5);
+            p2livesBar = new Rectangle(837 - (78 * p2lives), 658, 78 * p2lives, 5);
             p2spclTmr.Enabled = true;
             p2spclCooltime = 1;
             p2sklCool = true;
             p2invince = false;
             p2stunned = false;
+            p2trueInvince = false;
         }
 
 
@@ -747,7 +749,7 @@ namespace BrawlTest
             if (gameStarted == true && fadeDone == true)
             {
                 //p1
-                if (p1atkActive == false && p1stunned == false && p1spclActive == false)
+                if (p1atkActive == false && p1stunned == false && p1spclActive == false && p1spriteStatus != "Concede")
                 {
                     if (e.KeyData == Keys.D || e.KeyData == Keys.A)
                     {
@@ -761,7 +763,7 @@ namespace BrawlTest
                 }
 
                 //p2
-                if (p2atkActive == false && p2stunned == false && p2spclActive == false)
+                if (p2atkActive == false && p2stunned == false && p2spclActive == false && p2spriteStatus != "Concede")
                 {
                     if (e.KeyData == Keys.Right || e.KeyData == Keys.Left)
                     {
@@ -864,6 +866,7 @@ namespace BrawlTest
             {
                 if (p1hb.IntersectsWith(platform) && p1spriteStatus != "TakingDamage")
                 {
+                    p1trueInvince = true;
                     if(p1spriteStatus != "Concede")
                     {
                         p1frame = 1;
@@ -957,6 +960,7 @@ namespace BrawlTest
             {
                 if (p2hb.IntersectsWith(platform) && p2spriteStatus != "TakingDamage")
                 {
+                    p2trueInvince = true;
                     if (p2spriteStatus != "Concede")
                     {
                         p2frame = 1;
@@ -1631,7 +1635,7 @@ namespace BrawlTest
                 p1atkhb = Rectangle.Empty;
                 p1atkActive = false;
             }
-            if (p2hb.IntersectsWith(p1atkhb))
+            if (p2hb.IntersectsWith(p1atkhb) && p2trueInvince == false)
             {
                 p2spriteStatus = "TakingDamage";
                 p2xv = 0;
@@ -1645,11 +1649,11 @@ namespace BrawlTest
                     p1damageDealt += (p1atk - p2def);
                     p2ChpBar = new Rectangle(603 + 200 - (200 * p2currentHp / p2hp), 629, (200 * p2currentHp / p2hp), 5);
                 }
-                p2invince = true;
                 p2stunned = true;
                 p2stunTime = p2dex;
                 p2stunTmr.Enabled = true;
                 p2dealKnockback = false;
+                p2invince = true;
             }
         }
 
@@ -1678,7 +1682,7 @@ namespace BrawlTest
         }
         private void p2atkTime_Tick(object sender, EventArgs e) //tracks cooldown time
         {
-            if (p2atkCooltime > p1atkLength + p2dex)
+            if (p2atkCooltime > p2atkLength + p2dex)
             {
                 p2atkTime.Enabled = false;
                 p2atkCool = false;
@@ -1692,7 +1696,7 @@ namespace BrawlTest
                 p2atkhb = Rectangle.Empty;
                 p2atkActive = false;
             }
-            if (p1hb.IntersectsWith(p2atkhb))
+            if (p1hb.IntersectsWith(p2atkhb) && p1trueInvince == false)
             {
                 p1spriteStatus = "TakingDamage";
                 p1xv = 0;
@@ -1706,11 +1710,11 @@ namespace BrawlTest
                     p2damageDealt += (p2atk - p1def);
                     p1ChpBar = new Rectangle(195, 629, (200 * p1currentHp / p1hp), 5);
                 }
-                p1invince = true;
                 p1stunned = true;
                 p1stunTime = p1dex;
                 p1stunTmr.Enabled = true;
                 p1dealKnockback = false;
+                p1invince = true;
             }
         }
 
@@ -1730,14 +1734,15 @@ namespace BrawlTest
                 switch (p1Character)
                 {
                     case "Cedric":
+                        p1trueInvince = true;
                         if (p1facingRight == true)
                         {
-                            p1xv = 10;
+                            p1xv = 15;
                             p1xa = 0;
                         }
                         else
                         {
-                            p1xv = -10;
+                            p1xv = -15;
                             p1xa = 0;
                         }
                         break;
@@ -1746,9 +1751,9 @@ namespace BrawlTest
             if (p1spclDoesDmg == true)
             {
                 p1xv = 0;
-                p1yv = 0;
                 p1xa = 0;
                 p1ya = 0;
+                p1yv = 0;
                 int playerposX, playerposY;
                 if (p1facingRight == true)
                 {
@@ -1762,11 +1767,11 @@ namespace BrawlTest
                 }
                 p1spclhb = new Rectangle(playerposX, playerposY, p1spclhbX, p1spclhbY);
             }
-            if(p1spclDoesDrop == true)
+            if (p1spclDoesDrop == true)
             {
 
             }
-            if(p1spclDoesHeal == true)
+            if (p1spclDoesHeal == true)
             {
                 p1currentHp += p1spclDmg * p1atk;
                 if(p1currentHp > p1hp)
@@ -1797,7 +1802,17 @@ namespace BrawlTest
                             if (p1spclCooltime < 5)
                             {
                                 p1spclDoesDmg = false;
-                                p1invince = true;
+                                if (p1spclCooltime == 3)
+                                {
+                                    if (p1facingRight == true)
+                                    {
+                                        p1facingRight = false;
+                                    }
+                                    else
+                                    {
+                                        p1facingRight = true;
+                                    }
+                                }
                             }
                             if (p1spclCooltime == 5)
                             {
@@ -1805,9 +1820,10 @@ namespace BrawlTest
                                 p1spclAtk();
                                 p1spclCooltime = 5;
                             }
-                            if (p1spclCooltime == 32)
+                            if (p1spclCooltime == 18)
                             {
                                 p1spclDoesDmg = false;
+                                p1trueInvince = false;
                             }
                             break;
                     }
@@ -1818,7 +1834,7 @@ namespace BrawlTest
                     {
                         p1spclhb = Rectangle.Empty;
                     }
-                    if (p2hb.IntersectsWith(p1spclhb))
+                    if (p2hb.IntersectsWith(p1spclhb) && p2trueInvince == false)
                     {
                         p2spriteStatus = "TakingDamage";
                         p2xv = 0;
@@ -1843,7 +1859,7 @@ namespace BrawlTest
                 {
 
                 }
-                if (p1spclCooltime > p1spclLength)
+                if (p1spclCooltime > p1spclLength + 1)
                 {
                     p1spclActive = false;
                 }
@@ -1861,6 +1877,7 @@ namespace BrawlTest
                 switch (p2Character)
                 {
                     case "Cedric":
+                        p1trueInvince = true;
                         if (p2facingRight == true)
                         {
                             p2xv = 10;
@@ -1877,9 +1894,9 @@ namespace BrawlTest
             if (p2spclDoesDmg == true)
             {
                 p2xv = 0;
-                p2yv = 0;
                 p2xa = 0;
                 p2ya = 0;
+                p2yv = 0;
                 int playerposX, playerposY;
                 if (p2facingRight == true)
                 {
@@ -1928,17 +1945,36 @@ namespace BrawlTest
                             if (p2spclCooltime < 5)
                             {
                                 p2spclDoesDmg = false;
-                                p2invince = true;
+                                if (p2spclCooltime == 3)
+                                {
+                                    if (p2facingRight == true)
+                                    {
+                                        p2facingRight = false;
+                                    }
+                                    else
+                                    {
+                                        p2facingRight = true;
+                                    }
+                                }
                             }
                             if (p2spclCooltime == 5)
                             {
                                 p2spclDoesDmg = true;
                                 p2spclAtk();
                                 p2spclCooltime = 5;
+                                if (p2facingRight == true)
+                                {
+                                    p2facingRight = false;
+                                }
+                                else
+                                {
+                                    p2facingRight = true;
+                                }
                             }
-                            if (p2spclCooltime == 32)
+                            if (p2spclCooltime == 18)
                             {
                                 p2spclDoesDmg = false;
+                                p2trueInvince = false;
                             }
                             break;
                     }
@@ -1949,7 +1985,7 @@ namespace BrawlTest
                     {
                         p2spclhb = Rectangle.Empty;
                     }
-                    if (p1hb.IntersectsWith(p2spclhb))
+                    if (p1hb.IntersectsWith(p2spclhb) && p1trueInvince == false)
                     {
                         p1spriteStatus = "TakingDamage";
                         p1xv = 0;
@@ -1974,7 +2010,7 @@ namespace BrawlTest
                 {
 
                 }
-                if (p2spclCooltime > p2spclLength)
+                if (p2spclCooltime > p2spclLength + 1)
                 {
                     p2spclActive = false;
                 }
