@@ -9,6 +9,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Text.RegularExpressions;
+
 
 namespace BrawlTest
 {
@@ -20,40 +22,44 @@ namespace BrawlTest
         //----------------------------------\\
 
         Rectangle platform, Arena, fadeSpace;
-        Rectangle p1Sprite, p1hb, p1atkhb, p1spclhb; //hitboxes
-        Rectangle p2Sprite, p2hb, p2atkhb, p2spclhb; //hitboxes
 
         Graphics g; // declare the graphics object
-        SolidBrush blueBrush = new SolidBrush(Color.LightSkyBlue);
+        SolidBrush blueBrush = new SolidBrush(Color.LightSkyBlue); //some brushes that are used
         SolidBrush whiteBrush = new SolidBrush(Color.White);
-        Image arenaImage = Image.FromFile(Application.StartupPath + @"\Assets\Arena.png");
-        Image[] fadeFrame = new Image[6];
+        Image arenaImage = Image.FromFile(Application.StartupPath + @"\Assets\Arena.png"); //arena background
+        Image[] fadeFrame = new Image[6]; //fade images 
+        Image[] fadeoutFrame = new Image[6]; //fade images 
 
-        bool gameStarted, titleCleared, labels, fadeDone;
+        bool gameStarted, titleCleared, labels, fadeDone, gameOver, labelShown;
         string gameStatus;
         int smallDelay, Frame;
 
 
-        //p1
-        int p1xv, p1yv, p1xa, p1ya;
+        //----------------------------------\\
+        //           P1 Variables           \\
+        //----------------------------------\\
+        string p1playerName;//the players name
+        int p1xv, p1yv, p1xa, p1ya; //velocity variables
         int p1atkCooltime, p1spclCooltime, p1stunTime; //cooldown timers
         bool p1falling, p1jumping, p1atkActive, p1spclActive, p1invince, p1stunned, p1trueInvince; //indicators if these things are active
         bool p1atkCool, p1sklCool; //skill cooldowns
         bool p1facingRight; //which side is the player facing
-        string p1Character;
-        int p1currentHp, p1lives;
+        string p1Character; //which character the player chose
+        int p1currentHp, p1lives; // hp and lives
+        Rectangle p1Sprite, p1hb, p1atkhb, p1spclhb; //p1hitboxes
         //p1 imported integers
         int p1hp, p1atk, p1def, p1dex, p1spd; //stats
         int p1atkLength; //attack specifications 
         int p1atkhbX, p1atkhbY, p1atkhbOffsetX, p1atkhbOffsetY; //attack hitbox sizes
         bool p1spclDoesHeal, p1spclDoesDmg, p1spclDoesDrop, p1spclDoesSpecial; //Special skill conditions
         int p1spclLength, p1spclCool, p1spclhbX, p1spclhbY, p1spclhbOffsetX, p1spclhbOffsetY; //Special skill specifications
-        int p1spclDmg, p1spclStun;
-        string p1fullName, p1desc;
+        int p1spclDmg, p1spclStun; //special damage and stun values
+        string p1fullName, p1desc; //values displayed in charsel
         bool p1dealKnockback = false;
         //p1 sprite works
-        string p1spriteStatus;
-        int p1frame;
+        string p1spriteStatus; //sprite status
+        int p1frame; //universal sprite frame int
+        //all the sprites
         Image[] p1Idle = new Image[9];
         Image[] p1Taunt = new Image[10];
         Image[] p1Engarde = new Image[9];
@@ -74,31 +80,36 @@ namespace BrawlTest
         //p1 CharSel stat works
         Rectangle p1hpbar, p1atkbar, p1defbar, p1dexbar, p1spdbar;
         Rectangle p1ChpBar, p1livesBar, p1spclBar;
-        bool p1charChosen;
+        bool p1charChosen, p1nameEntered;
         //p1 Result Stats
-        int p1damageDealt, p1damageTaken;
+        int p1damageDealt, p1hpleft;
 
 
-        //p2
-        int p2xv, p2yv, p2xa, p2ya;
+        //----------------------------------\\
+        //           P2 Variables           \\
+        //----------------------------------\\
+        string p2playerName;//the players name
+        int p2xv, p2yv, p2xa, p2ya; //velocity variables
         int p2atkCooltime, p2spclCooltime, p2stunTime; //cooldown timers
         bool p2falling, p2jumping, p2atkActive, p2spclActive, p2invince, p2stunned, p2trueInvince; //indicators if these things are active
         bool p2atkCool, p2sklCool; //skill cooldowns
         bool p2facingRight; //which side is the player facing
-        string p2Character;
-        int p2currentHp, p2lives;
+        string p2Character; //which character the player chose
+        int p2currentHp, p2lives; // hp and lives
+        Rectangle p2Sprite, p2hb, p2atkhb, p2spclhb; //p2hitboxes
         //p2 imported integers
         int p2hp, p2atk, p2def, p2dex, p2spd; //stats
         int p2atkLength; //attack specifications 
         int p2atkhbX, p2atkhbY, p2atkhbOffsetX, p2atkhbOffsetY; //attack hitbox sizes
         bool p2spclDoesHeal, p2spclDoesDmg, p2spclDoesDrop, p2spclDoesSpecial; //Special skill conditions
         int p2spclLength, p2spclCool, p2spclhbX, p2spclhbY, p2spclhbOffsetX, p2spclhbOffsetY; //Special skill specifications
-        int p2spclDmg, p2spclStun;
-        string p2fullName, p2desc;
+        int p2spclDmg, p2spclStun; //special damage and stun values
+        string p2fullName, p2desc; //values displayed in charsel
         bool p2dealKnockback = false;
         //p2 sprite works
-        string p2spriteStatus;
-        int p2frame;
+        string p2spriteStatus; //sprite status
+        int p2frame; //universal sprite frame int
+        //all the sprites
         Image[] p2Idle = new Image[9];
         Image[] p2Taunt = new Image[10];
         Image[] p2Engarde = new Image[9];
@@ -119,15 +130,16 @@ namespace BrawlTest
         //p2 CharSel stat works
         Rectangle p2hpbar, p2atkbar, p2defbar, p2dexbar, p2spdbar;
         Rectangle p2ChpBar, p2livesBar, p2spclBar;
-        bool p2charChosen;
+        bool p2charChosen, p2nameEntered;
         //p2 Result Stats
-        int p2damageDealt, p2damageTaken;
+        int p2damageDealt, p2hpleft;
 
 
-
+        //classes
         Title title = new Title();
         CharSel charsel = new CharSel();
         Rules rules = new Rules();
+        Results results = new Results();
 
         public Form1()
         {
@@ -138,33 +150,35 @@ namespace BrawlTest
         private void Form1_Load(object sender, EventArgs e)
         {
             gameStarted = false;
-            gameStatus = "title";
+            gameStatus = "title"; //starts on title screen
             smallDelay = 1;
-            for (int i = 1; i <= 5; i++)
+            for (int i = 1; i <= 5; i++) //prepares fade images
             {
                 fadeFrame[i] = Image.FromFile(Application.StartupPath + @"\Assets\FadeSc_(" + i.ToString() + ").png");
+                fadeoutFrame[i] = Image.FromFile(Application.StartupPath + @"\Assets\FadeBlc_(" + i.ToString() + ").png");
             }
         }
 
         //----------------------------------\\
         //           Game Startup           \\
         //----------------------------------\\
-        private void gameStart()
+        private void gameStart()//starts game 
         {
             gameStarted = true;
             p1lives = 3;
             p2lives = 3;
             p1setChar();
             p2setChar();
-            p1loadChar();
-            p2loadChar();
+            //reads char files
+            p1loadChar(); 
+            p2loadChar(); 
+            //prepares all sprite works
             p1prepareSprite();
             p2prepareSprite();
             veloTmr.Enabled = true;
             mainPanel.Invalidate();
         }
-
-        private void p1setChar()
+        private void p1setChar()//sets all the variables for p1 character, also responsible for reseting stats after respawn 
         {
             p1Sprite = new Rectangle(300, 300, 200, 150);
             p1hb = new Rectangle(300, 300, 60, 100);
@@ -180,7 +194,7 @@ namespace BrawlTest
             p1stunned = false;
             p1trueInvince = false;
         }
-        private void p2setChar()
+        private void p2setChar()//sets all the variables for p2 character, also responsible for reseting stats after respawn 
         {
             p2Sprite = new Rectangle(640, 300, 200, 150);
             p2hb = new Rectangle(640, 300, 60, 100);
@@ -197,14 +211,14 @@ namespace BrawlTest
             p2trueInvince = false;
         }
 
-
         //----------------------------------\\
         //        Loading Character         \\
         //----------------------------------\\
 
+        //prepares sprites, but for charsel
         private void p1prepareSpritecharsel()
         {
-            if (p1Character != "nocharacter")
+            if (p1Character != "nocharacter")//if character isn't empty
             {
                 for (int i = 1; i <= 8; i++)//creates the image files for animations
                 {
@@ -222,10 +236,10 @@ namespace BrawlTest
                 p1Name.Text = p1fullName;
                 p1spclDesc.Text = p1desc;
             }
-        }
+        } 
         private void p2prepareSpritecharsel()
         {
-            if (p2Character != "nocharacter")
+            if (p2Character != "nocharacter")//if character isn't empty
             {
                 for (int i = 1; i <= 8; i++)//creates the image files for animations
                 {
@@ -244,11 +258,13 @@ namespace BrawlTest
                 p2spclDesc.Text = p2desc;
             }
         }
+
+        //reads character files and load in stats
         private void p1loadChar()
         {
-            if (p1Character != "nocharacter")
+            if (p1Character != "nocharacter")//if character isn't empty
             {
-                System.IO.StreamReader file = new System.IO.StreamReader(Application.StartupPath + @"\characters\" + p1Character.ToString() + ".txt");
+                System.IO.StreamReader file = new System.IO.StreamReader(Application.StartupPath + @"\characters\" + p1Character.ToString() + ".txt"); //selects the txt file matching the character
                 int linenumber = 1;
                 for (int i = 1; i <= 25; i++)
                 {
@@ -257,10 +273,10 @@ namespace BrawlTest
                         string line = File.ReadLines(Application.StartupPath + @"\characters\" + p1Character.ToString() + ".txt").ElementAt(linenumber);
                         switch (linenumber)
                         {
-                            case 1:
+                            case 1://displayed name
                                 p1fullName = line;
                                 break;
-                            case 2://character description
+                            case 2://special description
                                 p1desc = line;
                                 break;
                             case 3://stats
@@ -278,59 +294,59 @@ namespace BrawlTest
                             case 7:
                                 p1spd = int.Parse(line);
                                 break;
-                            case 8://attack specifications
+                            case 8://attack time
                                 p1atkLength = int.Parse(line);
                                 break;
-                            case 9:
+                            case 9://attack hitbox size(x)
                                 p1atkhbX = int.Parse(line);
                                 break;
-                            case 10:
+                            case 10://attack hitbox size(y)
                                 p1atkhbY = int.Parse(line);
                                 break;
-                            case 11:
+                            case 11://attack offset from hitbox(x)
                                 p1atkhbOffsetX = int.Parse(line);
                                 break;
-                            case 12:
+                            case 12://attack offset from hitbox(y)
                                 p1atkhbOffsetY = int.Parse(line);
                                 break;
-                            case 13://special spefications
+                            case 13://does special heal self?
                                 if (line.Contains("y")) { p1spclDoesHeal = true; }
                                 else { p1spclDoesHeal = false; }
                                 break;
-                            case 14:
+                            case 14://does special deal damage?
                                 if (line.Contains("y")) { p1spclDoesDmg = true; }
                                 else { p1spclDoesDmg = false; }
                                 break;
-                            case 15:
+                            case 15://does special drop stats?
                                 if (line.Contains("y")) { p1spclDoesDrop = true; }
                                 else { p1spclDoesDrop = false; }
                                 break;
-                            case 16:
+                            case 16://does special do anything else?
                                 if (line.Contains("y")) { p1spclDoesSpecial = true; }
                                 else { p1spclDoesSpecial = false; }
                                 break;
-                            case 17:
+                            case 17://special time
                                 p1spclLength = int.Parse(line);
                                 break;
-                            case 18:
+                            case 18://special cooldown time
                                 p1spclCool = int.Parse(line);
                                 break;
-                            case 19:
+                            case 19://special hitbox size(x)
                                 p1spclhbX = int.Parse(line);
                                 break;
-                            case 20:
+                            case 20://special hitbox size(y)
                                 p1spclhbY = int.Parse(line);
                                 break;
-                            case 21:
+                            case 21://special offset from hitbox(x)
                                 p1spclhbOffsetX = int.Parse(line);
                                 break;
-                            case 22:
+                            case 22://special offset from hitbox(y)
                                 p1spclhbOffsetY = int.Parse(line);
                                 break;
-                            case 23:
+                            case 23://special damage multiplier
                                 p1spclDmg = int.Parse(line);
                                 break;
-                            case 24:
+                            case 24://special stun time
                                 p1spclStun = int.Parse(line);
                                 break;
                         }
@@ -347,7 +363,7 @@ namespace BrawlTest
         {
             if (p2Character != "nocharacter")
             {
-                System.IO.StreamReader file = new System.IO.StreamReader(Application.StartupPath + @"\characters\" + p2Character.ToString() + ".txt");
+                System.IO.StreamReader file = new System.IO.StreamReader(Application.StartupPath + @"\characters\" + p2Character.ToString() + ".txt");//selects the txt file matching the character
                 int linenumber = 1;
                 for (int i = 1; i <= 25; i++)
                 {
@@ -356,10 +372,10 @@ namespace BrawlTest
                         string line = File.ReadLines(Application.StartupPath + @"\characters\" + p2Character.ToString() + ".txt").ElementAt(linenumber);
                         switch (linenumber)
                         {
-                            case 1:
+                            case 1://displayed name
                                 p2fullName = line;
                                 break;
-                            case 2://character description
+                            case 2://special description
                                 p2desc = line;
                                 break;
                             case 3://stats
@@ -377,59 +393,59 @@ namespace BrawlTest
                             case 7:
                                 p2spd = int.Parse(line);
                                 break;
-                            case 8://attack specifications
+                            case 8://attack time
                                 p2atkLength = int.Parse(line);
                                 break;
-                            case 9:
+                            case 9://attack hitbox size(x)
                                 p2atkhbX = int.Parse(line);
                                 break;
-                            case 10:
+                            case 10://attack hitbox size(y)
                                 p2atkhbY = int.Parse(line);
                                 break;
-                            case 11:
+                            case 11://attack offset from hitbox(x)
                                 p2atkhbOffsetX = int.Parse(line);
                                 break;
-                            case 12:
+                            case 12://attack offset from hitbox(y)
                                 p2atkhbOffsetY = int.Parse(line);
                                 break;
-                            case 13://special spefications
+                            case 13://does special heal self?
                                 if (line.Contains("y")) { p2spclDoesHeal = true; }
                                 else { p2spclDoesHeal = false; }
                                 break;
-                            case 14:
+                            case 14://does special deal damage?
                                 if (line.Contains("y")) { p2spclDoesDmg = true; }
                                 else { p2spclDoesDmg = false; }
                                 break;
-                            case 15:
+                            case 15://does special drop stats?
                                 if (line.Contains("y")) { p2spclDoesDrop = true; }
                                 else { p2spclDoesDrop = false; }
                                 break;
-                            case 16:
+                            case 16://does special do anything else?
                                 if (line.Contains("y")) { p2spclDoesSpecial = true; }
                                 else { p2spclDoesSpecial = false; }
                                 break;
-                            case 17:
+                            case 17://special time
                                 p2spclLength = int.Parse(line);
                                 break;
-                            case 18:
+                            case 18://special cooldown time
                                 p2spclCool = int.Parse(line);
                                 break;
-                            case 19:
+                            case 19://special hitbox size(x)
                                 p2spclhbX = int.Parse(line);
                                 break;
-                            case 20:
+                            case 20://special hitbox size(y)
                                 p2spclhbY = int.Parse(line);
                                 break;
-                            case 21:
+                            case 21://special offset from hitbox(x)
                                 p2spclhbOffsetX = int.Parse(line);
                                 break;
-                            case 22:
+                            case 22://special offset from hitbox(y)
                                 p2spclhbOffsetY = int.Parse(line);
                                 break;
-                            case 23:
+                            case 23://special damage multiplier
                                 p2spclDmg = int.Parse(line);
                                 break;
-                            case 24:
+                            case 24://special stun time
                                 p2spclStun = int.Parse(line);
                                 break;
                         }
@@ -444,6 +460,7 @@ namespace BrawlTest
             }
         }
 
+        //prepare sprites for chosen characters
         private void p1prepareSprite()
         {
             for (int i = 1; i <= 8; i++)//creates the image files for animations
@@ -458,40 +475,40 @@ namespace BrawlTest
             {
                 p1Engarde[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p1Character + "_Engarde_(" + i.ToString() + ").png");
                 p1EngardeL[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p1Character + "_Engarde_(" + i.ToString() + ").png");
-                p1EngardeL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);
+                p1EngardeL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);//flipping images that varies based on which way the character is facing
             }
             for (int i = 1; i <= 4; i++)
             {
                 p1Run[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p1Character + "_Run_(" + i.ToString() + ").png");
                 p1RunL[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p1Character + "_Run_(" + i.ToString() + ").png");
-                p1RunL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);
+                p1RunL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);//flipping images that varies based on which way the character is facing
             }
             for (int i = 1; i <= 4; i++)
             {
                 p1Jump[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p1Character + "_Jump_(" + i.ToString() + ").png");
                 p1JumpL[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p1Character + "_Jump_(" + i.ToString() + ").png");
-                p1JumpL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);
+                p1JumpL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);//flipping images that varies based on which way the character is facing
             }
             for (int i = 1; i <= p1atkLength; i++)
             {
                 p1Regular[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p1Character + "_Regular_(" + i.ToString() + ").png");
                 p1RegularL[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p1Character + "_Regular_(" + i.ToString() + ").png");
-                p1RegularL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);
+                p1RegularL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);//flipping images that varies based on which way the character is facing
                 p1RegularAtk[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p1Character + "_AtkWeapon_(" + i.ToString() + ").png");
                 p1RegularAtkL[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p1Character + "_AtkWeapon_(" + i.ToString() + ").png");
-                p1RegularAtkL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);
+                p1RegularAtkL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);//flipping images that varies based on which way the character is facing
             }
             for (int i = 1; i <= p1spclLength; i++)
             {
                 p1Special[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p1Character + "_Special_(" + i.ToString() + ").png");
                 p1SpecialL[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p1Character + "_Special_(" + i.ToString() + ").png");
-                p1SpecialL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);
+                p1SpecialL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);//flipping images that varies based on which way the character is facing
             }
             for (int i = 1; i <= 3; i++)
             {
                 p1Concede[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p1Character + "_Concede_(" + i.ToString() + ").png");
                 p1ConcedeL[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p1Character + "_Concede_(" + i.ToString() + ").png");
-                p1ConcedeL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);
+                p1ConcedeL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);//flipping images that varies based on which way the character is facing
             }
         }
         private void p2prepareSprite()
@@ -508,57 +525,59 @@ namespace BrawlTest
             {
                 p2Engarde[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p2Character + "_Engarde_(" + i.ToString() + ").png");
                 p2EngardeL[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p2Character + "_Engarde_(" + i.ToString() + ").png");
-                p2EngardeL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);
+                p2EngardeL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);//flipping images that varies based on which way the character is facing
             }
             for (int i = 1; i <= 4; i++)
             {
                 p2Run[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p2Character + "_Run_(" + i.ToString() + ").png");
                 p2RunL[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p2Character + "_Run_(" + i.ToString() + ").png");
-                p2RunL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);
+                p2RunL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);//flipping images that varies based on which way the character is facing
             }
             for (int i = 1; i <= 4; i++)
             {
                 p2Jump[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p2Character + "_Jump_(" + i.ToString() + ").png");
                 p2JumpL[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p2Character + "_Jump_(" + i.ToString() + ").png");
-                p2JumpL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);
+                p2JumpL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);//flipping images that varies based on which way the character is facing
             }
             for (int i = 1; i <= p2atkLength; i++)
             {
                 p2Regular[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p2Character + "_Regular_(" + i.ToString() + ").png");
                 p2RegularL[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p2Character + "_Regular_(" + i.ToString() + ").png");
-                p2RegularL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);
+                p2RegularL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);//flipping images that varies based on which way the character is facing
                 p2RegularAtk[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p2Character + "_AtkWeapon_(" + i.ToString() + ").png");
                 p2RegularAtkL[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p2Character + "_AtkWeapon_(" + i.ToString() + ").png");
-                p2RegularAtkL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);
+                p2RegularAtkL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);//flipping images that varies based on which way the character is facing
             }
             for (int i = 1; i <= p2spclLength; i++)
             {
                 p2Special[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p2Character + "_Special_(" + i.ToString() + ").png");
                 p2SpecialL[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p2Character + "_Special_(" + i.ToString() + ").png");
-                p2SpecialL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);
+                p2SpecialL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);//flipping images that varies based on which way the character is facing
             }
             for (int i = 1; i <= 3; i++)
             {
                 p2Concede[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p2Character + "_Concede_(" + i.ToString() + ").png");
                 p2ConcedeL[i] = Image.FromFile(Application.StartupPath + @"\Sprites\" + p2Character + "_Concede_(" + i.ToString() + ").png");
-                p2ConcedeL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);
+                p2ConcedeL[i].RotateFlip(RotateFlipType.RotateNoneFlipX);//flipping images that varies based on which way the character is facing
             }
         }
 
-        private void drawBars(Graphics g)
+        private void drawBars(Graphics g)//visualise stat bars in charsel 
         {
+            //p1
             g.FillRectangle(whiteBrush, p1hpbar);
             g.FillRectangle(whiteBrush, p1atkbar);
             g.FillRectangle(whiteBrush, p1defbar);
             g.FillRectangle(whiteBrush, p1dexbar);
             g.FillRectangle(whiteBrush, p1spdbar);
+            //p2
             g.FillRectangle(whiteBrush, p2hpbar);
             g.FillRectangle(whiteBrush, p2atkbar);
             g.FillRectangle(whiteBrush, p2defbar);
             g.FillRectangle(whiteBrush, p2dexbar);
             g.FillRectangle(whiteBrush, p2spdbar);
-        }
-        private void drawBarsGame(Graphics g)
+        } 
+        private void drawBarsGame(Graphics g)//visualise stat bars in game 
         {
             g.FillRectangle(whiteBrush, p1ChpBar);
             g.FillRectangle(whiteBrush, p2ChpBar);
@@ -566,7 +585,7 @@ namespace BrawlTest
             g.FillRectangle(whiteBrush, p2livesBar);
             if(p1spclCooltime >= p1spclCool)
             {
-                g.FillRectangle(blueBrush, p1spclBar);
+                g.FillRectangle(blueBrush, p1spclBar);//if special is fully charged, the bar changes to light blue
             }
             else
             {
@@ -574,22 +593,24 @@ namespace BrawlTest
             }
             if (p2spclCooltime >= p2spclCool)
             {
-                g.FillRectangle(blueBrush, p2spclBar);
+                g.FillRectangle(blueBrush, p2spclBar);//if special is fully charged, the bar changes to light blue
             }
             else
             {
                 g.FillRectangle(whiteBrush, p2spclBar);
             }
-        }
+        } 
+
 
         //----------------------------------\\
-        //             Controls              \\
+        //             Controls             \\
         //----------------------------------\\
-        private void Form1_KeyDown(object sender, KeyEventArgs e)
+
+        private void Form1_KeyDown(object sender, KeyEventArgs e)//all player controls 
         {
-            if (gameStarted == false)
+            if (gameStarted == false)//controls for navigating menus 
             {
-                if (titleCleared == false)
+                if (titleCleared == false)//pressing any keys on title would trigger this and transition to charsel
                 {
                     titleCleared = true;
                     title.triggerTransition();
@@ -608,9 +629,9 @@ namespace BrawlTest
                 }
                 else 
                 {
-                    if (gameStatus == "CharSel" && charsel.transitionDone() == true)
+                    if (gameStatus == "CharSel" && charsel.transitionDone() == true) //charsel controls
                     {
-                        if(p1charChosen == false)
+                        if(p1charChosen == false) //if p1 character isn't chosen yet
                         {
                             if (e.KeyData == Keys.D) { charsel.moveSelRight1(); }
                             if (e.KeyData == Keys.A) { charsel.moveSelLeft1(); }
@@ -619,7 +640,7 @@ namespace BrawlTest
                             p1Character = charsel.p1char();
                             p1loadChar();
                             p1prepareSpritecharsel();
-                            if(e.KeyData == Keys.G)
+                            if(e.KeyData == Keys.G) //key to lock in character
                             {
                                 if (p1Character != "nocharacter")
                                 { 
@@ -630,7 +651,7 @@ namespace BrawlTest
                                 } 
                             }
                         }
-                        if(p2charChosen == false)
+                        if(p2charChosen == false) //if p2 character isn't chosen yet
                         {
                             if (e.KeyData == Keys.Right) { charsel.moveSelRight2(); }
                             if (e.KeyData == Keys.Left) { charsel.moveSelLeft2(); }
@@ -639,7 +660,7 @@ namespace BrawlTest
                             p2Character = charsel.p2char();
                             p2loadChar();
                             p2prepareSpritecharsel();
-                            if (e.KeyData == Keys.M)
+                            if (e.KeyData == Keys.M) //key to lock in character
                             {
                                 if (p2Character != "nocharacter")
                                 { 
@@ -651,15 +672,18 @@ namespace BrawlTest
                             }
 
                         }
-                        if (e.KeyData == Keys.R) { 
+                        if (e.KeyData == Keys.R) //to rules page
+                        { 
                             charsel.toRules(); 
                             p1Name.Visible = false;
                             p1spclDesc.Visible = false;
                             p2Name.Visible = false;
                             p2spclDesc.Visible = false;
+                            p1nameBox.Visible = false;
+                            p2nameBox.Visible = false;
                         }
                     }
-                    else if ( rules.transitionDone() == true )
+                    else if ( rules.transitionDone() == true ) //this is to swap back form rules to charsel. because of some complications characters that are locked in will be reset
                     {
                         rules.toCharsel();
                         p1charChosen = false;
@@ -667,12 +691,12 @@ namespace BrawlTest
                     }
                 }
             }
-            else if(fadeDone == true)
+            else if(fadeDone == true && gameOver == false)//controls for playing the game
             {
                 //p1
-                if (p1atkActive == false && p1stunned == false && p1spclActive == false && p1spriteStatus != "Concede")
+                if (p1atkActive == false && p1stunned == false && p1spclActive == false && p1spriteStatus != "Concede")//checks every condition that won't allow the player to move
                 {
-                    if (p1xv < 10 && p1xv > -10)//velocity cap
+                    if (p1xv < 10 && p1xv > -10)//velocity cap so the player can't infinitely accelerate
                     {
                         if (e.KeyData == Keys.D)
                         {
@@ -702,15 +726,15 @@ namespace BrawlTest
                         }
                     }
                     if (e.KeyData == Keys.G && p1atkCool == false && p1jumping == false) { p1Atk(); p1spriteStatus = "Regular"; p1frame = 1; } //actives attack skill
-                    if (e.KeyData == Keys.H && p1sklCool == false && p1jumping == false) { p1spclAtk(); p1spriteStatus = "Special"; p1frame = 1; } //actives attack skill
+                    if (e.KeyData == Keys.H && p1sklCool == false && p1jumping == false) { p1spclAtk(); p1spriteStatus = "Special"; p1frame = 1; } //actives special skill
 
-                    if (e.KeyData == Keys.J) { p1spriteStatus = "Taunt"; p1frame = 1; }
+                    if (e.KeyData == Keys.F) { p1spriteStatus = "Taunt"; p1frame = 1; }
                 }
 
                 //p2
-                if (p2atkActive == false && p2stunned == false && p2spclActive == false && p2spriteStatus != "Concede")
+                if (p2atkActive == false && p2stunned == false && p2spclActive == false && p2spriteStatus != "Concede")//checks every condition that won't allow the player to move
                 {
-                    if (p2xv < 10 && p2xv > -10)//velocity cap
+                    if (p2xv < 10 && p2xv > -10)//velocity cap so the player can't infinitely accelerate
                     {
                         if (e.KeyData == Keys.Right)
                         {
@@ -738,18 +762,18 @@ namespace BrawlTest
                         }
                     }
                     if (e.KeyData == Keys.M && p2atkCool == false && p2jumping == false) { p2Atk(); p2spriteStatus = "Regular"; p2frame = 1; } //actives attack skill
-                    if (e.KeyData == Keys.N && p2sklCool == false && p2jumping == false) { p2spclAtk(); p2spriteStatus = "Special"; p2frame = 1; } //actives attack skill
+                    if (e.KeyData == Keys.N && p2sklCool == false && p2jumping == false) { p2spclAtk(); p2spriteStatus = "Special"; p2frame = 1; } //actives special skill
 
                     if (e.KeyData == Keys.B) { p2spriteStatus = "Taunt"; p2frame = 1; }
                 }
             }
-        }
-        private void Form1_KeyUp(object sender, KeyEventArgs e)
+        } 
+        private void Form1_KeyUp(object sender, KeyEventArgs e)//stops some things when key is released 
         {
-            if (gameStarted == true && fadeDone == true)
+            if (gameStarted == true && fadeDone == true && gameOver == false)
             {
                 //p1
-                if (p1atkActive == false && p1stunned == false && p1spclActive == false && p1spriteStatus != "Concede")
+                if (p1atkActive == false && p1stunned == false && p1spclActive == false && p1spriteStatus != "Concede") //checks everything that locks controls
                 {
                     if (e.KeyData == Keys.D || e.KeyData == Keys.A)
                     {
@@ -763,7 +787,7 @@ namespace BrawlTest
                 }
 
                 //p2
-                if (p2atkActive == false && p2stunned == false && p2spclActive == false && p2spriteStatus != "Concede")
+                if (p2atkActive == false && p2stunned == false && p2spclActive == false && p2spriteStatus != "Concede") //checks everything that locks controls
                 {
                     if (e.KeyData == Keys.Right || e.KeyData == Keys.Left)
                     {
@@ -778,39 +802,102 @@ namespace BrawlTest
             }
         }
 
+
+        //----------------------------------\\
+        //          Entering Name           \\
+        //----------------------------------\\
+
+        private void p1nameBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyData == Keys.Enter)
+            {
+                p1playerName = p1nameBox.Text;
+                if (Regex.IsMatch(p1playerName, @"^[a-zA-Z]+$"))//checks playerName for letters
+                {
+                    p1nameBox.ReadOnly = true;
+                    ActiveControl = null;
+                    p1nameBox.ForeColor = Color.DimGray;
+                    p1nameEntered = true;
+                }
+                else
+                {
+                    p1nameBox.Text = "letters only!";
+                    p1nameBox.Focus();
+
+                }
+            }
+        }
+        private void p1nameBox_Click(object sender, EventArgs e)
+        {
+            if(p1nameBox.Text == "Enter name (letters only)")//clears the box when you click on it
+            {
+                p1nameBox.Clear();
+            }
+        }
+
+        private void p2nameBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.Enter)
+            {
+                p2playerName = p2nameBox.Text;
+                if (Regex.IsMatch(p2playerName, @"^[a-zA-Z]+$"))//checks playerName for letters
+                {
+                    p2nameBox.ReadOnly = true;
+                    ActiveControl = null;
+                    p2nameEntered = true;
+                    p2nameBox.ForeColor = Color.DimGray;
+                }
+                else
+                {
+                    p2nameBox.Text = "letters only!";
+                    p2nameBox.Focus();
+
+                }
+            }
+        }
+        private void p2nameBox_Click(object sender, EventArgs e)
+        {
+            if (p2nameBox.Text == "Enter name (letters only)")//clears the box when you click on it
+            {
+                p2nameBox.Clear();
+            }
+        }
+
         //----------------------------------\\
         //             Movement             \\
         //----------------------------------\\
-        private void veloTmr_Tick(object sender, EventArgs e) //universal timer
+
+        private void veloTmr_Tick(object sender, EventArgs e)//universal timer for player movement 
         {
             mainPanel.Invalidate();
+
             //----------------------------------\\
             //               P1                 \\
             //----------------------------------\\
-            p1hb.Y += p1yv;
-            p1hb.X += p1xv;
-            p1Sprite.Y = p1hb.Y - 50;
+            p1hb.Y += p1yv;//y velocity conversion 
+            p1hb.X += p1xv;//x velocity conversion
+            p1Sprite.Y = p1hb.Y - 50;//the sprite hitbox follows hitbox
             p1Sprite.X = p1hb.X - 70;
-            if(p1hb.X <= 0)
+            if(p1hb.X <= 0)//doesn't allow players to move out of form
             {
                 p1hb.X = 1;
                 p1xa = 0;
                 p1xv = 0;
             }
-            if (p1hb.X >= 940)
+            if (p1hb.X >= 940)//doesn't allow players to move out of form 
             {
                 p1hb.X = 939;
                 p1xa = 0;
                 p1xv = 0;
             }
 
-            if (p1hb.IntersectsWith(platform))
+            if (p1hb.IntersectsWith(platform))//if player is touching the ground
             {
-                if (p1falling == true && p1hb.Y < 600)
+                if (p1falling == true && p1hb.Y < 600)//if player hits the ground(therefore previously falling)
                 {
                     int place = (int)p1hb.Y;
                     p1ya = 0;
-                    p1hb.Y -= place - 441;
+                    p1hb.Y -= place - 441;//sets player on top of the ground
                     p1yv = 0;
                     p1falling = false;
                     p1jumping = false;
@@ -827,7 +914,7 @@ namespace BrawlTest
                     }
                 }
             }
-            else 
+            else //if the player isn't on the ground, gravity acceleration occurs
             {
                 p1ya += 1;
                 p1falling = true;
@@ -853,25 +940,31 @@ namespace BrawlTest
             { 
                 p1xv += p1xa; //acceleration
             }
-            if (p1xv > 0)//coding for air resistance 
+            if (p1xv > 0)//x-velocity decay(right)
             { 
                 p1xv -= 1;
             }
-            if (p1xv < 0)
+            if (p1xv < 0)//x-velocity decay(left)
             {
                 p1xv += 1;
             }
-            p1spclBar = new Rectangle(103, 719, (292 * p1spclCooltime / p1spclCool), 5);
-            if(p1currentHp <= 0)
+            p1spclBar = new Rectangle(103, 719, (292 * p1spclCooltime / p1spclCool), 5);//refreshes special bar 
+            if(p1currentHp <= 0)//start concede sequence
             {
                 if (p1hb.IntersectsWith(platform) && p1spriteStatus != "TakingDamage")
                 {
                     p1trueInvince = true;
-                    if(p1spriteStatus != "Concede")
+                    if(p1spriteStatus != "Concede")//if this is the first time triggering this code, set frame to 1
                     {
                         p1frame = 1;
                     }
                     p1spriteStatus = "Concede";
+                    if(p1lives == 1)
+                    {
+                        p2spriteStatus = "Engarde";
+                        p1lives -= 1;
+                        stopGame();
+                    }
                 }
                 p1xv = 0;
                 p1xa = 0;
@@ -881,30 +974,30 @@ namespace BrawlTest
             //----------------------------------\\
             //               P2                 \\
             //----------------------------------\\
-            p2hb.Y += p2yv;
-            p2hb.X += p2xv;
-            p2Sprite.Y = p2hb.Y - 50;
+            p2hb.Y += p2yv;//y velocity conversion 
+            p2hb.X += p2xv;//x velocity conversion
+            p2Sprite.Y = p2hb.Y - 50;//the sprite hitbox follows hitbox
             p2Sprite.X = p2hb.X - 70;
-            if (p2hb.X <= 0)
+            if (p2hb.X <= 0)//doesn't allow players to move out of form
             {
                 p2hb.X = 1;
                 p2xa = 0;
                 p2xv = 0;
             }
-            if (p2hb.X >= 940)
+            if (p2hb.X >= 940)//doesn't allow players to move out of form 
             {
                 p2hb.X = 939;
                 p2xa = 0;
                 p2xv = 0;
             }
 
-            if (p2hb.IntersectsWith(platform))
+            if (p2hb.IntersectsWith(platform))//if player is touching the ground
             {
-                if (p2falling == true && p2hb.Y < 600)
+                if (p2falling == true && p2hb.Y < 600)//if player hits the ground(therefore previously falling)
                 {
                     int place = (int)p2hb.Y;
                     p2ya = 0;
-                    p2hb.Y -= place - 441;
+                    p2hb.Y -= place - 441;//sets player on top of the ground
                     p2yv = 0;
                     p2falling = false;
                     p2jumping = false;
@@ -921,7 +1014,7 @@ namespace BrawlTest
                     }
                 }
             }
-            else
+            else //if the player isn't on the ground, gravity acceleration occurs
             {
                 p2ya += 1;
                 p2falling = true;
@@ -947,32 +1040,37 @@ namespace BrawlTest
             {
                 p2xv += p2xa; //acceleration
             }
-            if (p2xv > 0)//coding for air resistance 
+            if (p2xv > 0)//x-velocity decay(right)
             {
                 p2xv -= 1;
             }
-            if (p2xv < 0)
+            if (p2xv < 0)//x-velocity decay(left)
             {
                 p2xv += 1;
             }
             p2spclBar = new Rectangle(895 - (292 * p2spclCooltime / p2spclCool), 719, (292 * p2spclCooltime / p2spclCool), 5);
-            if (p2currentHp <= 0)
+            if (p2currentHp <= 0)//start concede sequence
             {
                 if (p2hb.IntersectsWith(platform) && p2spriteStatus != "TakingDamage")
                 {
                     p2trueInvince = true;
-                    if (p2spriteStatus != "Concede")
+                    if (p2spriteStatus != "Concede")//if this is the first time triggering this code, set frame to 1
                     {
                         p2frame = 1;
                     }
                     p2spriteStatus = "Concede";
+                    if (p2lives == 1)
+                    {
+                        p1spriteStatus = "Engarde";
+                        p2lives -= 1;
+                        stopGame();
+                    }
                 }
                 p2xv = 0;
                 p2xa = 0;
             }
         }
-
-        private void p1stunTmr_Tick(object sender, EventArgs e)
+        private void p1stunTmr_Tick(object sender, EventArgs e)//controls stun time for p1 
         {
             p1stunned = true;
             p1stunTime -= 1;
@@ -1002,8 +1100,7 @@ namespace BrawlTest
                 p1stunTmr.Enabled = false;
             }
         }
-
-        private void p2stunTmr_Tick(object sender, EventArgs e)
+        private void p2stunTmr_Tick(object sender, EventArgs e)//controls stun time for p2 
         {
             p2stunned = true;
             p2stunTime -= 1;
@@ -1035,23 +1132,23 @@ namespace BrawlTest
         }
 
 
-
         //----------------------------------\\
         //            Aesthetics            \\
         //----------------------------------\\
-        private void mainPanel_Paint(object sender, PaintEventArgs e)
+
+        private void mainPanel_Paint(object sender, PaintEventArgs e)//paints everything 
         {
             g = e.Graphics;
             g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
             switch (gameStatus)
             {
                 case "title":
-                    title.drawTitle(g);
+                    title.drawTitle(g);//draws everything in title
                     break;
                 case "CharSel":
-                    charsel.drawCharSel(g);
-                    drawBars(g);
-                    if (p1spriteStatus == "Idle")
+                    charsel.drawCharSel(g);//draws background in charsel
+                    drawBars(g);//draws stat bars
+                    if (p1spriteStatus == "Idle")//draws p1 chosen character
                     {
                         g.DrawImage(p1Idle[p1frame], p1Sprite);
                     }
@@ -1059,7 +1156,7 @@ namespace BrawlTest
                     {
                         g.DrawImage(p1Taunt[p1frame], p1Sprite);
                     }
-                    if (p2spriteStatus == "Idle")
+                    if (p2spriteStatus == "Idle")//draws p2 chosen character
                     {
                         g.DrawImage(p2Idle[p2frame], p2Sprite);
                     }
@@ -1067,33 +1164,33 @@ namespace BrawlTest
                     {
                         g.DrawImage(p2Taunt[p2frame], p2Sprite);
                     }
-                    if (charsel.transitionDone() != true)
+                    if (charsel.transitionDone() != true)//draws fade in transiton
                     {
                         charsel.drawFade(g);
                     }
-                    charsel.drawFadeout(g);
+                    charsel.drawFadeout(g);//draws fade out transition
                     break;
                 case "Rules":
-                    rules.drawRules(g);
-                    if (rules.transitionDone() != true)
+                    rules.drawRules(g);//draws rules screen 
+                    if (rules.transitionDone() != true)//draws fade in transition
                     {
                         rules.drawFade(g);
                     }
-                    else if (rules.rulesDone() != true)
+                    else if (rules.rulesDone() != true)//draws fade out transition
                     {
                         rules.drawFadeout(g);
                     }
                     break;
                 case "Game":
-                    g.DrawImage(arenaImage, Arena);
-                    drawBarsGame(g);
-                    if (fadeDone == false)
+                    g.DrawImage(arenaImage, Arena);//draws background
+                    drawBarsGame(g);//draws stat bars
+                    if (fadeDone == false)//draws fade in 
                     {
                         g.DrawImage(fadeFrame[Frame], fadeSpace);
                     }
                     else
                     {
-                        switch (p1spriteStatus)
+                        switch (p1spriteStatus)//draws p1 sprite
                         {
                             case "Engarde":
                                 if (p1facingRight == true)
@@ -1162,57 +1259,64 @@ namespace BrawlTest
                                 break;
                             case "Concede":
                                 if (p1frame <= 3)
-                                {
-                                    if (p1facingRight == true)
                                     {
-                                        g.DrawImage(p1Concede[p1frame], p1Sprite);
+                                        if (p1facingRight == true)
+                                        {
+                                            g.DrawImage(p1Concede[p1frame], p1Sprite);
+                                        }
+                                        else
+                                        {
+                                            g.DrawImage(p1ConcedeL[p1frame], p1Sprite);
+                                        }
+                                    }
+                                if (gameOver == false)
+                                {
+                                    if (p1frame > 13)
+                                    {
+                                        if (p1facingRight == true)
+                                        {
+                                            if (p1flash == false)
+                                            {
+                                                g.DrawImage(p1Concede[3], p1Sprite);
+                                                p1flash = true;
+                                            }
+                                            else
+                                            {
+                                                p1flash = false;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (p1flash == false)
+                                            {
+                                                g.DrawImage(p1ConcedeL[3], p1Sprite);
+                                                p1flash = true;
+                                            }
+                                            else
+                                            {
+                                                p1flash = false;
+                                            }
+                                        }
                                     }
                                     else
                                     {
-                                        g.DrawImage(p1ConcedeL[p1frame], p1Sprite);
-                                    }
-                                }
-                                else if (p1frame > 13)
-                                {
-                                    if (p1facingRight == true)
-                                    {
-                                        if (p1flash == false)
+                                        if (p1facingRight == true)
                                         {
                                             g.DrawImage(p1Concede[3], p1Sprite);
-                                            p1flash = true;
                                         }
                                         else
-                                        {
-                                            p1flash = false;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (p1flash == false)
                                         {
                                             g.DrawImage(p1ConcedeL[3], p1Sprite);
-                                            p1flash = true;
-                                        }
-                                        else
-                                        {
-                                            p1flash = false;
                                         }
                                     }
                                 }
-                                else
+                                else if (p2frame > 3)
                                 {
-                                    if (p1facingRight == true)
-                                    {
-                                        g.DrawImage(p1Concede[3], p1Sprite);
-                                    }
-                                    else
-                                    {
-                                        g.DrawImage(p1ConcedeL[3], p1Sprite);
-                                    }
+                                    g.DrawImage(p1Concede[3], p1Sprite);
                                 }
                                 break;
                         }
-                        switch (p2spriteStatus)
+                        switch (p2spriteStatus)//draws p2 sprite
                         {
                             case "Engarde":
                                 if (p2facingRight == true)
@@ -1281,64 +1385,101 @@ namespace BrawlTest
                                 break;
                             case "Concede":
                                 if (p2frame <= 3)
-                                {
-                                    if (p2facingRight == true)
                                     {
-                                        g.DrawImage(p2Concede[p2frame], p2Sprite);
+                                        if (p2facingRight == true)
+                                        {
+                                            g.DrawImage(p2Concede[p2frame], p2Sprite);
+                                        }
+                                        else
+                                        {
+                                            g.DrawImage(p2ConcedeL[p2frame], p2Sprite);
+                                        }
+                                    }
+                                if (gameOver == false)
+                                {
+                                    if (p2frame > 13)
+                                    {
+                                        if (p2facingRight == true)
+                                        {
+                                            if (p2flash == false)
+                                            {
+                                                g.DrawImage(p2Concede[3], p2Sprite);
+                                                p2flash = true;
+                                            }
+                                            else
+                                            {
+                                                p2flash = false;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (p2flash == false)
+                                            {
+                                                g.DrawImage(p2ConcedeL[3], p2Sprite);
+                                                p2flash = true;
+                                            }
+                                            else
+                                            {
+                                                p2flash = false;
+                                            }
+                                        }
                                     }
                                     else
                                     {
-                                        g.DrawImage(p2ConcedeL[p2frame], p2Sprite);
-                                    }
-                                }
-                                else if (p2frame > 13)
-                                {
-                                    if (p2facingRight == true)
-                                    {
-                                        if (p2flash == false)
+                                        if (p2facingRight == true)
                                         {
                                             g.DrawImage(p2Concede[3], p2Sprite);
-                                            p2flash = true;
                                         }
                                         else
-                                        {
-                                            p2flash = false;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (p2flash == false)
                                         {
                                             g.DrawImage(p2ConcedeL[3], p2Sprite);
-                                            p2flash = true;
-                                        }
-                                        else
-                                        {
-                                            p2flash = false;
                                         }
                                     }
                                 }
-                                else
+                                else if (p2frame > 3)
                                 {
-                                    if (p2facingRight == true)
-                                    {
-                                        g.DrawImage(p2Concede[3], p2Sprite);
-                                    }
-                                    else
-                                    {
-                                        g.DrawImage(p2ConcedeL[3], p2Sprite);
-                                    }
+                                    g.DrawImage(p2Concede[3], p2Sprite);
                                 }
                                 break;
                         }
+                        if (gameOver == true)
+                        {
+                            g.DrawImage(fadeoutFrame[(Frame-10)], fadeSpace);
+                        }
+                    }
+                    break;
+                case "Results":
+                    results.drawResults(g);//draws results screen 
+                    if (p1spriteStatus == "Idle")//draws p1 chosen character
+                    {
+                        g.DrawImage(p1Idle[p1frame], p1Sprite);
+                    }
+                    else
+                    {
+                        g.DrawImage(p1Concede[3], p1Sprite);
+                    }
+                    if (p2spriteStatus == "Idle")//draws p2 chosen character
+                    {
+                        g.DrawImage(p2Idle[p2frame], p2Sprite);
+                    }
+                    else
+                    {
+                        g.DrawImage(p2Concede[3], p2Sprite);
+                    }
+                    if (results.transitionDone() != true)//draws fade in transition
+                    {
+                        results.drawFade(g);
+                    }
+                    else if (results.resultsDone() != true)//draws fade out transition
+                    {
+                        results.drawFadeout(g);
                     }
                     break;
             }
         }
-
-        private void aniTmr_Tick(object sender, EventArgs e)
+        private void aniTmr_Tick(object sender, EventArgs e)//animation timer and universal timer for menus
         {
-            mainPanel.Invalidate();
+            mainPanel.Invalidate();//draws every tick(8fps)
             switch (gameStatus)
             {
                 case "title":
@@ -1365,11 +1506,13 @@ namespace BrawlTest
                             p2Name.Visible = true;
                             p2spclDesc.Visible = true;
                             labels = true;
+                            p1nameBox.Visible = true;
+                            p2nameBox.Visible = true;
                         }
                     }
-                    if(p1charChosen == true && p2charChosen == true)
+                    if(p1charChosen == true && p2charChosen == true && p1nameEntered == true && p2nameEntered == true)
                     {
-                        smallDelay += 1;
+                        smallDelay += 1;//theres a small delay after characters are chosen before the scene switches so the sprite changes can finish 
                         if(smallDelay >= 10)
                         {
                             charsel.toGame();
@@ -1377,11 +1520,13 @@ namespace BrawlTest
                             p1spclDesc.Visible = false;
                             p2Name.Visible = false;
                             p2spclDesc.Visible = false;
-                            if (charsel.charselDone() != true)
+                            p1nameBox.Visible = false;
+                            p2nameBox.Visible = false;
+                            if (charsel.charselDone() != true)//starts fade out sequence
                             {
                                 charsel.fadeoutCharSel();
                             }
-                            else
+                            else//empties and makes everything after fade out sequence
                             {
                                 p1Sprite = Rectangle.Empty;
                                 p2Sprite = Rectangle.Empty;
@@ -1391,6 +1536,7 @@ namespace BrawlTest
                                 gameStatus = charsel.statuscharsel();
                                 charsel.charselEmpty();
                                 Frame = 1;
+                                smallDelay = 1;
                                 fadeDone = false;
                             }
 
@@ -1398,11 +1544,11 @@ namespace BrawlTest
                     }
                     else
                     {
-                        if (charsel.charselDone() != true)
+                        if (charsel.charselDone() != true)//starts fade to rules sequence
                         {
                             charsel.fadeoutCharSel();
                         }
-                        else
+                        else//empties everything in charsel
                         {
                             rules = new Rules();
                             p1Sprite = Rectangle.Empty;
@@ -1422,7 +1568,7 @@ namespace BrawlTest
                     {
                         rules.fadeoutRules();
                     }
-                    else
+                    else//back to charsel
                     {
                         charsel = new CharSel();
                         gameStatus = "CharSel";
@@ -1437,19 +1583,129 @@ namespace BrawlTest
                     }
                     break;
                 case "Game":
-                    if(Frame < 10)
+                    if (Frame < 10)//small pause before players spawn in 
                     {
                         Frame += 1;
-                        if(Frame == 5)
+                        if (Frame == 5)
                         {
                             fadeDone = true;
                             fadeSpace = Rectangle.Empty;
                         }
                     }
-                    else if (Frame == 10)
+                    else if (Frame == 10)//starts the game here
                     {
                         gameStart();
                         Frame = 11;
+                    }
+                    if (gameOver == true)
+                    {
+                        smallDelay += 1;
+                        if (smallDelay >= 15)
+                        {
+                            fadeSpace = new Rectangle(0, 0, 1000, 750);
+                            Frame += 1;
+                            if (smallDelay == 19)//switches to result screen
+                            {
+                                gameStatus = "Results";
+                                p1Sprite = new Rectangle(-66, 392, 400, 300);
+                                p2Sprite = new Rectangle(666, 392, 400, 300);
+                                p1frame = 1;
+                                p2frame = 1;
+                                if(p1lives > 0)
+                                {
+                                    p1spriteStatus = "Idle";
+                                }
+                                else
+                                {
+                                    p1spriteStatus = "Concede";
+                                }
+                                if (p2lives > 0)
+                                {
+                                    p2spriteStatus = "Idle";
+                                }
+                                else
+                                {
+                                    p2spriteStatus = "Concede";
+                                }
+                            }
+                        }
+                    }
+                    break;
+                case "Results":
+                    results.aniResults();
+                    if (results.transitionDone() != true)
+                    {
+                        results.transitionResults();
+                    }
+                    else if(labelShown == false)
+                    {
+                        labelShown = true;
+                        p1nameLabel.Visible = true;
+                        p1nameLabel.Text = p1playerName;
+                        p2nameLabel.Visible = true;
+                        p2nameLabel.Text = p2playerName;
+                        p1charLbl.Visible = true;
+                        p1charLbl.Text = p1Character;
+                        p2charLbl.Visible = true;
+                        p2charLbl.Text = p2Character;
+                        p1battleResult.Visible = true;
+                        if(p1lives == 0)
+                        {
+                            p1battleResult.Text = "Lost";
+                        }
+                        else
+                        {
+                            p1battleResult.Text = "Won";
+                        }
+                        p2battleResult.Visible = true;
+                        if (p2lives == 0)
+                        {
+                            p2battleResult.Text = "Lost";
+                        }
+                        else
+                        {
+                            p2battleResult.Text = "Won";
+                        }
+                        p1dmgLabel.Visible = true;
+                        p1dmgLabel.Text = p1damageDealt.ToString();
+                        p2dmgLabel.Visible = true;
+                        p2dmgLabel.Text = p2damageDealt.ToString();
+                        if(p1currentHp < 0)
+                        {
+                            p1currentHp = 0;
+                        }
+                        if (p2currentHp < 0)
+                        {
+                            p2currentHp = 0;
+                        }
+                        if(p1lives < 3)
+                        {
+                            p1hpleft = (((p1lives) * p1hp + p1currentHp) * 100) / (p1hp * 3);
+                        }
+                        else
+                        {
+                            p1hpleft = 100;
+                        }
+                        if (p2lives < 3)
+                        {
+                            p2hpleft = (((p2lives) * p2hp + p2currentHp) * 100) / (p2hp * 3);
+                        }
+                        else
+                        {
+                            p2hpleft = 100;
+                        }
+                        p1hpLabel.Visible = true;
+                        p1hpLabel.Text = p1hpleft.ToString() + "%";
+                        p2hpLabel.Visible = true;
+                        p2hpLabel.Text = p2hpleft.ToString() + "%";
+                        centLbl1.Visible = true;
+                        centLbl2.Visible = true;
+                        centLbl3.Visible = true;
+                        centLbl4.Visible = true;
+                    }
+                    if (results.resultsDone() != true)
+                    {
+                        results.fadeoutResults();
                     }
                     break;
             }
@@ -1514,7 +1770,7 @@ namespace BrawlTest
                     break;
                 case "Concede":
                     p1frame += 1;
-                    if(p1frame == 15)
+                    if(p1frame == 15 && gameOver == false)
                     {
                         p1lives -= 1;
                         p1setChar();
@@ -1582,7 +1838,7 @@ namespace BrawlTest
                     break;
                 case "Concede":
                     p2frame += 1;
-                    if (p2frame == 15)
+                    if (p2frame == 15 && gameOver == false)
                     {
                         p2lives -= 1;
                         p2setChar();
@@ -1596,12 +1852,13 @@ namespace BrawlTest
         //       Player Base attack         \\
         //----------------------------------\\
 
-        private void p1Atk()
+        private void p1Atk() //creates hitbox for p1 attack, fires once 
         {
             p1atkCool = true;
             p1atkActive = true;
             p1atkTime.Enabled = true;
             p1atkCooltime = 0;
+            //sets momentum to 0
             p1xv = 0;
             p1yv = 0;
             p1xa = 0;
@@ -1617,11 +1874,11 @@ namespace BrawlTest
                 playerposX = p1hb.X + 30 - p1atkhbOffsetX - p1atkhbX;
                 playerposY = p1hb.Y + p1atkhbOffsetY;
             }
-            p1atkhb = new Rectangle(playerposX, playerposY, p1atkhbX, p1atkhbY);
+            p1atkhb = new Rectangle(playerposX, playerposY, p1atkhbX, p1atkhbY);//sets hitbox position based on inputted values
         }
-        private void p1atkTime_Tick(object sender, EventArgs e) //tracks cooldown time
+        private void p1atkTime_Tick(object sender, EventArgs e) //tracks p1 attack cooldown time and check for collison 
         {
-            if (p1atkCooltime > p1atkLength + p1dex)
+            if (p1atkCooltime > p1atkLength + p1dex)//cooldown time is equal to player dex value
             {
                 p1atkTime.Enabled = false;
                 p1atkCool = false;
@@ -1630,39 +1887,39 @@ namespace BrawlTest
             {
                 p1atkCooltime += 1;
             }
-            if (p1atkCooltime > p1atkLength)
+            if (p1atkCooltime > p1atkLength)//empties attack hitbox
             {
                 p1atkhb = Rectangle.Empty;
                 p1atkActive = false;
             }
-            if (p2hb.IntersectsWith(p1atkhb) && p2trueInvince == false)
+            if (p2hb.IntersectsWith(p1atkhb) && p2trueInvince == false)//if hit player 2
             {
                 p2spriteStatus = "TakingDamage";
                 p2xv = 0;
                 p2xa = 0;
                 p2yv = 0;
                 p2ya = 0;
-                if (p1atk - p2def > 0 && p2invince == false)
+                if (p1atk - p2def > 0 && p2invince == false)//triggers only once 
                 {
                     p2currentHp -= (p1atk - p2def);
-                    p2damageTaken += (p1atk - p2def);
                     p1damageDealt += (p1atk - p2def);
                     p2ChpBar = new Rectangle(603 + 200 - (200 * p2currentHp / p2hp), 629, (200 * p2currentHp / p2hp), 5);
                 }
                 p2stunned = true;
                 p2stunTime = p2dex;
-                p2stunTmr.Enabled = true;
+                p2stunTmr.Enabled = true;//starts stun sequence
                 p2dealKnockback = false;
                 p2invince = true;
             }
         }
 
-        private void p2Atk()
+        private void p2Atk() //creates hitbox for p2 attack, fires once 
         {
             p2atkCool = true;
             p2atkActive = true;
             p2atkTime.Enabled = true;
             p2atkCooltime = 0;
+            //sets momentum to 0
             p2xv = 0;
             p2yv = 0;
             p2xa = 0;
@@ -1678,11 +1935,11 @@ namespace BrawlTest
                 playerposX = p2hb.X + 30 - p2atkhbOffsetX - p2atkhbX;
                 playerposY = p2hb.Y + p2atkhbOffsetY;
             }
-            p2atkhb = new Rectangle(playerposX, playerposY, p2atkhbX, p2atkhbY);
+            p2atkhb = new Rectangle(playerposX, playerposY, p2atkhbX, p2atkhbY);//sets hitbox position based on inputted values
         }
-        private void p2atkTime_Tick(object sender, EventArgs e) //tracks cooldown time
+        private void p2atkTime_Tick(object sender, EventArgs e) //tracks p2 attack cooldown time and check for collison 
         {
-            if (p2atkCooltime > p2atkLength + p2dex)
+            if (p2atkCooltime > p2atkLength + p2dex)//cooldown time is equal to player dex value
             {
                 p2atkTime.Enabled = false;
                 p2atkCool = false;
@@ -1691,28 +1948,27 @@ namespace BrawlTest
             {
                 p2atkCooltime += 1;
             }
-            if (p2atkCooltime > p2atkLength)
+            if (p2atkCooltime > p2atkLength)//empties attack hitbox
             {
                 p2atkhb = Rectangle.Empty;
                 p2atkActive = false;
             }
-            if (p1hb.IntersectsWith(p2atkhb) && p1trueInvince == false)
+            if (p1hb.IntersectsWith(p2atkhb) && p1trueInvince == false)//if hit player 2
             {
                 p1spriteStatus = "TakingDamage";
                 p1xv = 0;
                 p1xa = 0;
                 p1yv = 0;
                 p1ya = 0;
-                if (p2atk - p1def > 0 && p1invince == false)
+                if (p2atk - p1def > 0 && p1invince == false)//triggers only once 
                 {
                     p1currentHp -= (p2atk - p1def);
-                    p1damageTaken += (p2atk - p1def);
                     p2damageDealt += (p2atk - p1def);
                     p1ChpBar = new Rectangle(195, 629, (200 * p1currentHp / p1hp), 5);
                 }
                 p1stunned = true;
                 p1stunTime = p1dex;
-                p1stunTmr.Enabled = true;
+                p1stunTmr.Enabled = true;//starts stun sequence
                 p1dealKnockback = false;
                 p1invince = true;
             }
@@ -1723,19 +1979,19 @@ namespace BrawlTest
         //          Player Specials         \\
         //----------------------------------\\
 
-        private void p1spclAtk()
+        private void p1spclAtk() //set values for p1 special, fires once normally 
         {
             p1sklCool = true;
             p1spclActive = true;
             p1spclTmr.Enabled = true;
             p1spclCooltime = 0;
-            if (p1spclDoesSpecial == true)
+            if (p1spclDoesSpecial == true)//if special does anything special
             {
                 switch (p1Character)
                 {
                     case "Cedric":
-                        p1trueInvince = true;
-                        if (p1facingRight == true)
+                        p1trueInvince = true;//gives true invincibility
+                        if (p1facingRight == true)//launches the player based on what direction they are facing
                         {
                             p1xv = 15;
                             p1xa = 0;
@@ -1748,7 +2004,7 @@ namespace BrawlTest
                         break;
                 }
             }
-            if (p1spclDoesDmg == true)
+            if (p1spclDoesDmg == true)//if special does damage; spawns attack hitboxes
             {
                 p1xv = 0;
                 p1xa = 0;
@@ -1771,19 +2027,19 @@ namespace BrawlTest
             {
 
             }
-            if (p1spclDoesHeal == true)
+            if (p1spclDoesHeal == true)//if special heals
             {
-                p1currentHp += p1spclDmg * p1atk;
+                p1currentHp += p1spclDmg * p1atk;//heal calc
                 if(p1currentHp > p1hp)
                 {
                     p1currentHp = p1hp;
                 }
-                p1ChpBar = new Rectangle(195, 629, (200 * p1currentHp / p1hp), 5);
+                p1ChpBar = new Rectangle(195, 629, (200 * p1currentHp / p1hp), 5);//refreshes hp bar
             }
         }
-        private void p1spclTmr_Tick(object sender, EventArgs e)
+        private void p1spclTmr_Tick(object sender, EventArgs e) //tracks p1 special cooldown time and components that reqiure time .
         {
-            if (p1spclCooltime >= p1spclCool)
+            if (p1spclCooltime >= p1spclCool)//if cooldown is over
             {
                 p1spclTmr.Enabled = false;
                 p1sklCool = false;
@@ -1792,9 +2048,9 @@ namespace BrawlTest
             {
                 p1spclCooltime += 1;
             }
-            if (p1spclActive == true)
+            if (p1spclActive == true)//if special is active
             {
-                if (p1spclDoesSpecial == true)
+                if (p1spclDoesSpecial == true)//if special does anything special
                 {
                     switch (p1Character)
                     {
@@ -1802,7 +2058,7 @@ namespace BrawlTest
                             if (p1spclCooltime < 5)
                             {
                                 p1spclDoesDmg = false;
-                                if (p1spclCooltime == 3)
+                                if (p1spclCooltime == 3)//changes the way the player is facing to deliver the attack
                                 {
                                     if (p1facingRight == true)
                                     {
@@ -1817,10 +2073,10 @@ namespace BrawlTest
                             if (p1spclCooltime == 5)
                             {
                                 p1spclDoesDmg = true;
-                                p1spclAtk();
-                                p1spclCooltime = 5;
+                                p1spclAtk();//fires the one-time code again to spawn attack hitboxes
+                                p1spclCooltime = 5;//overrides spclAtk value changes to spclcooltime
                             }
-                            if (p1spclCooltime == 18)
+                            if (p1spclCooltime == 18)//changes bool changes to default
                             {
                                 p1spclDoesDmg = false;
                                 p1trueInvince = false;
@@ -1834,17 +2090,16 @@ namespace BrawlTest
                     {
                         p1spclhb = Rectangle.Empty;
                     }
-                    if (p2hb.IntersectsWith(p1spclhb) && p2trueInvince == false)
+                    if (p2hb.IntersectsWith(p1spclhb) && p2trueInvince == false)//checks for hits
                     {
                         p2spriteStatus = "TakingDamage";
                         p2xv = 0;
                         p2xa = 0;
                         p2yv = 0;
                         p2ya = 0;
-                        if (p1spclDmg * p1atk - p2def > 0 && p2invince == false)
+                        if (p1spclDmg * p1atk - p2def > 0 && p2invince == false)//fires only once
                         {
                             p2currentHp -= p1spclDmg * p1atk;
-                            p2damageTaken += p1spclDmg * p1atk;
                             p1damageDealt += p1spclDmg * p1atk;
                             p2ChpBar = new Rectangle(603 + 200 - (200 * p2currentHp / p2hp), 629, (200 * p2currentHp / p2hp), 5);
                         }
@@ -1866,7 +2121,7 @@ namespace BrawlTest
             }
         }
 
-        private void p2spclAtk()
+        private void p2spclAtk() //set values for p2 special, fires once normally 
         {
             p2sklCool = true;
             p2spclActive = true;
@@ -1924,7 +2179,7 @@ namespace BrawlTest
                 p2ChpBar = new Rectangle(603 + 200 - (200 * p2currentHp / p2hp), 629, (200 * p2currentHp / p2hp), 5);
             }
         }
-        private void p2spclTmr_Tick(object sender, EventArgs e)
+        private void p2spclTmr_Tick(object sender, EventArgs e) //tracks p2 special cooldown time and components that reqiure time 
         {
             if (p2spclCooltime >= p2spclCool)
             {
@@ -1995,7 +2250,6 @@ namespace BrawlTest
                         if (p2spclDmg * p2atk - p1def > 0 && p1invince == false)
                         {
                             p1currentHp -= p2spclDmg * p2atk;
-                            p1damageTaken += p2spclDmg * p2atk;
                             p2damageDealt += p2spclDmg * p2atk;
                             p1ChpBar = new Rectangle(195, 629, (200 * p1currentHp / p1hp), 5);
                         }
@@ -2015,6 +2269,17 @@ namespace BrawlTest
                     p2spclActive = false;
                 }
             }
+        }
+
+
+        //----------------------------------\\
+        //            Stop Game             \\
+        //----------------------------------\\
+
+        private void stopGame()
+        {
+            veloTmr.Enabled = false;
+            gameOver = true;
         }
 
     }
