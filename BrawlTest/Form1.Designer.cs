@@ -31,222 +31,100 @@ namespace BrawlTest
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.mainPanel = new System.Windows.Forms.Panel();
-            this.p2nameBox = new System.Windows.Forms.TextBox();
-            this.p1nameBox = new System.Windows.Forms.TextBox();
-            this.p2spclDesc = new System.Windows.Forms.Label();
-            this.p2Name = new System.Windows.Forms.Label();
-            this.p1spclDesc = new System.Windows.Forms.Label();
-            this.p1Name = new System.Windows.Forms.Label();
-            this.veloTmr = new System.Windows.Forms.Timer(this.components);
-            this.p1atkTime = new System.Windows.Forms.Timer(this.components);
-            this.p2atkTime = new System.Windows.Forms.Timer(this.components);
-            this.p1stunTmr = new System.Windows.Forms.Timer(this.components);
-            this.p2stunTmr = new System.Windows.Forms.Timer(this.components);
-            this.aniTmr = new System.Windows.Forms.Timer(this.components);
-            this.p1spclTmr = new System.Windows.Forms.Timer(this.components);
-            this.p2spclTmr = new System.Windows.Forms.Timer(this.components);
-            this.p1nameLabel = new System.Windows.Forms.Label();
-            this.p2nameLabel = new System.Windows.Forms.Label();
+            this.MainPanel = new System.Windows.Forms.Panel();
+            this.LstBoxScore = new System.Windows.Forms.ListBox();
+            this.LstBoxName = new System.Windows.Forms.ListBox();
             this.centLbl1 = new System.Windows.Forms.Label();
             this.centLbl2 = new System.Windows.Forms.Label();
             this.centLbl3 = new System.Windows.Forms.Label();
             this.centLbl4 = new System.Windows.Forms.Label();
-            this.p1charLbl = new System.Windows.Forms.Label();
-            this.p2charLbl = new System.Windows.Forms.Label();
-            this.p1battleResult = new System.Windows.Forms.Label();
-            this.p2battleResult = new System.Windows.Forms.Label();
-            this.p1dmgLabel = new System.Windows.Forms.Label();
-            this.p2dmgLabel = new System.Windows.Forms.Label();
-            this.p1hpLabel = new System.Windows.Forms.Label();
-            this.p2hpLabel = new System.Windows.Forms.Label();
-            this.mainPanel.SuspendLayout();
+            this.P2hpLabel = new System.Windows.Forms.Label();
+            this.P1hpLabel = new System.Windows.Forms.Label();
+            this.P2dmgLabel = new System.Windows.Forms.Label();
+            this.P1dmgLabel = new System.Windows.Forms.Label();
+            this.P2battleResult = new System.Windows.Forms.Label();
+            this.P1battleResult = new System.Windows.Forms.Label();
+            this.P2charLbl = new System.Windows.Forms.Label();
+            this.P1charLbl = new System.Windows.Forms.Label();
+            this.P2nameLabel = new System.Windows.Forms.Label();
+            this.P1nameLabel = new System.Windows.Forms.Label();
+            this.P2nameBox = new System.Windows.Forms.TextBox();
+            this.P1nameBox = new System.Windows.Forms.TextBox();
+            this.P2spclDesc = new System.Windows.Forms.Label();
+            this.P2Name = new System.Windows.Forms.Label();
+            this.P1spclDesc = new System.Windows.Forms.Label();
+            this.P1Name = new System.Windows.Forms.Label();
+            this.VeloTmr = new System.Windows.Forms.Timer(this.components);
+            this.P1atkTime = new System.Windows.Forms.Timer(this.components);
+            this.P2atkTime = new System.Windows.Forms.Timer(this.components);
+            this.P1stunTmr = new System.Windows.Forms.Timer(this.components);
+            this.P2stunTmr = new System.Windows.Forms.Timer(this.components);
+            this.AniTmr = new System.Windows.Forms.Timer(this.components);
+            this.P1spclTmr = new System.Windows.Forms.Timer(this.components);
+            this.P2spclTmr = new System.Windows.Forms.Timer(this.components);
+            this.MainPanel.SuspendLayout();
             this.SuspendLayout();
             // 
-            // mainPanel
+            // MainPanel
             // 
-            this.mainPanel.BackColor = System.Drawing.Color.Black;
-            this.mainPanel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("mainPanel.BackgroundImage")));
-            this.mainPanel.Controls.Add(this.centLbl1);
-            this.mainPanel.Controls.Add(this.centLbl2);
-            this.mainPanel.Controls.Add(this.centLbl3);
-            this.mainPanel.Controls.Add(this.centLbl4);
-            this.mainPanel.Controls.Add(this.p2hpLabel);
-            this.mainPanel.Controls.Add(this.p1hpLabel);
-            this.mainPanel.Controls.Add(this.p2dmgLabel);
-            this.mainPanel.Controls.Add(this.p1dmgLabel);
-            this.mainPanel.Controls.Add(this.p2battleResult);
-            this.mainPanel.Controls.Add(this.p1battleResult);
-            this.mainPanel.Controls.Add(this.p2charLbl);
-            this.mainPanel.Controls.Add(this.p1charLbl);
-            this.mainPanel.Controls.Add(this.p2nameLabel);
-            this.mainPanel.Controls.Add(this.p1nameLabel);
-            this.mainPanel.Controls.Add(this.p2nameBox);
-            this.mainPanel.Controls.Add(this.p1nameBox);
-            this.mainPanel.Controls.Add(this.p2spclDesc);
-            this.mainPanel.Controls.Add(this.p2Name);
-            this.mainPanel.Controls.Add(this.p1spclDesc);
-            this.mainPanel.Controls.Add(this.p1Name);
-            this.mainPanel.Location = new System.Drawing.Point(0, 0);
-            this.mainPanel.Name = "mainPanel";
-            this.mainPanel.Size = new System.Drawing.Size(1000, 750);
-            this.mainPanel.TabIndex = 0;
-            this.mainPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.mainPanel_Paint);
+            this.MainPanel.BackColor = System.Drawing.Color.Black;
+            this.MainPanel.Controls.Add(this.LstBoxScore);
+            this.MainPanel.Controls.Add(this.LstBoxName);
+            this.MainPanel.Controls.Add(this.centLbl1);
+            this.MainPanel.Controls.Add(this.centLbl2);
+            this.MainPanel.Controls.Add(this.centLbl3);
+            this.MainPanel.Controls.Add(this.centLbl4);
+            this.MainPanel.Controls.Add(this.P2hpLabel);
+            this.MainPanel.Controls.Add(this.P1hpLabel);
+            this.MainPanel.Controls.Add(this.P2dmgLabel);
+            this.MainPanel.Controls.Add(this.P1dmgLabel);
+            this.MainPanel.Controls.Add(this.P2battleResult);
+            this.MainPanel.Controls.Add(this.P1battleResult);
+            this.MainPanel.Controls.Add(this.P2charLbl);
+            this.MainPanel.Controls.Add(this.P1charLbl);
+            this.MainPanel.Controls.Add(this.P2nameLabel);
+            this.MainPanel.Controls.Add(this.P1nameLabel);
+            this.MainPanel.Controls.Add(this.P2nameBox);
+            this.MainPanel.Controls.Add(this.P1nameBox);
+            this.MainPanel.Controls.Add(this.P2spclDesc);
+            this.MainPanel.Controls.Add(this.P2Name);
+            this.MainPanel.Controls.Add(this.P1spclDesc);
+            this.MainPanel.Controls.Add(this.P1Name);
+            this.MainPanel.Location = new System.Drawing.Point(0, 0);
+            this.MainPanel.Name = "MainPanel";
+            this.MainPanel.Size = new System.Drawing.Size(1000, 750);
+            this.MainPanel.TabIndex = 0;
+            this.MainPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.MainPanel_Paint);
             // 
-            // p2nameBox
+            // LstBoxScore
             // 
-            this.p2nameBox.BackColor = System.Drawing.Color.Black;
-            this.p2nameBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.p2nameBox.Font = new System.Drawing.Font("Abel", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.p2nameBox.ForeColor = System.Drawing.Color.White;
-            this.p2nameBox.Location = new System.Drawing.Point(610, 706);
-            this.p2nameBox.Name = "p2nameBox";
-            this.p2nameBox.Size = new System.Drawing.Size(200, 32);
-            this.p2nameBox.TabIndex = 5;
-            this.p2nameBox.TabStop = false;
-            this.p2nameBox.Text = "Enter name (letters only)";
-            this.p2nameBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.p2nameBox.Visible = false;
-            this.p2nameBox.Click += new System.EventHandler(this.p2nameBox_Click);
-            this.p2nameBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.p2nameBox_KeyDown);
+            this.LstBoxScore.BackColor = System.Drawing.Color.Black;
+            this.LstBoxScore.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.LstBoxScore.Font = new System.Drawing.Font("Abel", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LstBoxScore.ForeColor = System.Drawing.Color.White;
+            this.LstBoxScore.FormattingEnabled = true;
+            this.LstBoxScore.ItemHeight = 27;
+            this.LstBoxScore.Location = new System.Drawing.Point(560, 240);
+            this.LstBoxScore.Name = "LstBoxScore";
+            this.LstBoxScore.Size = new System.Drawing.Size(160, 297);
+            this.LstBoxScore.TabIndex = 22;
+            this.LstBoxScore.TabStop = false;
+            this.LstBoxScore.Visible = false;
             // 
-            // p1nameBox
+            // LstBoxName
             // 
-            this.p1nameBox.BackColor = System.Drawing.Color.Black;
-            this.p1nameBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.p1nameBox.Font = new System.Drawing.Font("Abel", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.p1nameBox.ForeColor = System.Drawing.Color.White;
-            this.p1nameBox.Location = new System.Drawing.Point(191, 706);
-            this.p1nameBox.Name = "p1nameBox";
-            this.p1nameBox.Size = new System.Drawing.Size(200, 32);
-            this.p1nameBox.TabIndex = 4;
-            this.p1nameBox.TabStop = false;
-            this.p1nameBox.Text = "Enter name (letters only)";
-            this.p1nameBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.p1nameBox.Visible = false;
-            this.p1nameBox.Click += new System.EventHandler(this.p1nameBox_Click);
-            this.p1nameBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.p1nameBox_KeyDown);
-            // 
-            // p2spclDesc
-            // 
-            this.p2spclDesc.BackColor = System.Drawing.Color.Transparent;
-            this.p2spclDesc.Font = new System.Drawing.Font("Abel", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.p2spclDesc.ForeColor = System.Drawing.Color.White;
-            this.p2spclDesc.Location = new System.Drawing.Point(530, 306);
-            this.p2spclDesc.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.p2spclDesc.Name = "p2spclDesc";
-            this.p2spclDesc.Size = new System.Drawing.Size(130, 76);
-            this.p2spclDesc.TabIndex = 3;
-            this.p2spclDesc.Text = "p2spclDesc";
-            this.p2spclDesc.TextAlign = System.Drawing.ContentAlignment.BottomRight;
-            this.p2spclDesc.Visible = false;
-            // 
-            // p2Name
-            // 
-            this.p2Name.BackColor = System.Drawing.Color.Transparent;
-            this.p2Name.Font = new System.Drawing.Font("Abel", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.p2Name.ForeColor = System.Drawing.Color.White;
-            this.p2Name.Location = new System.Drawing.Point(500, 382);
-            this.p2Name.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.p2Name.Name = "p2Name";
-            this.p2Name.Size = new System.Drawing.Size(160, 38);
-            this.p2Name.TabIndex = 2;
-            this.p2Name.Text = "p2Name";
-            this.p2Name.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            this.p2Name.Visible = false;
-            // 
-            // p1spclDesc
-            // 
-            this.p1spclDesc.BackColor = System.Drawing.Color.Transparent;
-            this.p1spclDesc.Font = new System.Drawing.Font("Abel", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.p1spclDesc.ForeColor = System.Drawing.Color.White;
-            this.p1spclDesc.Location = new System.Drawing.Point(340, 330);
-            this.p1spclDesc.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.p1spclDesc.Name = "p1spclDesc";
-            this.p1spclDesc.Size = new System.Drawing.Size(140, 90);
-            this.p1spclDesc.TabIndex = 1;
-            this.p1spclDesc.Text = "p1spclDesc";
-            this.p1spclDesc.Visible = false;
-            // 
-            // p1Name
-            // 
-            this.p1Name.BackColor = System.Drawing.Color.Transparent;
-            this.p1Name.Font = new System.Drawing.Font("Abel", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.p1Name.ForeColor = System.Drawing.Color.White;
-            this.p1Name.Location = new System.Drawing.Point(340, 300);
-            this.p1Name.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.p1Name.Name = "p1Name";
-            this.p1Name.Size = new System.Drawing.Size(160, 38);
-            this.p1Name.TabIndex = 0;
-            this.p1Name.Text = "p1Name";
-            this.p1Name.Visible = false;
-            // 
-            // veloTmr
-            // 
-            this.veloTmr.Interval = 15;
-            this.veloTmr.Tick += new System.EventHandler(this.veloTmr_Tick);
-            // 
-            // p1atkTime
-            // 
-            this.p1atkTime.Interval = 125;
-            this.p1atkTime.Tick += new System.EventHandler(this.p1atkTime_Tick);
-            // 
-            // p2atkTime
-            // 
-            this.p2atkTime.Interval = 125;
-            this.p2atkTime.Tick += new System.EventHandler(this.p2atkTime_Tick);
-            // 
-            // p1stunTmr
-            // 
-            this.p1stunTmr.Tick += new System.EventHandler(this.p1stunTmr_Tick);
-            // 
-            // p2stunTmr
-            // 
-            this.p2stunTmr.Tick += new System.EventHandler(this.p2stunTmr_Tick);
-            // 
-            // aniTmr
-            // 
-            this.aniTmr.Enabled = true;
-            this.aniTmr.Interval = 125;
-            this.aniTmr.Tick += new System.EventHandler(this.aniTmr_Tick);
-            // 
-            // p1spclTmr
-            // 
-            this.p1spclTmr.Interval = 125;
-            this.p1spclTmr.Tick += new System.EventHandler(this.p1spclTmr_Tick);
-            // 
-            // p2spclTmr
-            // 
-            this.p2spclTmr.Interval = 125;
-            this.p2spclTmr.Tick += new System.EventHandler(this.p2spclTmr_Tick);
-            // 
-            // p1nameLabel
-            // 
-            this.p1nameLabel.BackColor = System.Drawing.Color.Transparent;
-            this.p1nameLabel.Font = new System.Drawing.Font("Abel", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.p1nameLabel.ForeColor = System.Drawing.Color.White;
-            this.p1nameLabel.Location = new System.Drawing.Point(280, 160);
-            this.p1nameLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.p1nameLabel.Name = "p1nameLabel";
-            this.p1nameLabel.Size = new System.Drawing.Size(185, 25);
-            this.p1nameLabel.TabIndex = 6;
-            this.p1nameLabel.Text = "p1nameLabel";
-            this.p1nameLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.p1nameLabel.Visible = false;
-            // 
-            // p2nameLabel
-            // 
-            this.p2nameLabel.BackColor = System.Drawing.Color.Transparent;
-            this.p2nameLabel.Font = new System.Drawing.Font("Abel", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.p2nameLabel.ForeColor = System.Drawing.Color.White;
-            this.p2nameLabel.Location = new System.Drawing.Point(535, 160);
-            this.p2nameLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.p2nameLabel.Name = "p2nameLabel";
-            this.p2nameLabel.Size = new System.Drawing.Size(185, 25);
-            this.p2nameLabel.TabIndex = 7;
-            this.p2nameLabel.Text = "p2nameLabel";
-            this.p2nameLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.p2nameLabel.Visible = false;
+            this.LstBoxName.BackColor = System.Drawing.Color.Black;
+            this.LstBoxName.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.LstBoxName.Font = new System.Drawing.Font("Abel", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LstBoxName.ForeColor = System.Drawing.Color.White;
+            this.LstBoxName.FormattingEnabled = true;
+            this.LstBoxName.ItemHeight = 27;
+            this.LstBoxName.Location = new System.Drawing.Point(285, 240);
+            this.LstBoxName.Name = "LstBoxName";
+            this.LstBoxName.Size = new System.Drawing.Size(160, 297);
+            this.LstBoxName.TabIndex = 21;
+            this.LstBoxName.TabStop = false;
+            this.LstBoxName.Visible = false;
             // 
             // centLbl1
             // 
@@ -304,171 +182,328 @@ namespace BrawlTest
             this.centLbl4.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.centLbl4.Visible = false;
             // 
-            // p1charLbl
+            // P2hpLabel
             // 
-            this.p1charLbl.BackColor = System.Drawing.Color.Transparent;
-            this.p1charLbl.Font = new System.Drawing.Font("Abel", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.p1charLbl.ForeColor = System.Drawing.Color.White;
-            this.p1charLbl.Location = new System.Drawing.Point(320, 240);
-            this.p1charLbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.p1charLbl.Name = "p1charLbl";
-            this.p1charLbl.Size = new System.Drawing.Size(100, 25);
-            this.p1charLbl.TabIndex = 13;
-            this.p1charLbl.Text = "p1charLbl";
-            this.p1charLbl.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.p1charLbl.Visible = false;
+            this.P2hpLabel.BackColor = System.Drawing.Color.Transparent;
+            this.P2hpLabel.Font = new System.Drawing.Font("Abel", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.P2hpLabel.ForeColor = System.Drawing.Color.White;
+            this.P2hpLabel.Location = new System.Drawing.Point(565, 480);
+            this.P2hpLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.P2hpLabel.Name = "P2hpLabel";
+            this.P2hpLabel.Size = new System.Drawing.Size(125, 25);
+            this.P2hpLabel.TabIndex = 20;
+            this.P2hpLabel.Text = "p2hpLabel";
+            this.P2hpLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.P2hpLabel.Visible = false;
             // 
-            // p2charLbl
+            // P1hpLabel
             // 
-            this.p2charLbl.BackColor = System.Drawing.Color.Transparent;
-            this.p2charLbl.Font = new System.Drawing.Font("Abel", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.p2charLbl.ForeColor = System.Drawing.Color.White;
-            this.p2charLbl.Location = new System.Drawing.Point(580, 240);
-            this.p2charLbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.p2charLbl.Name = "p2charLbl";
-            this.p2charLbl.Size = new System.Drawing.Size(100, 25);
-            this.p2charLbl.TabIndex = 14;
-            this.p2charLbl.Text = "p2charLbl";
-            this.p2charLbl.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.p2charLbl.Visible = false;
+            this.P1hpLabel.BackColor = System.Drawing.Color.Transparent;
+            this.P1hpLabel.Font = new System.Drawing.Font("Abel", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.P1hpLabel.ForeColor = System.Drawing.Color.White;
+            this.P1hpLabel.Location = new System.Drawing.Point(310, 480);
+            this.P1hpLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.P1hpLabel.Name = "P1hpLabel";
+            this.P1hpLabel.Size = new System.Drawing.Size(125, 25);
+            this.P1hpLabel.TabIndex = 19;
+            this.P1hpLabel.Text = "p1hpLabel";
+            this.P1hpLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.P1hpLabel.Visible = false;
             // 
-            // p1battleResult
+            // P2dmgLabel
             // 
-            this.p1battleResult.BackColor = System.Drawing.Color.Transparent;
-            this.p1battleResult.Font = new System.Drawing.Font("Abel", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.p1battleResult.ForeColor = System.Drawing.Color.White;
-            this.p1battleResult.Location = new System.Drawing.Point(300, 320);
-            this.p1battleResult.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.p1battleResult.Name = "p1battleResult";
-            this.p1battleResult.Size = new System.Drawing.Size(145, 25);
-            this.p1battleResult.TabIndex = 15;
-            this.p1battleResult.Text = "p1battleResult";
-            this.p1battleResult.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.p1battleResult.Visible = false;
+            this.P2dmgLabel.BackColor = System.Drawing.Color.Transparent;
+            this.P2dmgLabel.Font = new System.Drawing.Font("Abel", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.P2dmgLabel.ForeColor = System.Drawing.Color.White;
+            this.P2dmgLabel.Location = new System.Drawing.Point(565, 400);
+            this.P2dmgLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.P2dmgLabel.Name = "P2dmgLabel";
+            this.P2dmgLabel.Size = new System.Drawing.Size(125, 25);
+            this.P2dmgLabel.TabIndex = 18;
+            this.P2dmgLabel.Text = "p2dmgLabel";
+            this.P2dmgLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.P2dmgLabel.Visible = false;
             // 
-            // p2battleResult
+            // P1dmgLabel
             // 
-            this.p2battleResult.BackColor = System.Drawing.Color.Transparent;
-            this.p2battleResult.Font = new System.Drawing.Font("Abel", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.p2battleResult.ForeColor = System.Drawing.Color.White;
-            this.p2battleResult.Location = new System.Drawing.Point(555, 320);
-            this.p2battleResult.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.p2battleResult.Name = "p2battleResult";
-            this.p2battleResult.Size = new System.Drawing.Size(145, 25);
-            this.p2battleResult.TabIndex = 16;
-            this.p2battleResult.Text = "p2battleResult";
-            this.p2battleResult.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.p2battleResult.Visible = false;
+            this.P1dmgLabel.BackColor = System.Drawing.Color.Transparent;
+            this.P1dmgLabel.Font = new System.Drawing.Font("Abel", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.P1dmgLabel.ForeColor = System.Drawing.Color.White;
+            this.P1dmgLabel.Location = new System.Drawing.Point(310, 400);
+            this.P1dmgLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.P1dmgLabel.Name = "P1dmgLabel";
+            this.P1dmgLabel.Size = new System.Drawing.Size(125, 25);
+            this.P1dmgLabel.TabIndex = 17;
+            this.P1dmgLabel.Text = "p1dmgLabel";
+            this.P1dmgLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.P1dmgLabel.Visible = false;
             // 
-            // p1dmgLabel
+            // P2battleResult
             // 
-            this.p1dmgLabel.BackColor = System.Drawing.Color.Transparent;
-            this.p1dmgLabel.Font = new System.Drawing.Font("Abel", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.p1dmgLabel.ForeColor = System.Drawing.Color.White;
-            this.p1dmgLabel.Location = new System.Drawing.Point(310, 400);
-            this.p1dmgLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.p1dmgLabel.Name = "p1dmgLabel";
-            this.p1dmgLabel.Size = new System.Drawing.Size(125, 25);
-            this.p1dmgLabel.TabIndex = 17;
-            this.p1dmgLabel.Text = "p1dmgLabel";
-            this.p1dmgLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.p1dmgLabel.Visible = false;
+            this.P2battleResult.BackColor = System.Drawing.Color.Transparent;
+            this.P2battleResult.Font = new System.Drawing.Font("Abel", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.P2battleResult.ForeColor = System.Drawing.Color.White;
+            this.P2battleResult.Location = new System.Drawing.Point(555, 320);
+            this.P2battleResult.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.P2battleResult.Name = "P2battleResult";
+            this.P2battleResult.Size = new System.Drawing.Size(145, 25);
+            this.P2battleResult.TabIndex = 16;
+            this.P2battleResult.Text = "p2battleResult";
+            this.P2battleResult.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.P2battleResult.Visible = false;
             // 
-            // p2dmgLabel
+            // P1battleResult
             // 
-            this.p2dmgLabel.BackColor = System.Drawing.Color.Transparent;
-            this.p2dmgLabel.Font = new System.Drawing.Font("Abel", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.p2dmgLabel.ForeColor = System.Drawing.Color.White;
-            this.p2dmgLabel.Location = new System.Drawing.Point(565, 400);
-            this.p2dmgLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.p2dmgLabel.Name = "p2dmgLabel";
-            this.p2dmgLabel.Size = new System.Drawing.Size(125, 25);
-            this.p2dmgLabel.TabIndex = 18;
-            this.p2dmgLabel.Text = "p2dmgLabel";
-            this.p2dmgLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.p2dmgLabel.Visible = false;
+            this.P1battleResult.BackColor = System.Drawing.Color.Transparent;
+            this.P1battleResult.Font = new System.Drawing.Font("Abel", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.P1battleResult.ForeColor = System.Drawing.Color.White;
+            this.P1battleResult.Location = new System.Drawing.Point(300, 320);
+            this.P1battleResult.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.P1battleResult.Name = "P1battleResult";
+            this.P1battleResult.Size = new System.Drawing.Size(145, 25);
+            this.P1battleResult.TabIndex = 15;
+            this.P1battleResult.Text = "p1battleResult";
+            this.P1battleResult.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.P1battleResult.Visible = false;
             // 
-            // p1hpLabel
+            // P2charLbl
             // 
-            this.p1hpLabel.BackColor = System.Drawing.Color.Transparent;
-            this.p1hpLabel.Font = new System.Drawing.Font("Abel", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.p1hpLabel.ForeColor = System.Drawing.Color.White;
-            this.p1hpLabel.Location = new System.Drawing.Point(310, 480);
-            this.p1hpLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.p1hpLabel.Name = "p1hpLabel";
-            this.p1hpLabel.Size = new System.Drawing.Size(125, 25);
-            this.p1hpLabel.TabIndex = 19;
-            this.p1hpLabel.Text = "p1hpLabel";
-            this.p1hpLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.p1hpLabel.Visible = false;
+            this.P2charLbl.BackColor = System.Drawing.Color.Transparent;
+            this.P2charLbl.Font = new System.Drawing.Font("Abel", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.P2charLbl.ForeColor = System.Drawing.Color.White;
+            this.P2charLbl.Location = new System.Drawing.Point(580, 240);
+            this.P2charLbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.P2charLbl.Name = "P2charLbl";
+            this.P2charLbl.Size = new System.Drawing.Size(100, 25);
+            this.P2charLbl.TabIndex = 14;
+            this.P2charLbl.Text = "p2charLbl";
+            this.P2charLbl.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.P2charLbl.Visible = false;
             // 
-            // p2hpLabel
+            // P1charLbl
             // 
-            this.p2hpLabel.BackColor = System.Drawing.Color.Transparent;
-            this.p2hpLabel.Font = new System.Drawing.Font("Abel", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.p2hpLabel.ForeColor = System.Drawing.Color.White;
-            this.p2hpLabel.Location = new System.Drawing.Point(565, 480);
-            this.p2hpLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.p2hpLabel.Name = "p2hpLabel";
-            this.p2hpLabel.Size = new System.Drawing.Size(125, 25);
-            this.p2hpLabel.TabIndex = 20;
-            this.p2hpLabel.Text = "p2hpLabel";
-            this.p2hpLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.p2hpLabel.Visible = false;
+            this.P1charLbl.BackColor = System.Drawing.Color.Transparent;
+            this.P1charLbl.Font = new System.Drawing.Font("Abel", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.P1charLbl.ForeColor = System.Drawing.Color.White;
+            this.P1charLbl.Location = new System.Drawing.Point(320, 240);
+            this.P1charLbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.P1charLbl.Name = "P1charLbl";
+            this.P1charLbl.Size = new System.Drawing.Size(100, 25);
+            this.P1charLbl.TabIndex = 13;
+            this.P1charLbl.Text = "p1charLbl";
+            this.P1charLbl.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.P1charLbl.Visible = false;
+            // 
+            // P2nameLabel
+            // 
+            this.P2nameLabel.BackColor = System.Drawing.Color.Transparent;
+            this.P2nameLabel.Font = new System.Drawing.Font("Abel", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.P2nameLabel.ForeColor = System.Drawing.Color.White;
+            this.P2nameLabel.Location = new System.Drawing.Point(535, 160);
+            this.P2nameLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.P2nameLabel.Name = "P2nameLabel";
+            this.P2nameLabel.Size = new System.Drawing.Size(185, 25);
+            this.P2nameLabel.TabIndex = 7;
+            this.P2nameLabel.Text = "p2nameLabel";
+            this.P2nameLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.P2nameLabel.Visible = false;
+            // 
+            // P1nameLabel
+            // 
+            this.P1nameLabel.BackColor = System.Drawing.Color.Transparent;
+            this.P1nameLabel.Font = new System.Drawing.Font("Abel", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.P1nameLabel.ForeColor = System.Drawing.Color.White;
+            this.P1nameLabel.Location = new System.Drawing.Point(280, 160);
+            this.P1nameLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.P1nameLabel.Name = "P1nameLabel";
+            this.P1nameLabel.Size = new System.Drawing.Size(185, 25);
+            this.P1nameLabel.TabIndex = 6;
+            this.P1nameLabel.Text = "p1nameLabel";
+            this.P1nameLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.P1nameLabel.Visible = false;
+            // 
+            // P2nameBox
+            // 
+            this.P2nameBox.BackColor = System.Drawing.Color.Black;
+            this.P2nameBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.P2nameBox.Font = new System.Drawing.Font("Abel", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.P2nameBox.ForeColor = System.Drawing.Color.White;
+            this.P2nameBox.Location = new System.Drawing.Point(610, 706);
+            this.P2nameBox.Name = "P2nameBox";
+            this.P2nameBox.Size = new System.Drawing.Size(200, 32);
+            this.P2nameBox.TabIndex = 5;
+            this.P2nameBox.TabStop = false;
+            this.P2nameBox.Text = "Enter name (letters only)";
+            this.P2nameBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.P2nameBox.Visible = false;
+            this.P2nameBox.Click += new System.EventHandler(this.P2nameBox_Click);
+            this.P2nameBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.P2nameBox_KeyDown);
+            // 
+            // P1nameBox
+            // 
+            this.P1nameBox.BackColor = System.Drawing.Color.Black;
+            this.P1nameBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.P1nameBox.Font = new System.Drawing.Font("Abel", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.P1nameBox.ForeColor = System.Drawing.Color.White;
+            this.P1nameBox.Location = new System.Drawing.Point(191, 706);
+            this.P1nameBox.Name = "P1nameBox";
+            this.P1nameBox.Size = new System.Drawing.Size(200, 32);
+            this.P1nameBox.TabIndex = 4;
+            this.P1nameBox.TabStop = false;
+            this.P1nameBox.Text = "Enter name (letters only)";
+            this.P1nameBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.P1nameBox.Visible = false;
+            this.P1nameBox.Click += new System.EventHandler(this.P1nameBox_Click);
+            this.P1nameBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.P1nameBox_KeyDown);
+            // 
+            // P2spclDesc
+            // 
+            this.P2spclDesc.BackColor = System.Drawing.Color.Transparent;
+            this.P2spclDesc.Font = new System.Drawing.Font("Abel", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.P2spclDesc.ForeColor = System.Drawing.Color.White;
+            this.P2spclDesc.Location = new System.Drawing.Point(530, 306);
+            this.P2spclDesc.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.P2spclDesc.Name = "P2spclDesc";
+            this.P2spclDesc.Size = new System.Drawing.Size(130, 76);
+            this.P2spclDesc.TabIndex = 3;
+            this.P2spclDesc.Text = "p2spclDesc";
+            this.P2spclDesc.TextAlign = System.Drawing.ContentAlignment.BottomRight;
+            this.P2spclDesc.Visible = false;
+            // 
+            // P2Name
+            // 
+            this.P2Name.BackColor = System.Drawing.Color.Transparent;
+            this.P2Name.Font = new System.Drawing.Font("Abel", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.P2Name.ForeColor = System.Drawing.Color.White;
+            this.P2Name.Location = new System.Drawing.Point(500, 382);
+            this.P2Name.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.P2Name.Name = "P2Name";
+            this.P2Name.Size = new System.Drawing.Size(160, 38);
+            this.P2Name.TabIndex = 2;
+            this.P2Name.Text = "p2Name";
+            this.P2Name.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.P2Name.Visible = false;
+            // 
+            // P1spclDesc
+            // 
+            this.P1spclDesc.BackColor = System.Drawing.Color.Transparent;
+            this.P1spclDesc.Font = new System.Drawing.Font("Abel", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.P1spclDesc.ForeColor = System.Drawing.Color.White;
+            this.P1spclDesc.Location = new System.Drawing.Point(340, 330);
+            this.P1spclDesc.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.P1spclDesc.Name = "P1spclDesc";
+            this.P1spclDesc.Size = new System.Drawing.Size(140, 90);
+            this.P1spclDesc.TabIndex = 1;
+            this.P1spclDesc.Text = "p1spclDesc";
+            this.P1spclDesc.Visible = false;
+            // 
+            // P1Name
+            // 
+            this.P1Name.BackColor = System.Drawing.Color.Transparent;
+            this.P1Name.Font = new System.Drawing.Font("Abel", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.P1Name.ForeColor = System.Drawing.Color.White;
+            this.P1Name.Location = new System.Drawing.Point(340, 300);
+            this.P1Name.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.P1Name.Name = "P1Name";
+            this.P1Name.Size = new System.Drawing.Size(160, 38);
+            this.P1Name.TabIndex = 0;
+            this.P1Name.Text = "p1Name";
+            this.P1Name.Visible = false;
+            // 
+            // VeloTmr
+            // 
+            this.VeloTmr.Interval = 15;
+            this.VeloTmr.Tick += new System.EventHandler(this.VeloTmr_Tick);
+            // 
+            // P1atkTime
+            // 
+            this.P1atkTime.Interval = 125;
+            this.P1atkTime.Tick += new System.EventHandler(this.P1atkTime_Tick);
+            // 
+            // P2atkTime
+            // 
+            this.P2atkTime.Interval = 125;
+            this.P2atkTime.Tick += new System.EventHandler(this.P2atkTime_Tick);
+            // 
+            // P1stunTmr
+            // 
+            this.P1stunTmr.Tick += new System.EventHandler(this.P1stunTmr_Tick);
+            // 
+            // P2stunTmr
+            // 
+            this.P2stunTmr.Tick += new System.EventHandler(this.P2stunTmr_Tick);
+            // 
+            // AniTmr
+            // 
+            this.AniTmr.Enabled = true;
+            this.AniTmr.Interval = 125;
+            this.AniTmr.Tick += new System.EventHandler(this.AniTmr_Tick);
+            // 
+            // P1spclTmr
+            // 
+            this.P1spclTmr.Interval = 125;
+            this.P1spclTmr.Tick += new System.EventHandler(this.P1spclTmr_Tick);
+            // 
+            // P2spclTmr
+            // 
+            this.P2spclTmr.Interval = 125;
+            this.P2spclTmr.Tick += new System.EventHandler(this.P2spclTmr_Tick);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
-            this.ClientSize = new System.Drawing.Size(998, 750);
-            this.Controls.Add(this.mainPanel);
+            this.ClientSize = new System.Drawing.Size(998, 746);
+            this.Controls.Add(this.MainPanel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(1014, 789);
-            this.MinimumSize = new System.Drawing.Size(1014, 789);
+            this.MaximumSize = new System.Drawing.Size(1014, 785);
+            this.MinimumSize = new System.Drawing.Size(1014, 673);
             this.Name = "Form1";
             this.Text = "Battle of Champions";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);
-            this.mainPanel.ResumeLayout(false);
-            this.mainPanel.PerformLayout();
+            this.MainPanel.ResumeLayout(false);
+            this.MainPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Panel mainPanel;
-        private System.Windows.Forms.Timer veloTmr;
-        private System.Windows.Forms.Timer p1atkTime;
-        private System.Windows.Forms.Timer p2atkTime;
-        private System.Windows.Forms.Timer p1stunTmr;
-        private System.Windows.Forms.Timer p2stunTmr;
-        private System.Windows.Forms.Timer aniTmr;
-        private System.Windows.Forms.Label p1Name;
-        private System.Windows.Forms.Label p1spclDesc;
-        private System.Windows.Forms.Label p2spclDesc;
-        private System.Windows.Forms.Label p2Name;
-        private System.Windows.Forms.Timer p1spclTmr;
-        private System.Windows.Forms.Timer p2spclTmr;
-        private System.Windows.Forms.TextBox p2nameBox;
-        private System.Windows.Forms.TextBox p1nameBox;
-        private System.Windows.Forms.Label p2nameLabel;
-        private System.Windows.Forms.Label p1nameLabel;
+        private System.Windows.Forms.Panel MainPanel;
+        private System.Windows.Forms.Timer VeloTmr;
+        private System.Windows.Forms.Timer P1atkTime;
+        private System.Windows.Forms.Timer P2atkTime;
+        private System.Windows.Forms.Timer P1stunTmr;
+        private System.Windows.Forms.Timer P2stunTmr;
+        private System.Windows.Forms.Timer AniTmr;
+        private System.Windows.Forms.Label P1Name;
+        private System.Windows.Forms.Label P1spclDesc;
+        private System.Windows.Forms.Label P2spclDesc;
+        private System.Windows.Forms.Label P2Name;
+        private System.Windows.Forms.Timer P1spclTmr;
+        private System.Windows.Forms.Timer P2spclTmr;
+        private System.Windows.Forms.TextBox P2nameBox;
+        private System.Windows.Forms.TextBox P1nameBox;
+        private System.Windows.Forms.Label P2nameLabel;
+        private System.Windows.Forms.Label P1nameLabel;
         private System.Windows.Forms.Label centLbl4;
         private System.Windows.Forms.Label centLbl3;
         private System.Windows.Forms.Label centLbl2;
         private System.Windows.Forms.Label centLbl1;
-        private System.Windows.Forms.Label p2charLbl;
-        private System.Windows.Forms.Label p1charLbl;
-        private System.Windows.Forms.Label p2battleResult;
-        private System.Windows.Forms.Label p1battleResult;
-        private System.Windows.Forms.Label p1dmgLabel;
-        private System.Windows.Forms.Label p2dmgLabel;
-        private System.Windows.Forms.Label p2hpLabel;
-        private System.Windows.Forms.Label p1hpLabel;
+        private System.Windows.Forms.Label P2charLbl;
+        private System.Windows.Forms.Label P1charLbl;
+        private System.Windows.Forms.Label P2battleResult;
+        private System.Windows.Forms.Label P1battleResult;
+        private System.Windows.Forms.Label P1dmgLabel;
+        private System.Windows.Forms.Label P2dmgLabel;
+        private System.Windows.Forms.Label P2hpLabel;
+        private System.Windows.Forms.Label P1hpLabel;
+        private System.Windows.Forms.ListBox LstBoxScore;
+        private System.Windows.Forms.ListBox LstBoxName;
     }
 }
 

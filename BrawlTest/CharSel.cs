@@ -22,7 +22,7 @@ namespace BrawlTest
         public Image[] selFrame2 = new Image[7];
         public Image[] charIcons = new Image[17];
         public Image ready = Image.FromFile(Application.StartupPath + @"\Assets\Ready.png");
-        public Rectangle charSelSpace, fadeSpace, selSpace1, selSpace2, blackSpace, p1ready, p2ready;
+        public Rectangle charSelSpace, fadeSpace, selSpace1, selSpace2, blackSpace, P1ready, P2ready;
         public Rectangle[] charIconSpace = new Rectangle[17];
         public int Frame, Fade, Fade2, Choser;
         public int charNum1, charNum2;
@@ -62,7 +62,7 @@ namespace BrawlTest
                 selFrame1[i] = Image.FromFile(Application.StartupPath + @"\Assets\Choser1_(" + i.ToString() + ").png");
                 selFrame2[i] = Image.FromFile(Application.StartupPath + @"\Assets\Choser2_(" + i.ToString() + ").png");
             }
-            readCharlist();
+            ReadCharlist();
             for (int i = 1; i <= 16; i++)
             {
                 try
@@ -85,25 +85,25 @@ namespace BrawlTest
 
         }
 
-        public void p1chosenChar()
+        public void P1chosenChar()
         {
-            p1ready = new Rectangle(56, 374, 78, 28);
+            P1ready = new Rectangle(56, 374, 78, 28);
         }
-        public void p2chosenChar()
+        public void P2chosenChar()
         {
-            p2ready = new Rectangle (866, 374, 78, 28);
+            P2ready = new Rectangle (866, 374, 78, 28);
         }
 
-        public string p1char()
+        public string P1char()
         {
             return Char[charNum1];
         }
-        public string p2char()
+        public string P2char()
         {
             return Char[charNum2];
         }
 
-        public void aniCharSel()
+        public void AniCharSel()
         {
             Frame += 1;//cycles between frames
             Choser += 1;
@@ -116,7 +116,7 @@ namespace BrawlTest
                 Choser = 1;
             }
         }
-        public void transitionCharSel()
+        public void TransitionCharSel()
         {
             if (Fade <= 5)//fade in transition
             {
@@ -128,7 +128,7 @@ namespace BrawlTest
             }
 
         }
-        public void fadeoutCharSel()
+        public void FadeoutCharSel()
         {
             if (Clicked == true)
             {
@@ -146,13 +146,13 @@ namespace BrawlTest
             }
         }
 
-        public void toRules()
+        public void ToRules()
         {
             fadeSpace = new Rectangle(0, 0, 1000, 750);
             status = "Rules";
             Clicked = true;
         }
-        public void toGame()
+        public void ToGame()
         {
             fadeSpace = new Rectangle(0, 0, 1000, 750);
             status = "Game";
@@ -160,7 +160,7 @@ namespace BrawlTest
         }
 
 
-        public void charselEmpty()
+        public void CharselEmpty()
         {
             charSelSpace = Rectangle.Empty;
             selSpace1 = Rectangle.Empty;
@@ -174,13 +174,13 @@ namespace BrawlTest
         }
 
 
-        public string statuscharsel()
+        public string Statuscharsel()
         {
             return status;
         }
 
 
-        public bool transitionDone()//returns bool to Form1 to change screens
+        public bool TransitionDone()//returns bool to Form1 to change screens
         {
             if (fadeComplete == true)
             {
@@ -191,7 +191,7 @@ namespace BrawlTest
                 return false;
             }
         }
-        public bool charselDone()//returns bool to Form1 to change screens
+        public bool CharselDone()//returns bool to Form1 to change screens
         {
             if (Fade2 == 5)
             {
@@ -204,7 +204,7 @@ namespace BrawlTest
         }
 
 
-        public void readCharlist()
+        public void ReadCharlist()
         {
             System.IO.StreamReader file = new System.IO.StreamReader(Application.StartupPath + @"\Characters\Champions.txt");
             for (int i = 1; i <= 16; i++)
@@ -225,7 +225,7 @@ namespace BrawlTest
             }
         }
 
-        public void drawCharSel(Graphics g)//draws background
+        public void DrawCharSel(Graphics g)//draws background
         {
             g.DrawImage(charSelFrame[Frame], charSelSpace);
             for (int i = 1; i <= 16; i++)
@@ -234,17 +234,17 @@ namespace BrawlTest
             }
             g.DrawImage(selFrame1[Choser], selSpace1);
             g.DrawImage(selFrame2[Choser], selSpace2);
-            g.DrawImage(ready, p1ready);
-            g.DrawImage(ready, p2ready);
+            g.DrawImage(ready, P1ready);
+            g.DrawImage(ready, P2ready);
         }
-        public void drawFade(Graphics g)//draws fade
+        public void DrawFade(Graphics g)//draws fade
         {
             if (Fade <= 5)
             {
                 g.DrawImage(fadeFrame[Fade], fadeSpace);
             }
         }
-        public void drawFadeout(Graphics g)//draws fade
+        public void DrawFadeout(Graphics g)//draws fade
         {
             if (Fade2 <= 5 && fadeStart == true)
             {
@@ -255,7 +255,7 @@ namespace BrawlTest
 
 
         //moving the selection box
-        public void moveSelLeft1()
+        public void MoveSelLeft1()
         {
             if(selSpace1.X > 88)
             { selSpace1.X -= 100; charNum1 -= 1; }
@@ -263,25 +263,25 @@ namespace BrawlTest
             { selSpace1 = new Rectangle(788, 76, 124, 124); charNum1 -= 1; }
 
         }
-        public void moveSelRight1()
+        public void MoveSelRight1()
         {
             if (selSpace1.X < 788)
             { selSpace1.X += 100; charNum1 += 1; }
             else if (selSpace1.X == 788 && selSpace1.Y == 76)
             { selSpace1 = new Rectangle(88, 176, 124, 124); charNum1 += 1; }
         }
-        public void moveSelUp1()
+        public void MoveSelUP1()
         { 
             if(selSpace1.Y == 176)
             { selSpace1.Y -= 100; charNum1 -= 8; }
         }
-        public void moveSelDown1()
+        public void MoveSelDown1()
         {
             if (selSpace1.Y == 76)
             { selSpace1.Y += 100; charNum1 += 8; }
         }
 
-        public void moveSelLeft2()
+        public void MoveSelLeft2()
         {
             if (selSpace2.X > 88)
             { selSpace2.X -= 100; charNum2 -= 1; }
@@ -289,19 +289,19 @@ namespace BrawlTest
             { selSpace2 = new Rectangle(788, 76, 124, 124); charNum2 -= 1; }
 
         }
-        public void moveSelRight2()
+        public void MoveSelRight2()
         {
             if (selSpace2.X < 788)
             { selSpace2.X += 100; charNum2 += 1; }
             else if (selSpace2.X == 788 && selSpace2.Y == 76)
             { selSpace2 = new Rectangle(88, 176, 124, 124); charNum2 += 1; }
         }
-        public void moveSelUp2()
+        public void MoveSelUP2()
         {
             if (selSpace2.Y == 176)
             { selSpace2.Y -= 100; charNum2 -= 8; }
         }
-        public void moveSelDown2()
+        public void MoveSelDown2()
         {
             if (selSpace2.Y == 76)
             { selSpace2.Y += 100; charNum2 += 8; }

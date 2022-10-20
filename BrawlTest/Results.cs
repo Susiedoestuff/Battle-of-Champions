@@ -13,16 +13,19 @@ using System.Windows.Forms;
 namespace BrawlTest
 {
     class Results
-    { //loads assets for the animated components of the character selection screen
+    { 
+        //loads assets for the animated components of the character selection screen
         public Image[] resultsFrame = new Image[22];
         public Image[] fadeFrame = new Image[6];
         public Image[] fadeoutFrame = new Image[6];
         public Image[] txtFrame = new Image[22];
         public Image leaderboard = Image.FromFile(Application.StartupPath + @"\Assets\Leaderboard.png");
         public Image result = Image.FromFile(Application.StartupPath + @"\Assets\Result.png");
+        public Image lbRefreshes = Image.FromFile(Application.StartupPath + @"\Assets\lbRefresh.png");
+        public Image lbnoRefresh = Image.FromFile(Application.StartupPath + @"\Assets\lbnoRefresh.png");
         public Rectangle resultsSpace, fadeSpace, text, txtSpace;
         public int Frame, Fade, Fade2;
-        public bool Clicked, fadeStart, fadeComplete, resultsShown;
+        public bool Clicked, fadeStart, fadeComplete, resultsShown, lbRefresh;
 
         public Results()
         {
@@ -45,8 +48,13 @@ namespace BrawlTest
             }
         }
 
+        public void ResultShown()
+        {
+            resultsShown = true;
+            txtSpace = Rectangle.Empty;
+        }
 
-        public void aniResults()
+        public void AniResults()
         {
             Frame += 1;//cycles between frames
             if (Frame == 22)
@@ -54,7 +62,7 @@ namespace BrawlTest
                 Frame = 1;
             }
         }
-        public void transitionResults()
+        public void TransitionResults()
         {
             if (Fade <= 5)//fade in transition
             {
@@ -67,7 +75,7 @@ namespace BrawlTest
             }
 
         }
-        public void fadeoutResults()
+        public void FadeoutResults()
         {
             if (Clicked == true)
             {
@@ -87,7 +95,7 @@ namespace BrawlTest
             }
         }
 
-        public bool transitionDone()//returns bool to Form1 to change screens
+        public bool TransitionDone()//returns bool to Form1 to change screens
         {
             if (fadeComplete == true)
             {
@@ -98,7 +106,7 @@ namespace BrawlTest
                 return false;
             }
         }
-        public bool resultsDone()//returns bool to Form1 to change screens
+        public bool ResultsDone()//returns bool to Form1 to change screens
         {
             if (Fade2 == 5)
             {
@@ -111,33 +119,52 @@ namespace BrawlTest
         }
 
 
-        public void drawResults(Graphics g)//draws background
+        public void DrawResults(Graphics g)//draws background
         {
             g.DrawImage(resultsFrame[Frame], resultsSpace);
-            g.DrawImage(txtFrame[Frame], txtSpace);
             if (resultsShown == false)
             {
-                g.DrawImage(leaderboard, text);
+                g.DrawImage(result, text);
+                g.DrawImage(txtFrame[Frame], txtSpace);
             }
             else
             {
-                g.DrawImage(result, text);
+                g.DrawImage(leaderboard, text);
+                if(lbRefresh == true)
+                {
+                    g.DrawImage(lbRefreshes, resultsSpace);
+                }
+                else
+                {
+                    g.DrawImage(lbnoRefresh, resultsSpace);
+                }
             }
         }
 
-        public void drawFade(Graphics g)//draws fade
+        public void DrawFade(Graphics g)//draws fade
         {
             if (Fade <= 5)
             {
                 g.DrawImage(fadeFrame[Fade], fadeSpace);
             }
         }
-        public void drawFadeout(Graphics g)//draws fade
+        public void DrawFadeout(Graphics g)//draws fade
         {
             if (Fade2 <= 5 && fadeStart == true)
             {
                 g.DrawImage(fadeoutFrame[Fade2], fadeSpace);
             }
         }
+        public void LbRefreshed()
+        {
+            lbRefresh = true;
+            txtSpace = new Rectangle(0, 0, 1000, 750);
+        }
+        public void LbStatic()
+        {
+            lbRefresh = false;
+            txtSpace = new Rectangle(0, 0, 1000, 750);
+        }
+
     }
 }

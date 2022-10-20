@@ -44,7 +44,7 @@ namespace BrawlTest
 
 
 
-        public void aniRules()
+        public void AniRules()
         {
             Frame += 1;//cycles between frames
             if (Frame == 22)
@@ -52,7 +52,7 @@ namespace BrawlTest
                 Frame = 1;
             }
         }
-        public void transitionRules()
+        public void TransitionRules()
         {
             if (Fade <= 5)//fade in transition
             {
@@ -65,7 +65,7 @@ namespace BrawlTest
             }
 
         }
-        public void fadeoutRules()
+        public void FadeoutRules()
         {
             if (Clicked == true)
             {
@@ -85,13 +85,13 @@ namespace BrawlTest
             }
         }
 
-        public void toCharsel()
+        public void ToCharsel()
         {
             fadeSpace = new Rectangle(0, 0, 1000, 750);
             Clicked = true;
         }
 
-        public bool transitionDone()//returns bool to Form1 to change screens
+        public bool TransitionDone()//returns bool to Form1 to change screens
         {
             if (fadeComplete == true)
             {
@@ -102,7 +102,7 @@ namespace BrawlTest
                 return false;
             }
         }
-        public bool rulesDone()//returns bool to Form1 to change screens
+        public bool RulesDone()//returns bool to Form1 to change screens
         {
             if (Fade2 == 5)
             {
@@ -115,18 +115,18 @@ namespace BrawlTest
         }
 
 
-        public void drawRules(Graphics g)//draws background
+        public void DrawRules(Graphics g)//draws background
         {
             g.DrawImage(ruleFrame[Frame], ruleSpace);
         }
-        public void drawFade(Graphics g)//draws fade
+        public void DrawFade(Graphics g)//draws fade
         {
             if (Fade <= 5)
             {
                 g.DrawImage(fadeFrame[Fade], fadeSpace);
             }
         }
-        public void drawFadeout(Graphics g)//draws fade
+        public void DrawFadeout(Graphics g)//draws fade
         {
             if (Fade2 <= 5 && fadeStart == true)
             {

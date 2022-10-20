@@ -44,7 +44,7 @@ namespace BrawlTest
             }
         }
 
-        public void aniTitle()
+        public void AniTitle()
         {
             Frame += 1;//cycles between frames
             if (Frame == 22)
@@ -75,7 +75,7 @@ namespace BrawlTest
             }
         }
 
-        public void drawTitle(Graphics g)//draws everything
+        public void DrawTitle(Graphics g)//draws everything
         {
             g.DrawImage(titleFrame[Frame], titleSpace);
             g.DrawImage(txtFrame[Frame2], txtSpace);
@@ -85,7 +85,7 @@ namespace BrawlTest
             }
         }
 
-        public void transitionTitle()//processes transition to character selection
+        public void TransitionTitle()//processes transition to character selection
         {
             if(Clicked == true)
             {
@@ -106,7 +106,7 @@ namespace BrawlTest
             }
         }
         
-        public bool titleDone()//returns bool to Form1 to change screens
+        public bool TitleDone()//returns bool to Form1 to change screens
         {
             if(Fade == 8)
             { 
@@ -118,7 +118,7 @@ namespace BrawlTest
             }
         }
 
-        public void triggerTransition()//starts transition process
+        public void TriggerTransition()//starts transition process
         {
             Clicked = true;
         }
