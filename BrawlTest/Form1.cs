@@ -54,7 +54,7 @@ namespace BrawlTest
         int P1hp, P1atk, P1def, P1dex, P1spd; //stats
         int P1atkLength; //attack specifications 
         int P1atkhbX, P1atkhbY, P1atkhbOffsetX, P1atkhbOffsetY; //attack hitbox sizes
-        bool P1spclDoesHeal, P1spclDoesDmg, P1spclDoesDrop, P1spclDoesSpecial; //Special skill conditions
+        bool P1spclDoesHeal, P1spclDoesDmg, P1spclDoesSpecial; //Special skill conditions
         int P1spclLength, P1spclCool, P1spclhbX, P1spclhbY, P1spclhbOffsetX, P1spclhbOffsetY; //Special skill specifications
         int P1spclDmg, P1spclStun; //special damage and stun values
         string P1fullName, P1desc; //values displayed in charsel
@@ -104,7 +104,7 @@ namespace BrawlTest
         int P2hp, P2atk, P2def, P2dex, P2spd; //stats
         int P2atkLength; //attack specifications 
         int P2atkhbX, P2atkhbY, P2atkhbOffsetX, P2atkhbOffsetY; //attack hitbox sizes
-        bool P2spclDoesHeal, P2spclDoesDmg, P2spclDoesDrop, P2spclDoesSpecial; //Special skill conditions
+        bool P2spclDoesHeal, P2spclDoesDmg, P2spclDoesSpecial; //Special skill conditions
         int P2spclLength, P2spclCool, P2spclhbX, P2spclhbY, P2spclhbOffsetX, P2spclhbOffsetY; //Special skill specifications
         int P2spclDmg, P2spclStun; //special damage and stun values
         string P2fullName, P2desc; //values displayed in charsel
@@ -320,10 +320,6 @@ namespace BrawlTest
                                 if (line.Contains("y")) { P1spclDoesDmg = true; }
                                 else { P1spclDoesDmg = false; }
                                 break;
-                            case 15://does special drop stats?
-                                if (line.Contains("y")) { P1spclDoesDrop = true; }
-                                else { P1spclDoesDrop = false; }
-                                break;
                             case 16://does special do anything else?
                                 if (line.Contains("y")) { P1spclDoesSpecial = true; }
                                 else { P1spclDoesSpecial = false; }
@@ -418,10 +414,6 @@ namespace BrawlTest
                             case 14://does special deal damage?
                                 if (line.Contains("y")) { P2spclDoesDmg = true; }
                                 else { P2spclDoesDmg = false; }
-                                break;
-                            case 15://does special drop stats?
-                                if (line.Contains("y")) { P2spclDoesDrop = true; }
-                                else { P2spclDoesDrop = false; }
                                 break;
                             case 16://does special do anything else?
                                 if (line.Contains("y")) { P2spclDoesSpecial = true; }
@@ -1851,6 +1843,7 @@ namespace BrawlTest
             }
             if (P2hb.IntersectsWith(P1atkhb) && P2trueInvince == false)//if hit player 2
             {
+                P2atkCooltime = P2atkLength - 1;//stops attack next tick
                 P2spriteStatus = "TakingDamage";
                 P2xv = 0;
                 P2xa = 0;
@@ -1912,6 +1905,7 @@ namespace BrawlTest
             }
             if (P1hb.IntersectsWith(P2atkhb) && P1trueInvince == false)//if hit player 2
             {
+                P1atkCooltime = P1atkLength - 1;//stops attack next tick
                 P1spriteStatus = "TakingDamage";
                 P1xv = 0;
                 P1xa = 0;
@@ -1980,10 +1974,6 @@ namespace BrawlTest
                 }
                 P1spclhb = new Rectangle(playerposX, playerposY, P1spclhbX, P1spclhbY);
             }
-            if (P1spclDoesDrop == true)
-            {
-
-            }
             if (P1spclDoesHeal == true)//if special heals
             {
                 P1currentHp += P1spclDmg * P1atk;//heal calc
@@ -2049,6 +2039,7 @@ namespace BrawlTest
                     }
                     if (P2hb.IntersectsWith(P1spclhb) && P2trueInvince == false)//checks for hits
                     {
+                        P2atkCooltime = P2atkLength - 1;//stops attack next tick
                         P2spriteStatus = "TakingDamage";
                         P2xv = 0;
                         P2xa = 0;
@@ -2066,10 +2057,6 @@ namespace BrawlTest
                         P2stunTmr.Enabled = true;
                         P2dealKnockback = false;
                     }
-                }
-                if (P1spclDoesDrop == true)
-                {
-
                 }
                 if (P1spclCooltime > P1spclLength + 1)
                 {
@@ -2121,10 +2108,6 @@ namespace BrawlTest
                     playerposY = P2hb.Y + P2spclhbOffsetY;
                 }
                 P2spclhb = new Rectangle(playerposX, playerposY, P2spclhbX, P2spclhbY);
-            }
-            if (P2spclDoesDrop == true)
-            {
-
             }
             if (P2spclDoesHeal == true)
             {
@@ -2199,6 +2182,7 @@ namespace BrawlTest
                     }
                     if (P1hb.IntersectsWith(P2spclhb) && P1trueInvince == false)
                     {
+                        P1atkCooltime = P1atkLength - 1;//stops attack next tick
                         P1spriteStatus = "TakingDamage";
                         P1xv = 0;
                         P1xa = 0;
@@ -2216,10 +2200,6 @@ namespace BrawlTest
                         P1stunTmr.Enabled = true;
                         P1dealKnockback = false;
                     }
-                }
-                if (P2spclDoesDrop == true)
-                {
-
                 }
                 if (P2spclCooltime > P2spclLength + 1)
                 {
