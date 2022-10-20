@@ -326,14 +326,14 @@ namespace BrawlTest
             // 
             this.P2nameBox.BackColor = System.Drawing.Color.Black;
             this.P2nameBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.P2nameBox.Font = new System.Drawing.Font("Abel", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.P2nameBox.Font = new System.Drawing.Font("Abel", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.P2nameBox.ForeColor = System.Drawing.Color.White;
-            this.P2nameBox.Location = new System.Drawing.Point(610, 706);
+            this.P2nameBox.Location = new System.Drawing.Point(590, 706);
             this.P2nameBox.Name = "P2nameBox";
-            this.P2nameBox.Size = new System.Drawing.Size(200, 32);
+            this.P2nameBox.Size = new System.Drawing.Size(250, 28);
             this.P2nameBox.TabIndex = 5;
             this.P2nameBox.TabStop = false;
-            this.P2nameBox.Text = "Enter name (letters only)";
+            this.P2nameBox.Text = "Enter name (press enter to confirm)";
             this.P2nameBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.P2nameBox.Visible = false;
             this.P2nameBox.Click += new System.EventHandler(this.P2nameBox_Click);
@@ -343,14 +343,14 @@ namespace BrawlTest
             // 
             this.P1nameBox.BackColor = System.Drawing.Color.Black;
             this.P1nameBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.P1nameBox.Font = new System.Drawing.Font("Abel", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.P1nameBox.Font = new System.Drawing.Font("Abel", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.P1nameBox.ForeColor = System.Drawing.Color.White;
-            this.P1nameBox.Location = new System.Drawing.Point(191, 706);
+            this.P1nameBox.Location = new System.Drawing.Point(160, 706);
             this.P1nameBox.Name = "P1nameBox";
-            this.P1nameBox.Size = new System.Drawing.Size(200, 32);
+            this.P1nameBox.Size = new System.Drawing.Size(250, 28);
             this.P1nameBox.TabIndex = 4;
             this.P1nameBox.TabStop = false;
-            this.P1nameBox.Text = "Enter name (letters only)";
+            this.P1nameBox.Text = "Enter name (press enter to confirm)";
             this.P1nameBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.P1nameBox.Visible = false;
             this.P1nameBox.Click += new System.EventHandler(this.P1nameBox_Click);

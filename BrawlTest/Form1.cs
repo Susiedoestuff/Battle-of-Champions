@@ -840,7 +840,7 @@ namespace BrawlTest
         }
         private void P1nameBox_Click(object sender, EventArgs e)
         {
-            if(P1nameBox.Text == "Enter name (letters only)")//clears the box when you click on it
+            if(P1nameBox.Text == "Enter name (press enter to confirm)")//clears the box when you click on it
             {
                 P1nameBox.Clear();
             }
@@ -868,7 +868,7 @@ namespace BrawlTest
         }
         private void P2nameBox_Click(object sender, EventArgs e)
         {
-            if (P2nameBox.Text == "Enter name (letters only)")//clears the box when you click on it
+            if (P2nameBox.Text == "Enter name (press enter to confirm)")//clears the box when you click on it
             {
                 P2nameBox.Clear();
             }
